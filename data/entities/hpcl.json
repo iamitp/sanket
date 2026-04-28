@@ -50,5 +50,181 @@
     "Cloudflare-fronted origin"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "hindustanpetroleum.com",
+        "stack": "Cloudflare + Google Trust Services TLS + ASP.NET Core; ALL 6 hardening headers MISSING",
+        "versions": [
+          "Cloudflare",
+          "Google Trust Services WE1 (expires 2026-07-14)",
+          "ASP.NET Core"
+        ],
+        "eolFlags": [
+          "CRITICAL: 0/6 hardening headers present",
+          "SPF ~all +a +mx (broad spoofing surface)",
+          "TLS expires in 78 days"
+        ]
+      },
+      {
+        "host": "hpclapi.hindustanpetroleum.com / hpcladmin.hindustanpetroleum.com",
+        "stack": "Admin/API endpoints (ASP.NET Core)",
+        "versions": [],
+        "eolFlags": [
+          "Admin endpoints publicly enumerated"
+        ]
+      },
+      {
+        "host": "lserver182-ind.hindustanpetroleum.com",
+        "stack": "Shared cPanel/WHM hosting",
+        "versions": [],
+        "eolFlags": [
+          "Shared infrastructure; WHM 2087/2083 standard brute-force target"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Missing headers → clickjacking + MIME-sniffing polyglot RCE",
+        "priority": 1,
+        "entry": "All 6 hardening headers missing. No nosniff = MIME sniffing exploitation. No X-Frame-Options = clickjacking. No CSP = unrestricted XSS.",
+        "pivot": "Transparent iframe overlay; user clicks attacker button → form intercept. SVG+XML polyglot upload → script execution on download.",
+        "objective": "Session hijack; payment theft; malware injection; pricing defacement.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "Email spoofing → executive phishing",
+        "priority": 1,
+        "entry": "SPF ~all with +a +mx — extremely broad.",
+        "pivot": "Phishing from ceo@hindustanpetroleum.com claiming urgent divestment/M&A.",
+        "objective": "Executive credential theft; insider threat; procurement fraud.",
+        "effort": "days",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "cPanel/WHM brute force on lserver182-ind",
+        "priority": 2,
+        "entry": "lserver182-ind has WHM on 2087/2083. Username enum (hpcl, hpcl_wp, hpcl_shop). Brute force if rate limit absent.",
+        "pivot": "WHM compromise → FTP, webshell, lateral to other shared customers. If hpclapi/hpcladmin co-located, direct admin API access.",
+        "objective": "Webshell persistence; lateral move; API credential extraction.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "D",
+        "name": "TLS rotation MITM (78 days)",
+        "priority": 2,
+        "entry": "Cert expires 2026-07-14. Monitor CT/WHOIS for renewal; registrar/DNS compromise → rogue cert.",
+        "pivot": "Valid cert allows MITM on hpclapi traffic; intercept API tokens; modify fuel pricing/inventory.",
+        "objective": "Supply-chain disruption; API MITM; customer data.",
+        "effort": "days",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "Missing headers = OWASP A04 standard hardening flaw",
+          "mythos": "Absence of all 6 headers indicates zero security review at HPCL. Polyglot SVG+XML upload yields client-side malware on every fuel-portal visitor — supply-chain vector for retail fuel pricing manipulation",
+          "factor": "~1× if only clickjacking; ~10× if MIME sniffing exploited"
+        },
+        {
+          "pathId": "B",
+          "preAi": "Broad SPF allows spoofing; state actors target energy executives",
+          "mythos": "SPF ~all +a +mx wide open + DMARC p=quarantine (not reject) → spoofed CEO emails land 30-40% of the time. SideCopy / WIZARD SPIDER pattern for Indian energy infra",
+          "factor": "~5× harder if DMARC p=reject; current state ≈ 1×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "HTTP security headers (CRITICAL — 0/6 currently present)",
+        "severity": "critical",
+        "host": "hindustanpetroleum.com",
+        "cve": "CWE-345, CWE-79, CWE-441",
+        "fix": "Add all 6: HSTS, CSP, X-Frame-Options SAMEORIGIN, X-Content-Type-Options nosniff, Referrer-Policy, Permissions-Policy.",
+        "owner": "Development",
+        "validation": "securityheaders.com returns A+; MIME sniffing test fails"
+      },
+      {
+        "tier": 1,
+        "title": "Email spoofing prevention — SPF -all + DMARC p=reject",
+        "severity": "critical",
+        "host": "hindustanpetroleum.com (email)",
+        "cve": null,
+        "fix": "SPF ~all → -all; remove +a +mx broad includes. DMARC p=reject. DKIM. BIMI. Test hard-fail.",
+        "owner": "Email Security",
+        "validation": "mxtoolbox shows -all and p=reject; spoofed mail bounces"
+      },
+      {
+        "tier": 1,
+        "title": "TLS rotation procedure (78 days to expiry)",
+        "severity": "critical",
+        "host": "hindustanpetroleum.com",
+        "cve": null,
+        "fix": "Initiate renewal NOW. DNSSEC. CT monitoring. Audit Google CA + MFA. HPKP. Registrar MFA.",
+        "owner": "Infrastructure",
+        "validation": "DNSSEC verified; CT monitoring; HPKP test"
+      },
+      {
+        "tier": 1,
+        "title": "cPanel/WHM brute-force protection",
+        "severity": "critical",
+        "host": "lserver182-ind.hindustanpetroleum.com",
+        "cve": null,
+        "fix": "Rate-limit WHM 5 fails → 30 min lockout. Non-standard port. MFA TOTP/FIDO2. Key-based auth only. Audit default accounts.",
+        "owner": "Hosting / SysAdmin",
+        "validation": "Rate limit test fires; MFA enforced; WHM not externally reachable"
+      },
+      {
+        "tier": 2,
+        "title": "ASP.NET cookie + session security — SameSite=Strict + CSRF",
+        "severity": "high",
+        "host": "hindustanpetroleum.com",
+        "cve": "CWE-352",
+        "fix": "SameSite=Strict (not Lax). Server-side CSRF token validation. [ValidateAntiForgeryToken]. CSP form-action 'self'.",
+        "owner": "Development",
+        "validation": "SameSite=Strict header; CSRF token enforced; PoC blocked"
+      },
+      {
+        "tier": 2,
+        "title": "API endpoint security on hpclapi",
+        "severity": "high",
+        "host": "hpclapi.hindustanpetroleum.com",
+        "cve": null,
+        "fix": "Rate-limit 100 req/min/IP. API key auth. HMAC-SHA256 signing. Full request log. IP allowlist if internal-only.",
+        "owner": "Development / Security",
+        "validation": "API key required; rate limit fires; signing enforced"
+      },
+      {
+        "tier": 2,
+        "title": "Admin endpoint security on hpcladmin — internal IPs only",
+        "severity": "high",
+        "host": "hpcladmin.hindustanpetroleum.com",
+        "cve": null,
+        "fix": "Internal IPs only (VPN + office). Cloudflare WAF IP control. MFA TOTP/FIDO2. Admin audit log. Re-auth on sensitive ops.",
+        "owner": "Infrastructure",
+        "validation": "External access blocked; MFA test passes"
+      },
+      {
+        "tier": 3,
+        "title": "Shared hosting risk assessment on lserver182-ind",
+        "severity": "medium",
+        "host": "lserver182-ind.hindustanpetroleum.com",
+        "cve": null,
+        "fix": "Audit other customers on same server. Migrate to dedicated server if possible. cPanel isolation: PHP open_basedir. Shell disabled for non-admin. Malware scan.",
+        "owner": "Hosting",
+        "validation": "Customer audit; isolation verified"
+      }
+    ],
+    "headlineQuestion": "HPCL's complete absence of HTTP hardening headers, broad SPF spoofing surface, and imminent July 2026 TLS rotation represent a critical convergence — what incident-response and forensic capabilities exist to detect and contain a sophisticated MITM attack initiated during the TLS renewal window?"
+  }
 }

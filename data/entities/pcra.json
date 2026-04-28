@@ -62,5 +62,191 @@
     "Missing CSP and Referrer-Policy"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "www.pcra.org",
+        "stack": "Cloudflare-fronted WordPress on Nginx",
+        "versions": [
+          "Let's Encrypt E8 TLS (expires 2026-07-25)"
+        ],
+        "eolFlags": [
+          "SPF and DMARC entirely absent — open spoofing surface"
+        ]
+      },
+      {
+        "host": "owa.pcra.org / webmail.pcra.org / mail.pcra.org / email.pcra.org",
+        "stack": "Multiple mail endpoints; OWA suggests Microsoft Exchange Server",
+        "versions": [
+          "Exchange version not externally exposed"
+        ],
+        "eolFlags": [
+          "12 subdomains in CT — multiple mail systems suggest distributed mail infra"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Email spoofing via absent SPF/DMARC",
+        "priority": 1,
+        "entry": "Zero SPF, zero DMARC.",
+        "pivot": "Spoof @pcra.org to industry stakeholders who trust public-information PCRA.",
+        "objective": "High-yield phishing on trusted petroleum-conservation entity.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "OWA exposure → CVE-2024-21410 NTLM relay (if Exchange Server)",
+        "priority": 1,
+        "entry": "owa.pcra.org publicly named in CT. OWA suggests on-prem Exchange Server.",
+        "pivot": "If Exchange 2016/2019 without Feb 2024+ patches, NTLM relay → priv esc → RCE as domain admin.",
+        "objective": "Domain compromise via OWA endpoint.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "Subdomain proliferation → dangling DNS (takeover risk)",
+        "priority": 2,
+        "entry": "12 subdomains including wildcard. Some likely point to deprovisioned cloud services.",
+        "pivot": "Subdomain takeover on dangling CNAME → phishing with valid TLS.",
+        "objective": "Trusted-domain phishing.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "D",
+        "name": "Cloudflare bypass via mail-server MITM (SMTP/IMAP/POP3)",
+        "priority": 2,
+        "entry": "Cloudflare proxies HTTP/S only. Mail protocols on mail.pcra.org bypass WAF.",
+        "pivot": "Direct connection to mail server; if unpatched, RCE without WAF visibility.",
+        "objective": "Mail-server compromise.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "E",
+        "name": "Missing CSP → reflected XSS on WordPress",
+        "priority": 3,
+        "entry": "WordPress identified via /wp/v2/ link headers; CSP absent.",
+        "pivot": "Plugin/theme XSS executes without CSP sandbox.",
+        "objective": "Admin account takeover via XSS.",
+        "effort": "hours",
+        "detection": "medium"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "Absent SPF/DMARC enables open spoofing on a high-trust public-information entity",
+          "mythos": "AI-augmented lure crafting with petroleum-conservation register accelerates social engineering",
+          "factor": "~5–7×"
+        },
+        {
+          "pathId": "B",
+          "preAi": "OWA + CVE-2024-21410 NTLM relay → domain admin RCE",
+          "mythos": "AI-augmented adversary prioritises Exchange version probe; relay automation reduces effort to hours",
+          "factor": "~10–15×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Publish SPF and DMARC records",
+        "severity": "critical",
+        "host": "pcra.org (email)",
+        "cve": null,
+        "fix": "SPF: 'v=spf1 include:_spf.google.com ~all' (adjust to actual provider). DMARC: 'v=DMARC1; p=quarantine; rua=mailto:dmarc@pcra.org; fo=1'. Monitor 2 weeks → p=reject.",
+        "owner": "PCRA IT / Email Security",
+        "validation": "dig +short TXT pcra.org shows v=spf1; dig +short TXT _dmarc.pcra.org shows DMARC1"
+      },
+      {
+        "tier": 1,
+        "title": "Patch Exchange Server for CVE-2024-21410 (if applicable)",
+        "severity": "critical",
+        "host": "owa.pcra.org",
+        "cve": "CVE-2024-21410",
+        "fix": "Confirm Exchange version on owa.pcra.org. If on-prem 2016/2019, apply Feb 2024+ Cumulative Update. Enable Extended Protection for Authentication (EPA) on OWA, ECP, ActiveSync.",
+        "owner": "PCRA Exchange Admin",
+        "validation": "Exchange CU verified post-patch; EPA enabled on all virtual directories"
+      },
+      {
+        "tier": 1,
+        "title": "Subdomain inventory + dangling DNS audit",
+        "severity": "critical",
+        "host": "*.pcra.org",
+        "cve": null,
+        "fix": "For each of 12 CT-logged subdomains, verify (a) DNS active (b) service running or intentionally disabled (c) if disabled, remove DNS. Remove dangling CNAMEs to deprovisioned cloud.",
+        "owner": "PCRA Infrastructure",
+        "validation": "Subdomain register filed; CT monitoring active"
+      },
+      {
+        "tier": 2,
+        "title": "Add CSP and Referrer-Policy headers",
+        "severity": "high",
+        "host": "www.pcra.org",
+        "cve": null,
+        "fix": "Cloudflare Workers or Nginx config: add CSP (nonce-based) + Referrer-Policy: strict-origin-when-cross-origin.",
+        "owner": "PCRA Web Ops",
+        "validation": "curl -i shows CSP and Referrer-Policy"
+      },
+      {
+        "tier": 2,
+        "title": "Secure mail servers behind reverse proxy or cloud gateway",
+        "severity": "high",
+        "host": "mail.pcra.org / webmail.pcra.org",
+        "cve": null,
+        "fix": "Move mail-server SMTP/IMAP/POP3 behind Mimecast / Proofpoint / Cloudflare Email Routing. Reduces direct attack surface.",
+        "owner": "PCRA Mail / IT Ops",
+        "validation": "External SMTP scan no longer reaches origin"
+      },
+      {
+        "tier": 2,
+        "title": "WordPress security + plugin audit",
+        "severity": "high",
+        "host": "www.pcra.org",
+        "cve": null,
+        "fix": "wp-cli plugin audit; update all. Remove unmaintained plugins. Wordfence/Sucuri scan.",
+        "owner": "PCRA Web Ops",
+        "validation": "WPScan; plugin status all-current"
+      },
+      {
+        "tier": 2,
+        "title": "Exchange Server hardening",
+        "severity": "high",
+        "host": "owa.pcra.org",
+        "cve": "CVE-2024-21410",
+        "fix": "EPA enforced. SMB signing required. NTLM auth restricted. Conditional Access via Azure AD if hybrid.",
+        "owner": "PCRA Exchange Admin",
+        "validation": "EPA active on all virtual dirs; SMB signing required"
+      },
+      {
+        "tier": 3,
+        "title": "Email security gateway / advanced threat protection",
+        "severity": "medium",
+        "host": "pcra.org email",
+        "cve": null,
+        "fix": "Microsoft Defender for Office 365 or equivalent. URL scanning, attachment sandboxing.",
+        "owner": "PCRA Email Security",
+        "validation": "Defender alerts active; quarantine working"
+      },
+      {
+        "tier": 3,
+        "title": "DMARC failure monitoring + alerting",
+        "severity": "medium",
+        "host": "pcra.org",
+        "cve": null,
+        "fix": "Subscribe to DMARC aggregator (DMARCIAN, EasyDMARC). Weekly digest; alert on misalignment.",
+        "owner": "PCRA Email Security",
+        "validation": "Weekly DMARC reports received and reviewed"
+      }
+    ],
+    "headlineQuestion": "PCRA lacks email authentication entirely (no SPF/DMARC) and exposes multiple mail endpoints (owa.pcra.org) potentially vulnerable to CVE-2024-21410 NTLM relay. What is the Exchange Server patch status, and is the SPF/DMARC deployment hours or days away?"
+  }
 }

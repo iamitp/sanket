@@ -66,5 +66,193 @@
       "days": 33
     }
   ],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "rgipt.ac.in",
+        "stack": "Custom 'My httpd server' (obfuscated Apache) + ASP.NET backend",
+        "versions": [
+          "Wildcard cert *.rgipt.ac.in TLS — EXPIRES 2026-05-09 (11 DAYS — CRITICAL)"
+        ],
+        "eolFlags": [
+          "IMMINENT wildcard expiry — blocks all student portals",
+          "DMARC absent",
+          "Soft SPF (~all)"
+        ]
+      },
+      {
+        "host": "moodle.rgipt.ac.in / admissions.rgipt.ac.in / academics.rgipt.ac.in",
+        "stack": "Moodle LMS / admissions portal / grade portal",
+        "versions": [
+          "Moodle version not externally exposed"
+        ],
+        "eolFlags": [
+          "If Moodle 4.4.0–4.4.1 / 4.3.0–4.3.5 / 4.2.0–4.2.8: CVE-2024-43425 RCE applies"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Wildcard cert expiry (11 days) → student-portal downtime",
+        "priority": 1,
+        "entry": "Wildcard *.rgipt.ac.in expires 2026-05-09. All subdomains fail TLS validation.",
+        "pivot": "During downtime, attackers can MITM any subdomain — particularly admissions during cycle.",
+        "objective": "Credential interception; trust erosion; admissions disruption.",
+        "effort": "passive",
+        "detection": "high"
+      },
+      {
+        "id": "B",
+        "name": "Moodle CVE-2024-43425 RCE (calculated questions)",
+        "priority": 1,
+        "entry": "Moodle 4.4.0–4.4.1 / 4.3.0–4.3.5 / 4.2.0–4.2.8 / older — command injection in calculated question type (CVSS 7.5, authenticated).",
+        "pivot": "Authenticated user crafts question; RCE on Moodle host.",
+        "objective": "Student data exfiltration; grade tampering; lateral move.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "Admissions portal CSRF / IDOR",
+        "priority": 2,
+        "entry": "No CSP; weak CSRF protection if tokens absent.",
+        "pivot": "CSRF request modifies application status; IDOR exposes other applicants' data.",
+        "objective": "Application manipulation; data theft.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "D",
+        "name": "Soft SPF + absent DMARC → student-targeted phishing",
+        "priority": 2,
+        "entry": "SPF ~all soft-fail; no DMARC.",
+        "pivot": "Forged @rgipt.ac.in to students with phishing link (fake grade portal, registration deadline).",
+        "objective": "Credential harvest; admissions-cycle exploitation.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "E",
+        "name": "Academics portal IDOR / broken access control",
+        "priority": 3,
+        "entry": "academics.rgipt.ac.in is grade/transcript portal; if SQLi or IDOR present.",
+        "pivot": "Access other students' grades; modify transcripts.",
+        "objective": "Academic fraud; institutional integrity loss.",
+        "effort": "days",
+        "detection": "medium"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "Cert-expiry MITM during 11-day downtime + admission cycle",
+          "mythos": "AI-augmented attacker pre-stages rogue cert for admissions subdomain, times exploitation to admission deadline",
+          "factor": "~8–12×"
+        },
+        {
+          "pathId": "B",
+          "preAi": "Moodle RCE via calculated questions",
+          "mythos": "AI-augmented attacker scans for vulnerable Moodle versions sector-wide; RGIPT picked because public-information entity has predictable patch lag",
+          "factor": "~3–5×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "EMERGENCY: Rotate wildcard *.rgipt.ac.in cert before 2026-05-09",
+        "severity": "critical",
+        "host": "*.rgipt.ac.in",
+        "cve": null,
+        "fix": "Order new wildcard cert IMMEDIATELY (target install 2026-05-07). Cover all subdomains. Have rollback plan if renewal fails.",
+        "owner": "RGIPT TLS Admin",
+        "validation": "openssl s_client | x509 -noout -enddate shows notAfter > 2026-05-15 on each subdomain"
+      },
+      {
+        "tier": 1,
+        "title": "Patch / upgrade Moodle to 4.4.2+ / 4.3.6+ / 4.2.9+ / 4.1.12+",
+        "severity": "critical",
+        "host": "moodle.rgipt.ac.in",
+        "cve": "CVE-2024-43425",
+        "fix": "Identify current Moodle version. Apply patch/upgrade to supported LTS. Test course authoring + calculated questions + assessments post-patch.",
+        "owner": "RGIPT Moodle Admin",
+        "validation": "Moodle admin → site information shows patched version"
+      },
+      {
+        "tier": 1,
+        "title": "Publish DMARC + harden SPF",
+        "severity": "critical",
+        "host": "rgipt.ac.in (email)",
+        "cve": null,
+        "fix": "SPF ~all → -all after verifying legitimate senders covered. DMARC: 'v=DMARC1; p=quarantine; rua=mailto:dmarc@rgipt.ac.in; fo=1'. Monitor 2 weeks → p=reject.",
+        "owner": "RGIPT IT / Email Security",
+        "validation": "dig +short TXT _dmarc.rgipt.ac.in returns DMARC1"
+      },
+      {
+        "tier": 2,
+        "title": "Add CSP header + CSRF token validation on admissions portal",
+        "severity": "high",
+        "host": "admissions.rgipt.ac.in",
+        "cve": null,
+        "fix": "Add CSP (nonce-based). Server-side CSRF token validation on every state-changing request.",
+        "owner": "RGIPT Web Ops",
+        "validation": "curl -i shows CSP; CSRF PoC blocked"
+      },
+      {
+        "tier": 2,
+        "title": "Access control audit on academics portal (IDOR prevention)",
+        "severity": "high",
+        "host": "academics.rgipt.ac.in",
+        "cve": null,
+        "fix": "Audit all endpoints for direct object references; require authorisation check on every request.",
+        "owner": "RGIPT App Dev",
+        "validation": "Test student-A token cannot access student-B grades"
+      },
+      {
+        "tier": 2,
+        "title": "Moodle security hardening + role-based access",
+        "severity": "high",
+        "host": "moodle.rgipt.ac.in",
+        "cve": null,
+        "fix": "Disable unused plugins. Restrict question authoring to verified instructors. Audit role permissions.",
+        "owner": "RGIPT Moodle Admin",
+        "validation": "Plugin list reviewed; role permissions documented"
+      },
+      {
+        "tier": 3,
+        "title": "Subdomain monitoring + CT log alerts",
+        "severity": "medium",
+        "host": "*.rgipt.ac.in",
+        "cve": null,
+        "fix": "Subscribe to certspotter or Censys CT monitoring on rgipt.ac.in.",
+        "owner": "RGIPT Infrastructure",
+        "validation": "CT alerts configured; test fires on new cert issuance"
+      },
+      {
+        "tier": 3,
+        "title": "Email security training for faculty + students",
+        "severity": "medium",
+        "host": "rgipt.ac.in users",
+        "cve": null,
+        "fix": "Annual phishing-awareness training. Quarterly simulated phishing.",
+        "owner": "RGIPT IT / HR",
+        "validation": "Training completion records; simulation click-rate trend"
+      },
+      {
+        "tier": 3,
+        "title": "Penetration testing + vulnerability scanning",
+        "severity": "medium",
+        "host": "rgipt.ac.in",
+        "cve": null,
+        "fix": "Quarterly pen-test by external firm. Continuous Nessus / OWASP ZAP scanning.",
+        "owner": "RGIPT Security",
+        "validation": "Quarterly report on file; remediation tracking"
+      }
+    ],
+    "headlineQuestion": "RGIPT has 11 days until wildcard cert expiration (blocking all student portals during admission season), a vulnerable Moodle instance (CVE-2024-43425 RCE), and absent email authentication. Is the cert renewal under way and Moodle patched, or are portal outages imminent?"
+  }
 }

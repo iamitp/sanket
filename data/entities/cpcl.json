@@ -49,5 +49,174 @@
     "Soft-fail SPF"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "www.cpcl.co.in",
+        "stack": "WordPress on Office365 MX (cpcl-co-in.mail.protection.outlook.com)",
+        "versions": [
+          "WordPress version detectable via Link headers (wp-json)",
+          "Sectigo Public Server Auth CA OV R36 TLS (expires 2026-10-25)"
+        ],
+        "eolFlags": [
+          "WordPress version exposed via /wp-json",
+          "No CSP",
+          "Soft-fail SPF (~all)"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "WordPress version detection → CVE matching",
+        "priority": 1,
+        "entry": "Identify WP version via wp-json. Enumerate plugins (King Addons, WPBakery).",
+        "pivot": "Match to CVE-2025-8489 (King Addons CVSS 9.8 KEV — privilege escalation) or CVE-2024-56286 (WPBakery CVSS 8.2 stored XSS).",
+        "objective": "Site takeover via privilege escalation.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "King Addons CVE-2025-8489 unauthenticated privilege escalation",
+        "priority": 1,
+        "entry": "Free user registration (if enabled). Specify 'administrator' role in payload.",
+        "pivot": "Escalate to admin without authentication.",
+        "objective": "Complete site takeover.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "WPBakery CVE-2024-56286 stored XSS",
+        "priority": 2,
+        "entry": "Legacy plugin contains stored XSS in page builder.",
+        "pivot": "Inject payload via contributor/editor account; admin views; token harvested.",
+        "objective": "Backdoor; admin compromise.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "D",
+        "name": "Soft-fail SPF + Office 365 MX → spear phishing",
+        "priority": 2,
+        "entry": "SPF ~all soft-fail; Office 365 MX shared infrastructure.",
+        "pivot": "Spoofed mail from cpcl-alternate.mail.protection.outlook.com may pass alignment.",
+        "objective": "Reach inbox with valid SPF; supplier-payment fraud.",
+        "effort": "days",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "WordPress version detection → plugin CVE matching → privilege escalation",
+          "mythos": "AI-augmented attacker auto-correlates wp-json fingerprint with current CVE chain in seconds",
+          "factor": "~5–10×"
+        },
+        {
+          "pathId": "D",
+          "preAi": "Soft-fail SPF + O365 MX → spear-phishing with high deliverability",
+          "mythos": "Lure crafting + supplier-network mapping accelerated",
+          "factor": "~3–5×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Audit WordPress core + all plugins; update against CVE-2025-8489",
+        "severity": "critical",
+        "host": "www.cpcl.co.in",
+        "cve": "CVE-2025-8489, CVE-2024-56286",
+        "fix": "wp-cli: wp plugin list --update=available. Update King Addons → 51.1.35+. Update WPBakery / Elementor / others. Test on staging.",
+        "owner": "Web Ops",
+        "validation": "wp plugin status: all current; vulnerable plugin versions absent"
+      },
+      {
+        "tier": 1,
+        "title": "Suppress WordPress version disclosure",
+        "severity": "critical",
+        "host": "www.cpcl.co.in",
+        "cve": null,
+        "fix": "Remove Link headers (wp-json). Disable /wp-json/ or require auth. Hide version in HTML meta + HTTP headers.",
+        "owner": "Web Ops",
+        "validation": "curl -I | grep wp-json returns nothing"
+      },
+      {
+        "tier": 1,
+        "title": "Disable or restrict user registration",
+        "severity": "critical",
+        "host": "www.cpcl.co.in",
+        "cve": "CVE-2025-8489 mitigation",
+        "fix": "WP Admin → Settings → Membership uncheck 'Anyone can register'. If needed, allowlist @cpcl.co.in only with manual approval.",
+        "owner": "Web Ops",
+        "validation": "Public registration with @gmail.com blocked"
+      },
+      {
+        "tier": 2,
+        "title": "Add CSP header — nonce-based",
+        "severity": "high",
+        "host": "www.cpcl.co.in",
+        "cve": null,
+        "fix": "default-src 'self'; script-src 'self' 'nonce-{random}'; style-src 'self' 'unsafe-inline' (only if necessary).",
+        "owner": "Web Ops",
+        "validation": "curl -i shows CSP with nonce, no unsafe-inline/eval in script-src"
+      },
+      {
+        "tier": 2,
+        "title": "Upgrade SPF from ~all to -all after 30-day monitoring",
+        "severity": "high",
+        "host": "cpcl.co.in (email)",
+        "cve": null,
+        "fix": "Monitor SPF alignment 30 days; replace ~all with -all.",
+        "owner": "Email Security",
+        "validation": "dig +short TXT cpcl.co.in shows -all"
+      },
+      {
+        "tier": 2,
+        "title": "Upgrade DMARC p=quarantine → p=reject",
+        "severity": "high",
+        "host": "cpcl.co.in (email)",
+        "cve": null,
+        "fix": "After SPF -all + 30-day clean rua, promote DMARC to p=reject.",
+        "owner": "Email Security",
+        "validation": "dig +short TXT _dmarc.cpcl.co.in shows p=reject"
+      },
+      {
+        "tier": 2,
+        "title": "Deploy WAF — block WordPress exploitation patterns",
+        "severity": "high",
+        "host": "www.cpcl.co.in",
+        "cve": null,
+        "fix": "Cloudflare or ModSecurity OWASP CRS. Custom rules: block /wp-admin/admin-ajax.php admin payloads from non-admin sessions.",
+        "owner": "Security / WAF",
+        "validation": "<img src=x onerror=alert(1)> returns 403"
+      },
+      {
+        "tier": 2,
+        "title": "Audit WordPress user roles + enforce 2FA on admins",
+        "severity": "high",
+        "host": "www.cpcl.co.in",
+        "cve": null,
+        "fix": "WP Admin → Users → audit each role + last login + 2FA status. Remove inactive users. Wordfence or Two-Factor plugin.",
+        "owner": "Web Ops",
+        "validation": "All admin/editor accounts have 2FA enabled"
+      },
+      {
+        "tier": 3,
+        "title": "DKIM signing for Office 365 mail",
+        "severity": "medium",
+        "host": "cpcl.co.in (email)",
+        "cve": null,
+        "fix": "O365 admin: Enable DKIM. Verify alignment with DMARC.",
+        "owner": "Email Security",
+        "validation": "Test email shows DKIM-Signature: pass"
+      }
+    ],
+    "headlineQuestion": "Can CPCL patch King Addons (CVE-2025-8489 CVSS 9.8 KEV) and suppress WordPress version disclosure before the next reconnaissance scan triggers automated exploitation?"
+  }
 }

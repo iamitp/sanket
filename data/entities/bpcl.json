@@ -63,5 +63,165 @@
     "Cloudflare 403 prevents external header verification — Phase 2 active scan needed"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "bharatpetroleum.in",
+        "stack": "Cloudflare WAF + DigiCert TLS + Microsoft stack (ADFS, Teams, Exchange)",
+        "versions": [
+          "Cloudflare blocks fingerprinting",
+          "DigiCert G3 ECC (expires 2026-12-01)",
+          "ADFS / Teams / Lync-SIP visible"
+        ],
+        "eolFlags": [
+          "External header analysis blocked by Cloudflare 403",
+          "ADFS publicly enumerated"
+        ]
+      },
+      {
+        "host": "adfstest.bharatpetroleum.in / qa.convenience.bharatpetroleum.in / qa.speed.bharatpetroleum.in",
+        "stack": "Test/QA Microsoft infrastructure",
+        "versions": [
+          "ADFS test (likely unpatched)",
+          "Convenience/Speed ASP.NET apps"
+        ],
+        "eolFlags": [
+          "Test environments expose architecture; credentials often reused from prod"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "ADFS brute force + credential spray",
+        "priority": 1,
+        "entry": "adfs.bharatpetroleum.in form-based login enables user enumeration via error messages.",
+        "pivot": "Username list + spray (breached lists, SIM swap). MFA bypass if SMS-based.",
+        "objective": "Email, VPN (rpad, connectbpc), procurement-dashboard access.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "B",
+        "name": "QA environment exploitation → production pivot",
+        "priority": 1,
+        "entry": "adfstest, qa.convenience, qa.speed have weaker posture (default creds, disabled auth, permissive CORS common in QA).",
+        "pivot": "QA ADFS access → test user DB → spray production ADFS. QA portals may carry embedded API keys.",
+        "objective": "Credential harvest; lateral move to prod with months of dwell time.",
+        "effort": "days",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "Citrix NetScaler pre-auth RCE (if rpad/connectbpc on NetScaler)",
+        "priority": 2,
+        "entry": "rpad / connectbpc endpoints suggest Citrix NetScaler. CVE-2025-7775 + CVE-2025-5777.",
+        "pivot": "RCE on NetScaler; memory leak → session token extraction.",
+        "objective": "Lateral move to production; fuel-procurement access.",
+        "effort": "hours",
+        "detection": "high"
+      },
+      {
+        "id": "D",
+        "name": "Email spoofing → executive phishing",
+        "priority": 2,
+        "entry": "SPF ~all soft-fail.",
+        "pivot": "Phishing from cfo@ claiming urgent procurement; lure to qa.speed-hosted phishing.",
+        "objective": "Executive credential theft; procurement fraud.",
+        "effort": "days",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "ADFS brute force standard; user enum via Kerberos error codes",
+          "mythos": "BPCL CMDs are state-espionage targets; ADFS is gateway to email + VPN; spraying breached creds from peer energy companies is high-ROI for foreign intelligence",
+          "factor": "~3× weak password; 10× SMS MFA; near-invisible if leaked VPN creds used"
+        },
+        {
+          "pathId": "B",
+          "preAi": "QA compromise textbook; default creds, data replication",
+          "mythos": "Test envs are forgotten frontier; adfstest likely manages prod-equivalent service accounts; QA DBs reverse-identifiable; production pivot with months undetected",
+          "factor": "~5× isolated QA; 1× if shared service accounts; 10× if QA→Prod deployment pipeline"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "ADFS pre-auth hardening — disable form-based external login",
+        "severity": "critical",
+        "host": "adfs.bharatpetroleum.in",
+        "cve": null,
+        "fix": "Disable form-based external login (Kerberos only). IP allowlist /adfs/ls/. Lockout 5 fails → 15 min. MFA TOTP/FIDO2.",
+        "owner": "BPCL IAM",
+        "validation": "External form login blocked; lockout fires; MFA enforced"
+      },
+      {
+        "tier": 1,
+        "title": "Citrix NetScaler patches CVE-2025-7775 + CVE-2025-5777",
+        "severity": "critical",
+        "host": "rpad / connectbpc (if NetScaler)",
+        "cve": "CVE-2025-7775, CVE-2025-5777",
+        "fix": "Patch NetScaler to current build. TLS ≥ 1.2 enforced. Strong ciphers only.",
+        "owner": "Infrastructure / Network Ops",
+        "validation": "NetScaler version ≥ patched build"
+      },
+      {
+        "tier": 1,
+        "title": "QA / test environment segregation",
+        "severity": "critical",
+        "host": "adfstest / qa.convenience / qa.speed",
+        "cve": null,
+        "fix": "Dedicated QA service accounts (no prod reuse). Network isolation. Rotate all QA passwords. IP allowlist (developer IPs). Re-auth required for QA→Prod calls.",
+        "owner": "Infrastructure / DevOps",
+        "validation": "AD audit confirms no shared service accounts; QA on isolated subnet"
+      },
+      {
+        "tier": 1,
+        "title": "Email spoofing prevention — SPF -all + DMARC p=reject",
+        "severity": "critical",
+        "host": "bharatpetroleum.in (email)",
+        "cve": null,
+        "fix": "SPF ~all → -all. DMARC p=reject. DKIM. BIMI. Explicit SPF for mail subdomains.",
+        "owner": "Email Security",
+        "validation": "mxtoolbox shows -all; DMARC p=reject"
+      },
+      {
+        "tier": 2,
+        "title": "Convenience portal SQLi remediation",
+        "severity": "high",
+        "host": "convenience.bharatpetroleum.in",
+        "cve": "CWE-89",
+        "fix": "Parameterise queries. Cloudflare WAF SQLi rules. Data-integrity checks. API auth required.",
+        "owner": "Development",
+        "validation": "sqlmap finds 0 injection; WAF blocks SQLi PoC"
+      },
+      {
+        "tier": 2,
+        "title": "Remote-access VPN — MFA + protocol audit",
+        "severity": "high",
+        "host": "rpad / connectvc / connectbpc",
+        "cve": null,
+        "fix": "MFA TOTP/FIDO2. Disable legacy protocols. Split-tunnel restrictions. 8-hour idle timeout. Geographic anomaly alerts.",
+        "owner": "Network Security",
+        "validation": "MFA enforced; protocol audit clean; geolocation alerts active"
+      },
+      {
+        "tier": 3,
+        "title": "Subdomain enumeration audit on 30+ subdomains",
+        "severity": "medium",
+        "host": "bharatpetroleum.in",
+        "cve": null,
+        "fix": "Inventory all subdomains. Verify each is authorised. Decommission unused. DNS integrity monitoring.",
+        "owner": "Infrastructure",
+        "validation": "Official subdomain register; monthly CT audit"
+      }
+    ],
+    "headlineQuestion": "With adfstest, qa.convenience, and qa.speed publicly enumerated and likely running weaker security, what controls prevent QA-environment compromise from pivoting to production — and are test credentials cleanly isolated from production databases?"
+  }
 }

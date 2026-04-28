@@ -44,5 +44,137 @@
       "days": 30
     }
   ],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "bharatpetroresources.com",
+        "stack": "Cloudflare front + LiteSpeed origin with WordPress",
+        "versions": [
+          "LiteSpeed inferred",
+          "WordPress version not exposed (likely 6.x)"
+        ],
+        "eolFlags": [
+          "Google TLS WE1 expires 2026-06-11 (~44 days remaining — URGENT renewal needed)"
+        ]
+      },
+      {
+        "host": "bharatpetroresources.in",
+        "stack": "ASP.NET (different stack; canonical ambiguity)",
+        "versions": [
+          "ASP.NET version unknown"
+        ],
+        "eolFlags": [
+          "Separate domain — canonical not yet confirmed by BPCL parent"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "WordPress arbitrary file upload → RCE (CVE-2024-31210 if vulnerable)",
+        "priority": 1,
+        "entry": "If WordPress 6.0–6.4.2, plugin upload allows path-traversal file write. Authenticated user with upload capability.",
+        "pivot": "Upload .zip plugin; on FTP-creds prompt, file persists in Media Library; PHP shell uploaded.",
+        "objective": "RCE on WordPress; complete site compromise.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "B",
+        "name": "Cloudflare bypass → origin server attack",
+        "priority": 2,
+        "entry": "Identify origin IP via DNS leaks or CT issuance trail; bypass Cloudflare WAF.",
+        "pivot": "Port-scan origin; exploit unpatched LiteSpeed or WordPress directly.",
+        "objective": "Direct DB and filesystem access without WAF interference.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "Canonical-confusion attack across .com / .in",
+        "priority": 2,
+        "entry": "Two stacks (.com WordPress, .in ASP.NET) — attacker exploits ambiguity.",
+        "pivot": "Compromise weaker stack; phish .com users via .in 'official' content.",
+        "objective": "Cross-domain credential harvesting; supply-chain attack on partners.",
+        "effort": "days",
+        "detection": "low"
+      },
+      {
+        "id": "D",
+        "name": "TLS expiry MITM window (44 days)",
+        "priority": 3,
+        "entry": "Cert renewal not started; expiry approaches.",
+        "pivot": "During emergency recertification, attacker presents rogue cert.",
+        "objective": "MITM during emergency renewal; service disruption.",
+        "effort": "passive",
+        "detection": "high"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "WordPress RCE → site control + customer data + malware distribution to visitors",
+          "mythos": "PSU-branded site compromise; malware injected on partner portals; supply-chain vector (vendor docs trojaned with SideCopy RAT, sector-documented)",
+          "factor": "~4–6×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "URGENT: Renew TLS cert before 2026-06-11 (44 days)",
+        "severity": "critical",
+        "host": "bharatpetroresources.com",
+        "cve": null,
+        "fix": "Start CSR generation today. Submit to Google Trust Services or Sectigo. 2-5 day turnaround. Install in Cloudflare → SSL/TLS → Origin Server.",
+        "owner": "BPRL IT / TLS Admin",
+        "validation": "openssl x509 -enddate shows notAfter > 2027-06"
+      },
+      {
+        "tier": 1,
+        "title": "Confirm canonical domain with BPCL parent and resolve .com/.in ambiguity",
+        "severity": "high",
+        "host": "bharatpetroresources.com vs bharatpetroresources.in",
+        "cve": null,
+        "fix": "BPRL leadership decides canonical. Implement 301 redirect on non-canonical. Audit .in (ASP.NET) for security posture; if not authorised, file impersonation complaint.",
+        "owner": "BPRL Leadership / IT Security",
+        "validation": "HTTP GET non-canonical returns 301 to canonical"
+      },
+      {
+        "tier": 1,
+        "title": "WordPress core to 6.4.3+ (or current) for CVE-2024-31210",
+        "severity": "critical",
+        "host": "bharatpetroresources.com",
+        "cve": "CVE-2024-31210 (conditional on version)",
+        "fix": "WP CLI: wp core update. Disable plugin upload via wp-config: define('DISALLOW_FILE_MODS', true);",
+        "owner": "BPRL Web Admin",
+        "validation": "wp core version returns ≥ 6.4.3; plugin-upload UI absent"
+      },
+      {
+        "tier": 2,
+        "title": "Cloudflare origin protection + 'Always Use HTTPS'",
+        "severity": "high",
+        "host": "bharatpetroresources.com",
+        "cve": null,
+        "fix": "Cloudflare → SSL/TLS → Always Use HTTPS ON. Origin firewall: only Cloudflare IP ranges accepted.",
+        "owner": "BPRL Cloud Ops",
+        "validation": "curl http:// redirects to https://; direct origin IP refused"
+      },
+      {
+        "tier": 2,
+        "title": "Restrict admin-role accounts ≤ 2; enforce 2FA",
+        "severity": "high",
+        "host": "bharatpetroresources.com",
+        "cve": "CVE-2024-31210 mitigation",
+        "fix": "WP CLI: wp user list --role=administrator. Reduce to ≤ 2. Enforce 2FA via plugin (Wordfence / Two-Factor).",
+        "owner": "BPRL Web Admin",
+        "validation": "Admin count ≤ 2; 2FA required on each"
+      }
+    ],
+    "headlineQuestion": "Which domain is the canonical BPRL site — bharatpetroresources.com or bharatpetroresources.in — and what is the cert-renewal status given 44 days to expiry?",
+    "coverageNotes": "WordPress version not externally exposed; CVE-2024-31210 applicability conditional on version. .in domain audit not conducted (different stack). No admin-endpoint probing per carve-out. Origin IP not enumerated."
+  }
 }

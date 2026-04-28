@@ -58,5 +58,144 @@
     "Cert expires September 2026"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "petronetlng.com",
+        "stack": "Application server returning HTTP 405 on root; ADFS endpoint adfs.petronetlng.com; SMTP infra (smtpdahej, smtpdelhi)",
+        "versions": [
+          "ADFS version not exposed; no Server header disclosed",
+          "GoDaddy G2 TLS"
+        ],
+        "eolFlags": [
+          "TLS expires 2026-09-12 (136 days)",
+          "All 6 hardening headers MISSING on root response"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "ADFS metadata exposure → SAML token forgery / NTLM relay",
+        "priority": 1,
+        "entry": "ADFS endpoint at adfs.petronetlng.com publicly named in CT; metadata at /FederationMetadata/2007-06/FederationMetadata.xml may be unauthenticated.",
+        "pivot": "Harvest signing certificates and token endpoints; craft forged SAML/OIDC tokens or initiate NTLM relay (CVE-2025-33073).",
+        "objective": "Unauthorised access to Petronet systems; impersonate employees; SAP / ERP access.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "B",
+        "name": "NTLM relay targeting ADFS-backed Windows infrastructure",
+        "priority": 2,
+        "entry": "Hybrid Azure AD with NTLM auth typical for corporate; attacker on network or via compromised app.",
+        "pivot": "Capture NTLM exchange; relay to ADFS or internal service without SMB signing.",
+        "objective": "Privilege escalation; MFA bypass if NTLM is primary factor.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "SMTP recon + sector-themed phishing",
+        "priority": 2,
+        "entry": "smtpdahej / smtpdelhi named in DNS; SPF strict / DMARC reject blocks direct spoofing but enables intel.",
+        "pivot": "Craft convincing internal-looking emails to Petronet employees with SideCopy-style oil-and-gas regulatory lures.",
+        "objective": "Initial compromise via email malware (CurlBack / Spark / Xeno RAT).",
+        "effort": "days",
+        "detection": "low"
+      },
+      {
+        "id": "D",
+        "name": "Missing hardening headers → clickjacking + reflected XSS",
+        "priority": 3,
+        "entry": "0/6 hardening headers; HTTP 405 on root suggests app server with no header middleware.",
+        "pivot": "Frame login pages in iframe overlay; reflected XSS via user-input parameters.",
+        "objective": "Session hijacking; phishing amplification.",
+        "effort": "hours",
+        "detection": "medium"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "ADFS metadata + NTLM relay → admin token forgery → SAP access",
+          "mythos": "Energy-company ADFS becomes attacker's authentication oracle; impersonate CFO; access LNG shipment schedules, pricing, supply agreements; pivot to OT via SAP-connected SCADA",
+          "factor": "~10–20× (ADFS = crown jewel of Microsoft identity stack; LNG pricing/logistics is strategic IP)"
+        },
+        {
+          "pathId": "C",
+          "preAi": "SMTP recon + crafted phishing → credential harvest before relay attempted",
+          "mythos": "Phishing low-cost; high ROI if employee training weak",
+          "factor": "~2–4×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Restrict ADFS metadata endpoint; require authentication",
+        "severity": "critical",
+        "host": "adfs.petronetlng.com",
+        "cve": null,
+        "fix": "PowerShell: Set-AdfsProperties -AllowAnonymousAccess $false. IIS URL Rewrite: block /FederationMetadata unless from whitelisted partner federation IPs.",
+        "owner": "Petronet Identity / ADFS Admin",
+        "validation": "curl /FederationMetadata returns 403 from external IP"
+      },
+      {
+        "tier": 1,
+        "title": "Enforce MFA on all ADFS-backed accounts; disable legacy NTLM",
+        "severity": "critical",
+        "host": "Petronet AD users",
+        "cve": "CVE-2024-21410, CVE-2025-33073",
+        "fix": "Azure AD Conditional Access → MFA required all users. ADFS auth providers → Forms + Microsoft Identity. Group Policy → 'Restrict NTLM: Incoming NTLM traffic' → Deny all.",
+        "owner": "Petronet IAM",
+        "validation": "Login without MFA rejected; NTLM auth attempts in event log show denials"
+      },
+      {
+        "tier": 1,
+        "title": "Patch Windows DCs for CVE-2025-33073; enforce SMB signing",
+        "severity": "critical",
+        "host": "Internal AD infra",
+        "cve": "CVE-2025-33073",
+        "fix": "Apply current Microsoft Security Update on all DCs. Group Policy SMB signing → Required.",
+        "owner": "Petronet Windows Admin",
+        "validation": "Get-SmbServerConfiguration | RequireSecuritySignature → True"
+      },
+      {
+        "tier": 2,
+        "title": "Add all 6 hardening headers to petronetlng.com",
+        "severity": "high",
+        "host": "petronetlng.com",
+        "cve": null,
+        "fix": "HSTS, CSP, X-Frame-Options DENY, X-Content-Type-Options nosniff, Referrer-Policy strict-origin-when-cross-origin, Permissions-Policy.",
+        "owner": "Petronet Web Ops",
+        "validation": "securityheaders.com returns A+"
+      },
+      {
+        "tier": 2,
+        "title": "Document and harden SMTP infra (smtpdahej, smtpdelhi)",
+        "severity": "high",
+        "host": "smtpdahej.petronetlng.com / smtpdelhi.petronetlng.com",
+        "cve": null,
+        "fix": "Restrict SMTP relay to authenticated internal users. Enforce SMTP TLS. nmap on 25/465/587 should show filtered or auth-required.",
+        "owner": "Petronet Mail / IT Ops",
+        "validation": "External SMTP test rejected; mxtoolbox shows no open relay"
+      },
+      {
+        "tier": 2,
+        "title": "TLS renewal scheduled for July 2026 (ahead of 2026-09-12 expiry)",
+        "severity": "high",
+        "host": "petronetlng.com",
+        "cve": null,
+        "fix": "Calendar alert 2026-07-01. Generate CSR; submit to GoDaddy or alternate CA.",
+        "owner": "Petronet TLS Admin",
+        "validation": "openssl x509 -enddate post-renewal shows notAfter > 2027"
+      }
+    ],
+    "headlineQuestion": "Is the ADFS metadata endpoint at adfs.petronetlng.com publicly accessible without authentication, and is MFA enforced on all user accounts?",
+    "coverageNotes": "ADFS endpoint DNS-resolvable but HTTP not actively probed. SMTP server IPs not resolved (possibly network-restricted). Internal AD versions/patches unverifiable from external recon."
+  }
 }

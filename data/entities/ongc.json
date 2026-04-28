@@ -46,5 +46,112 @@
     "Liferay Portal stack visible (JSESSIONID/COOKIE_SUPPORT)"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "www.ongcindia.com",
+        "stack": "Liferay Portal 7.x (exact version not exposed)",
+        "versions": [
+          "Liferay 7.3.2–7.4.3.111 range inferred from feature set"
+        ],
+        "eolFlags": [
+          "Liferay version concealed; CVE-2024-38002 applies if 7.4.x ≤ 7.4.3.111"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Liferay Workflow RCE (CVE-2024-38002)",
+        "priority": 1,
+        "entry": "Authenticated user crafts workflow definition upload via /api/jsonws/workflow.workflow* endpoints; no permission check on workflow editor.",
+        "pivot": "Upload via workflow API; achieves RCE as Liferay app server user.",
+        "objective": "RCE; lateral movement to backend systems; database access.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "B",
+        "name": "Liferay Layout SEO CSRF → RCE (CVE-2023-35030)",
+        "priority": 2,
+        "entry": "CSRF via malicious link to authenticated Liferay admin; no SameSite cookie observed.",
+        "pivot": "backURL parameter points to scripting console; admin click executes attacker Groovy script.",
+        "objective": "RCE in admin context.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "Ransomware staging via admin password spray",
+        "priority": 3,
+        "entry": "Weak admin creds or password spray on /c/portal/login; credential dumps from prior breaches.",
+        "pivot": "Admin compromise → webshell via document library or Groovy console.",
+        "objective": "Foothold for ransomware/data exfil (Qilin/Akira Q4 2025 energy targeting pattern).",
+        "effort": "days",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "Workflow RCE → app user execution → DB access, lateral to ICS/SCADA",
+          "mythos": "Workflow edit becomes pivot to operational technology; refinery operations interruptible; sector-wide cascade risk",
+          "factor": "~5–7× (refinery IT-OT entanglement; 2022 Oil India ransomware took 5 days to fully resolve)"
+        },
+        {
+          "pathId": "B",
+          "preAi": "Admin CSRF + scripting console → app-level privilege escalation",
+          "mythos": "No new capability; eliminates password attack",
+          "factor": "~2–3×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Liferay Workflow RCE (CVE-2024-38002) — patch to 7.4.3.112+",
+        "severity": "critical",
+        "host": "www.ongcindia.com",
+        "cve": "CVE-2024-38002",
+        "fix": "Upgrade Liferay to 7.4.3.112+ or backport. If on 7.3 LTS upgrade to 7.3.10.21+. Validate workflow API requires admin permission post-patch.",
+        "owner": "ONGC Infrastructure / Liferay Ops",
+        "validation": "curl /api/jsonws/workflow.workflow/get-workflows returns 401/403 without auth"
+      },
+      {
+        "tier": 1,
+        "title": "Liferay Layout CSRF (CVE-2023-35030)",
+        "severity": "critical",
+        "host": "www.ongcindia.com",
+        "cve": "CVE-2023-35030",
+        "fix": "Liferay 7.4.3.77+. Enable SameSite=Strict on session cookies.",
+        "owner": "ONGC Infrastructure",
+        "validation": "Set-Cookie header shows SameSite=Strict"
+      },
+      {
+        "tier": 2,
+        "title": "MFA on all Liferay admin accounts",
+        "severity": "high",
+        "host": "www.ongcindia.com",
+        "cve": null,
+        "fix": "Liferay → Control Panel → Security → enable TOTP/hardware key for Administrator role.",
+        "owner": "ONGC IAM",
+        "validation": "Admin login without MFA rejected"
+      },
+      {
+        "tier": 2,
+        "title": "DMARC p=reject + SPF audit (currently DMARC absent)",
+        "severity": "high",
+        "host": "ongcindia.com (email)",
+        "cve": null,
+        "fix": "Publish DMARC p=reject. SPF: explicit includes for actual mail infrastructure. DKIM signing.",
+        "owner": "ONGC IT / Email Security",
+        "validation": "dig _dmarc.ongcindia.com returns p=reject"
+      }
+    ],
+    "headlineQuestion": "Is unauthenticated access to Liferay workflow APIs blocked, and is the workflow component patched against CVE-2024-38002 — the highest-confidence attack path against ongcindia.com today?",
+    "coverageNotes": "Liferay version not externally exposed; 7.3.2–7.4.3.111 range inferred from feature signatures. SMTP/LDAP backend not probed."
+  }
 }

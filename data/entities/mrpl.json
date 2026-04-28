@@ -61,5 +61,151 @@
       "days": 33
     }
   ],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "mrpl.co.in",
+        "stack": "Apache (Server returned 503 at scan time — load balancer or maintenance)",
+        "versions": [
+          "GlobalSign RSA OV SSL CA 2018 TLS — EXPIRES 2026-05-05 (7 DAYS — IMMINENT)"
+        ],
+        "eolFlags": [
+          "CERT EXPIRY in 7 days — Tier 1 incident; missing CSP; site connectivity issues at scan time"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Cert-expiry MITM window (May 5–25)",
+        "priority": 1,
+        "entry": "After May 5, browsers reject the cert. Attacker acquires fake wildcard via Let's Encrypt; intercepts traffic until real cert pinned again.",
+        "pivot": "Refinery staff receive fake SAP ERP login page; admin credentials harvested.",
+        "objective": "MITM credential harvest at refinery scale.",
+        "effort": "days",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "SAP.MRPL subdomain hijack",
+        "priority": 2,
+        "entry": "Exploit exposed credentials or plugin RCE on sap.mrpl.co.in.",
+        "pivot": "Lateral move to financial / production systems.",
+        "objective": "Operational security impact; production data exfil.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "Weak cert renewal chain → MITM persists",
+        "priority": 2,
+        "entry": "If renewed with weaker CA or missing pinning.",
+        "pivot": "MITM via cross-signed deprecated CA; malware distribution masked as official updates.",
+        "objective": "Persistent supply-chain compromise.",
+        "effort": "days",
+        "detection": "low"
+      },
+      {
+        "id": "D",
+        "name": "ERP procurement compromise",
+        "priority": 3,
+        "entry": "ERP exposure surfaces procurement / vendor payment data.",
+        "pivot": "Phishing supplier mailboxes with invoice forgery; refinery payment diverted to attacker accounts.",
+        "objective": "Financial fraud; supplier-network manipulation.",
+        "effort": "days",
+        "detection": "medium"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "Cert-expiry MITM is opportunistic; success window narrow",
+          "mythos": "Pre-staged Let's Encrypt + automated DNS hijack reduces window from days to minutes",
+          "factor": "~10–20×"
+        },
+        {
+          "pathId": "B",
+          "preAi": "Subdomain hijack + lateral move standard",
+          "mythos": "Subdomain takeover combined with SAP CVE chain compresses dwell from weeks to days",
+          "factor": "~5–8×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "EMERGENCY: Rotate TLS certificate before 2026-05-05",
+        "severity": "critical",
+        "host": "mrpl.co.in",
+        "cve": null,
+        "fix": "Order new cert IMMEDIATELY (target 2026-04-29 install). OV cert from established CA. CSR strength: SHA-256 RSA 2048+ minimum. Install on all SANs (mrpl.co.in, *.mrpl.co.in, *.sap.mrpl.co.in).",
+        "owner": "MRPL TLS Admin",
+        "validation": "openssl s_client | x509 -noout -enddate shows notAfter > 2026-05-15"
+      },
+      {
+        "tier": 1,
+        "title": "Verify cert deploys to all subdomains (sap, www, etc.)",
+        "severity": "critical",
+        "host": "*.mrpl.co.in / *.sap.mrpl.co.in",
+        "cve": null,
+        "fix": "Deploy cert to load balancer + all reverse proxy endpoints.",
+        "owner": "MRPL TLS Admin / Infrastructure",
+        "validation": "curl -sI https://sap.mrpl.co.in returns 200 with valid cert"
+      },
+      {
+        "tier": 2,
+        "title": "Implement HPKP (HTTP Public Key Pinning) for backup cert key",
+        "severity": "high",
+        "host": "mrpl.co.in",
+        "cve": null,
+        "fix": "Pin current cert + backup CA root. 30-day max-age. Phased rollout to avoid lockout.",
+        "owner": "Infrastructure",
+        "validation": "curl -I shows Public-Key-Pins header"
+      },
+      {
+        "tier": 2,
+        "title": "Add CSP header (currently missing)",
+        "severity": "high",
+        "host": "mrpl.co.in",
+        "cve": null,
+        "fix": "default-src 'self'; script-src 'self' 'nonce-{random}'; connect-src 'self' https://sap.mrpl.co.in; block-all-mixed-content.",
+        "owner": "Frontend / Security",
+        "validation": "curl -i shows Content-Security-Policy header"
+      },
+      {
+        "tier": 2,
+        "title": "Upgrade DMARC p=quarantine → p=reject (after 30-day baseline)",
+        "severity": "high",
+        "host": "mrpl.co.in (email)",
+        "cve": null,
+        "fix": "Monitor 30-day rua; promote to p=reject.",
+        "owner": "Email Security",
+        "validation": "dig +short TXT _dmarc.mrpl.co.in returns p=reject"
+      },
+      {
+        "tier": 2,
+        "title": "Audit and disable unused subdomains; document SANs",
+        "severity": "high",
+        "host": "*.mrpl.co.in",
+        "cve": null,
+        "fix": "nslookup *.mrpl.co.in. Decommission unused. Document each in SAN list.",
+        "owner": "Infrastructure",
+        "validation": "Only active subdomains resolve"
+      },
+      {
+        "tier": 3,
+        "title": "Certificate pinning on client applications (mobile / API)",
+        "severity": "medium",
+        "host": "MRPL mobile apps / API clients",
+        "cve": null,
+        "fix": "Pin backup cert public key; phased SDK rollout.",
+        "owner": "App Development",
+        "validation": "Client SDK logs show pin validation on TLS handshake"
+      }
+    ],
+    "headlineQuestion": "Can MRPL rotate the expiring certificate (7 days to expiry) and implement HPKP before the May 5–25 window opens for MITM credential harvesting at the refinery?"
+  }
 }

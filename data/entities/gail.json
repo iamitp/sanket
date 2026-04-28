@@ -44,5 +44,131 @@
     "Apache backend, 2 subdomains only — minimal CT footprint"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "gailonline.com",
+        "stack": "Apache (no version disclosure)",
+        "versions": [
+          "eMudhra emSign G1 TLS (expires 2026-07-27)"
+        ],
+        "eolFlags": [
+          "CSP unsafe-inline + unsafe-eval (script-src) — XSS surface"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "CSP bypass → stored XSS → admin token theft",
+        "priority": 1,
+        "entry": "Inject <script> via form field; unsafe-inline + unsafe-eval allow execution.",
+        "pivot": "Token harvesting from localStorage / session storage; admin impersonation.",
+        "objective": "Site malware injection; admin account loss; sensitive data exfil.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "B",
+        "name": "Spear-phishing with sector-themed lure",
+        "priority": 2,
+        "entry": "Craft spoofed energy-sector policy memo (GAIL/NRL/MRPL letterhead).",
+        "pivot": "Email executive with .lnk → attacker-hosted .exe (SideCopy TTP). RAT deployment.",
+        "objective": "Supply-chain compromise via trusted internal communications.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "Refinery-contractor email phishing",
+        "priority": 3,
+        "entry": "Phish refinery contractor mailboxes with sector-themed lure.",
+        "pivot": "C2 beaconing + credential harvesting.",
+        "objective": "Lateral move via supply chain.",
+        "effort": "days",
+        "detection": "medium"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "CSP misconfiguration → stored XSS → admin access loss + sensitive data exfil",
+          "mythos": "AI-augmented attacker chains XSS payload mutation with token-harvesting playbook",
+          "factor": "~2–3×"
+        },
+        {
+          "pathId": "B",
+          "preAi": "Manual lure crafting + RAT deployment",
+          "mythos": "Lure document generation accelerated; supply-chain compromise compressed",
+          "factor": "~3–5×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Tighten CSP — remove unsafe-inline and unsafe-eval from script-src",
+        "severity": "critical",
+        "host": "gailonline.com",
+        "cve": null,
+        "fix": "Use nonce-based CSP for inline scripts. Audit templates for inline event handlers; migrate to external files.",
+        "owner": "Web / Frontend Engineering",
+        "validation": "curl -i shows CSP without unsafe-inline/eval"
+      },
+      {
+        "tier": 1,
+        "title": "Audit form fields and AJAX endpoints for injection points; deploy WAF rule",
+        "severity": "high",
+        "host": "gailonline.com",
+        "cve": null,
+        "fix": "Pen-test form inputs. Cloudflare/ModSecurity rule: block <script>, <iframe>, on*= patterns.",
+        "owner": "Security / WAF",
+        "validation": "<img src=x onerror=alert(1)> payload returns 403"
+      },
+      {
+        "tier": 2,
+        "title": "Subresource Integrity (SRI) on all CDN-hosted scripts",
+        "severity": "high",
+        "host": "gailonline.com",
+        "cve": null,
+        "fix": "Add integrity=sha384-... attributes on external <script src> tags.",
+        "owner": "Frontend Engineering",
+        "validation": "All external scripts have SRI hash attributes"
+      },
+      {
+        "tier": 2,
+        "title": "SIEM / EDR monitoring for suspicious document opens",
+        "severity": "high",
+        "host": "GAIL endpoints",
+        "cve": null,
+        "fix": "Monitor Office macro execution and .lnk launches. Pilot 50-100 endpoints.",
+        "owner": "SOC / EDR",
+        "validation": "EDR logs show exec block on suspicious file types"
+      },
+      {
+        "tier": 2,
+        "title": "Email attachment filtering — block .lnk, .exe, .ps1, macro Office",
+        "severity": "high",
+        "host": "GAIL email infrastructure",
+        "cve": null,
+        "fix": "Mail gateway: block these extensions. Warn on external sender. Quarantine if exec content.",
+        "owner": "Email Security",
+        "validation": "Test .lnk attachment quarantined"
+      },
+      {
+        "tier": 3,
+        "title": "Service-account credential rotation; reduce session TTL",
+        "severity": "medium",
+        "host": "gailonline.com",
+        "cve": null,
+        "fix": "Rotate all web-app service account creds. Audit token expiry; reduce to <4 h for sensitive ops.",
+        "owner": "App Security",
+        "validation": "Application logs show session TTL < 4 h for sensitive ops"
+      }
+    ],
+    "headlineQuestion": "Can GAIL eliminate unsafe-inline/unsafe-eval from CSP before the next XSS injection is discovered in a public form field?"
+  }
 }

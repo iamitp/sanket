@@ -63,5 +63,184 @@
       "days": 17
     }
   ],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "oisd.gov.in",
+        "stack": "Apache server; apex 404; www subdomain serves",
+        "versions": [
+          "DigiCert RapidSSL TLS (expires 2026-05-17 — 19 DAYS)",
+          "CN=www.oisd.gov.in (apex unmatched)"
+        ],
+        "eolFlags": [
+          "IMMINENT cert expiry; CN/SAN mismatch — apex returns browser warning",
+          "Apex CSP permissive (unsafe-inline/eval)",
+          "0/6 hardening headers on apex"
+        ]
+      },
+      {
+        "host": "connect.oisd.gov.in",
+        "stack": "Apache 2.2.15 (Red Hat) — EOL since 2017",
+        "versions": [
+          "Apache/2.2.15"
+        ],
+        "eolFlags": [
+          "Apache 2.2.15 EOL since 2017 — 8+ years of unpatched CVEs"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Cert expiry → phishing chain (19 days to impact)",
+        "priority": 1,
+        "entry": "Cert expires 2026-05-17. CN/SAN mismatch already triggers warnings on apex. After expiry, all subdomains warn.",
+        "pivot": "Users dismiss warnings (trained behaviour). Attacker MITMs on apex with rogue cert.",
+        "objective": "Credential interception during a known-warning window.",
+        "effort": "passive",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "Email spoofing via broken SPF (-all without senders) + absent DMARC",
+        "priority": 1,
+        "entry": "SPF v=spf1 -all rejects all senders unless DMARC has recovery; DMARC absent.",
+        "pivot": "Combined with absent DMARC, attacker spoofs @oisd.gov.in unimpeded.",
+        "objective": "Phishing with trusted government safety entity branding.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "Apache 2.2.15 EOL — unpatched RCE on connect subdomain",
+        "priority": 1,
+        "entry": "Apache 2.2.15 EOL since 2017. Dozens of cumulative CVEs in mod_ssl, mod_proxy, mod_rewrite.",
+        "pivot": "Endpoint returns 403 — restricted but reachable; if any auth path or known-CVE chain succeeds, RCE.",
+        "objective": "Server compromise; lateral move to OISD internal network.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "D",
+        "name": "Subdomain enumeration → potential takeover",
+        "priority": 3,
+        "entry": "CT logs reveal connect.oisd.gov.in and www.connect.oisd.gov.in.",
+        "pivot": "If DNS points to deprovisioned cloud and entry not removed, subdomain takeover.",
+        "objective": "Phishing with valid TLS via takeover.",
+        "effort": "hours",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "Cert expiry → browser warnings → phishing baseline",
+          "mythos": "AI-augmented attacker pre-stages rogue cert + DNS hijack timed to expiry minute",
+          "factor": "~5–10×"
+        },
+        {
+          "pathId": "C",
+          "preAi": "Apache 2.2.15 EOL exposes unpatched RCE surface",
+          "mythos": "AI maps 8 years of CVEs against the live config and surfaces the most likely exploitable chain in minutes",
+          "factor": "~10–20×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "EMERGENCY: Rotate TLS cert before 2026-05-17 with apex SAN coverage",
+        "severity": "critical",
+        "host": "oisd.gov.in",
+        "cve": null,
+        "fix": "Renew cert. Ensure SAN includes BOTH apex (oisd.gov.in) AND www. Re-issue if current cert only covers www. Validate apex serves 200 OK post-renewal.",
+        "owner": "OISD TLS Admin",
+        "validation": "openssl s_client | x509 -noout -ext subjectAltName shows both apex and www"
+      },
+      {
+        "tier": 1,
+        "title": "Fix broken SPF — add real includes or set neutral",
+        "severity": "critical",
+        "host": "oisd.gov.in (email)",
+        "cve": null,
+        "fix": "Replace 'v=spf1 -all' with 'v=spf1 include:<actual mail provider> -all'. If domain doesn't send mail, document and keep -all but pair with DMARC p=reject for clarity.",
+        "owner": "OISD IT / Email",
+        "validation": "Legitimate mail from approved senders delivers; spoofed mail bounces"
+      },
+      {
+        "tier": 1,
+        "title": "Publish DMARC record — start p=quarantine, escalate to p=reject",
+        "severity": "critical",
+        "host": "oisd.gov.in (email)",
+        "cve": null,
+        "fix": "DMARC: 'v=DMARC1; p=quarantine; rua=mailto:dmarc@oisd.gov.in; fo=1'. Monitor 2 weeks; escalate to p=reject.",
+        "owner": "OISD IT / Email",
+        "validation": "dig +short TXT _dmarc.oisd.gov.in returns DMARC1"
+      },
+      {
+        "tier": 1,
+        "title": "Apache 2.2.15 — upgrade to 2.4.62+ or migrate to nginx reverse proxy",
+        "severity": "critical",
+        "host": "connect.oisd.gov.in",
+        "cve": "Multiple unpatched (Apache 2.2.x EOL 2017)",
+        "fix": "(a) In-place upgrade to Apache 2.4.62+ with regression testing OR (b) Deploy nginx 1.26+ in reverse-proxy mode pointing to hardened backend. Test connect endpoint thoroughly.",
+        "owner": "OISD Infrastructure",
+        "validation": "curl -sI connect.oisd.gov.in | grep Server shows Apache 2.4.62+ or nginx"
+      },
+      {
+        "tier": 2,
+        "title": "Harden CSP — remove unsafe-inline and unsafe-eval",
+        "severity": "high",
+        "host": "oisd.gov.in",
+        "cve": null,
+        "fix": "Nonce-based CSP for inline scripts.",
+        "owner": "OISD Web Ops",
+        "validation": "curl -i shows CSP without unsafe-inline/eval"
+      },
+      {
+        "tier": 2,
+        "title": "Add the missing 6 hardening headers on apex",
+        "severity": "high",
+        "host": "oisd.gov.in",
+        "cve": null,
+        "fix": "HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy.",
+        "owner": "OISD Web Ops",
+        "validation": "securityheaders.com returns A or A+"
+      },
+      {
+        "tier": 2,
+        "title": "Subdomain inventory + takeover prevention",
+        "severity": "high",
+        "host": "*.oisd.gov.in",
+        "cve": null,
+        "fix": "For each CT-logged subdomain, verify DNS points to owned infra. Remove dangling CNAMEs. Implement CT monitoring.",
+        "owner": "OISD Infrastructure",
+        "validation": "Official subdomain register; monthly CT cross-check"
+      },
+      {
+        "tier": 3,
+        "title": "Reverse proxy / WAF deployment",
+        "severity": "medium",
+        "host": "OISD edge",
+        "cve": null,
+        "fix": "ModSecurity OWASP CRS or Cloudflare. Block traversal, SQLi, mod_rewrite exploit patterns.",
+        "owner": "Security Operations",
+        "validation": "WAF testing: CVE PoC payloads return 403"
+      },
+      {
+        "tier": 3,
+        "title": "Apache deprecation roadmap for entire OISD estate",
+        "severity": "medium",
+        "host": "OISD-wide",
+        "cve": null,
+        "fix": "Document timeline to retire all Apache 2.2.x and migrate to supported versions.",
+        "owner": "OISD CISO",
+        "validation": "Migration plan filed with target dates"
+      }
+    ],
+    "headlineQuestion": "OISD is fragile across three dimensions — imminent cert expiry (19 days), broken email authentication, and Apache 2.2.15 EOL with 8+ years of unpatched CVEs. What is the incident response if cert renewal fails on 2026-05-17?"
+  }
 }

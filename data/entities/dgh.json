@@ -55,5 +55,168 @@
     "Soft-fail SPF"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "dghindia.gov.in",
+        "stack": "Apache + CodeIgniter 4.x (ci_session + csrf_cookie_name visible) + PHP, eMudhra emSign wildcard TLS",
+        "versions": [
+          "Apache (version hidden)",
+          "CodeIgniter 4.x (csrf_cookie_name pattern)"
+        ],
+        "eolFlags": [
+          "CodeIgniter 4.x watch CVE-2025-54418 (ImageMagick RCE if handler enabled)"
+        ]
+      },
+      {
+        "host": "ebidding.dghindia.gov.in",
+        "stack": "Same Apache + CodeIgniter stack — e-procurement portal",
+        "versions": [],
+        "eolFlags": []
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "CodeIgniter ImageMagick RCE (CVE-2025-54418) → procurement manipulation",
+        "priority": 1,
+        "entry": "If ImageMagick handler enabled (plausible for bid documents with image overlays), CVE-2025-54418 gives unauthenticated RCE.",
+        "pivot": "Upload bid document with shell-metacharacter filename; ImageMagick processing injects command.",
+        "objective": "RCE; modify bid amounts; inject fake bids; alter contract awards.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "CSP unsafe-inline + unsafe-eval → stored XSS → bid manipulation",
+        "priority": 1,
+        "entry": "CSP allows both unsafe-inline and unsafe-eval; any stored XSS is RCE-equivalent in browser context.",
+        "pivot": "Inject XSS via bid form (project description, bidder comments). JavaScript steals admin session, modifies bid amounts.",
+        "objective": "Manipulate procurement outcomes, steal bid secrets pre-award.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "Wildcard cert (*.dghindia.gov.in) → subdomain phishing with valid TLS",
+        "priority": 2,
+        "entry": "eMudhra wildcard covers all subdomains.",
+        "pivot": "Register admin.dghindia.gov.in or api.dghindia.gov.in via DNS hijack/registrar compromise; serve phishing with valid TLS padlock.",
+        "objective": "Phishing, credential harvesting, malware distribution under trusted TLS.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "D",
+        "name": "Soft-fail SPF + DMARC p=quarantine → procurement BEC",
+        "priority": 2,
+        "entry": "Email auth weak.",
+        "pivot": "Spoof DGH director approving emergency procurement to MoPNG finance.",
+        "objective": "Fraudulent fund transfer, unauthorised contract award.",
+        "effort": "hours",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "4 hours (ImageMagick version + payload + upload fuzzing + RCE PoC)",
+          "mythos": "1 hour (pre-cached CI4 ImageMagick library, payload mutation, schema-pattern fuzzing)",
+          "factor": "~4×"
+        },
+        {
+          "pathId": "B",
+          "preAi": "3 hours (XSS payload + CSP-bypass + form fuzzing)",
+          "mythos": "45 min (XSS library with CSP-safe mutation, auto-discovery)",
+          "factor": "~4×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Verify CI version ≥ 4.6.2 and switch ImageMagick → GD",
+        "severity": "critical",
+        "host": "dghindia.gov.in / ebidding.dghindia.gov.in",
+        "cve": "CVE-2025-54418",
+        "fix": "composer show codeigniter/framework | grep 4.6.2. In app/Config/Images.php set imageHandler='gd' (or imagick with strict input validation). Test upload with shell metacharacters in filename.",
+        "owner": "Application Development",
+        "validation": "Upload of project.jpg;cat /etc/passwd# is rejected"
+      },
+      {
+        "tier": 1,
+        "title": "Remove unsafe-inline + unsafe-eval from CSP; nonce-based execution",
+        "severity": "critical",
+        "host": "dghindia.gov.in",
+        "cve": null,
+        "fix": "Generate per-request nonce. CSP: default-src 'self'; script-src 'self' 'nonce-{value}'; object-src 'none'.",
+        "owner": "Frontend / Security",
+        "validation": "curl -i shows CSP without unsafe-inline/eval; injected <script> without nonce blocked"
+      },
+      {
+        "tier": 1,
+        "title": "Add Referrer-Policy: strict-origin-when-cross-origin",
+        "severity": "high",
+        "host": "dghindia.gov.in",
+        "cve": null,
+        "fix": "Add header globally. Prevents query-string leakage (bid IDs, amounts, bidder names) on outbound clicks.",
+        "owner": "Infrastructure / Security",
+        "validation": "curl -e 'https://attacker.com' has no Referer in outbound"
+      },
+      {
+        "tier": 1,
+        "title": "Upgrade DMARC p=quarantine → p=reject",
+        "severity": "critical",
+        "host": "dghindia.gov.in (email)",
+        "cve": null,
+        "fix": "Monitor 30-day rua; then change to p=reject.",
+        "owner": "IT / Email Security",
+        "validation": "dig _dmarc returns p=reject"
+      },
+      {
+        "tier": 1,
+        "title": "Input validation + sanitisation on all e-bidding form fields",
+        "severity": "critical",
+        "host": "ebidding.dghindia.gov.in",
+        "cve": null,
+        "fix": "Whitelist allowed characters per field. CodeIgniter $this->validate(['project_name' => 'required|alpha_dash']). Output HTML-encoded. ZAP scan for residual XSS.",
+        "owner": "Backend Engineering",
+        "validation": "OWASP ZAP XSS scan: 0 findings"
+      },
+      {
+        "tier": 2,
+        "title": "DNS CAA records to restrict eMudhra-only issuance",
+        "severity": "high",
+        "host": "dghindia.gov.in",
+        "cve": null,
+        "fix": "'CAA 0 issue \"emudhra.com\"; CAA 0 issuewild \"emudhra.com\"'. CT monitoring monthly.",
+        "owner": "Infrastructure / PKI",
+        "validation": "dig CAA shows eMudhra restriction; crt.sh monthly audit"
+      },
+      {
+        "tier": 2,
+        "title": "Rate-limit + CAPTCHA on bid submission",
+        "severity": "high",
+        "host": "ebidding.dghindia.gov.in",
+        "cve": null,
+        "fix": "5 bid submissions/user/day; 100/IP/hour. CAPTCHA after 2 validation failures.",
+        "owner": "Backend Engineering",
+        "validation": "6 rapid submissions → 429 or CAPTCHA"
+      },
+      {
+        "tier": 2,
+        "title": "Immutable audit logging on bid modifications",
+        "severity": "high",
+        "host": "ebidding.dghindia.gov.in",
+        "cve": null,
+        "fix": "Log all bid CRUD with user/timestamp/old/new values to immutable storage (S3 Object Lock or equivalent). Alert on bid-amount edits.",
+        "owner": "Security Operations / DevOps",
+        "validation": "Bid edit creates audit entry; deletion attempt fires alert"
+      }
+    ],
+    "headlineQuestion": "Given the permissive CSP and the CVE-2025-54418 ImageMagick risk on a critical e-procurement platform, what is DGH's incident-detection latency if bid amounts are silently modified pre-award, and can audit logs prove bid integrity?"
+  }
 }

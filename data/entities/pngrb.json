@@ -50,5 +50,134 @@
     "All 6 hardening headers present"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "pngrb.gov.in",
+        "stack": "Microsoft IIS (Server header restricted) on Windows + likely .NET backend, GlobalSign OV TLS",
+        "versions": [
+          "IIS version hidden but ETag visible",
+          "GlobalSign RSA OV SSL CA 2018"
+        ],
+        "eolFlags": [
+          "IIS version concealed; if Windows Server 2016, mainstream EOL Jan 2022"
+        ]
+      },
+      {
+        "host": "edev.pngrb.gov.in",
+        "stack": "Same IIS as parent; explicitly named development environment",
+        "versions": [],
+        "eolFlags": [
+          "dev subdomain in public CT — should not be externally indexed"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Public edev subdomain → dev-environment configuration leak",
+        "priority": 1,
+        "entry": "edev.pngrb.gov.in publicly registered in CT; typical dev exposes /web.config, /debug, test creds, /.env.example.",
+        "pivot": "Harvest connection strings, API keys, test admin accounts; pivot from dev to prod via shared credentials.",
+        "objective": "Compromise prod via dev path; exfiltrate dev DB which often mirrors prod schema/data.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "IIS ETag fingerprint → version inference → CVE-targeted exploit",
+        "priority": 2,
+        "entry": "ETag visible in HTTP responses leaks IIS version pattern.",
+        "pivot": "Parse ETag → enumerate CVEs (CVE-2023-36434 HTTP/2 Rapid Reset; CVE-2023-21809 HTTP.sys memory corruption).",
+        "objective": "RCE; SYSTEM-level access on Windows IIS host.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "Soft-fail SPF + DMARC p=quarantine → email spoofing for regulator impersonation",
+        "priority": 2,
+        "entry": "DMARC p=quarantine (not reject); SPF soft-fail.",
+        "pivot": "Spoof PNGRB director-level emails to MoPNG/DGH/CMD audiences with urgent regulatory request.",
+        "objective": "Credential harvest, policy-decision interference.",
+        "effort": "hours",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "3 hours (edev enumeration + endpoint discovery + config harvest)",
+          "mythos": "30 min (subdomain fuzzing, common dev paths, parallel config-file extraction)",
+          "factor": "~6×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Remove edev.pngrb.gov.in from public DNS; migrate to internal-only",
+        "severity": "critical",
+        "host": "edev.pngrb.gov.in",
+        "cve": null,
+        "fix": "Delete or NXDOMAIN the edev DNS record. Provision new dev on edev-internal.pngrb.local accessible only via VPN. Revoke public cert. Audit CT for any unauthorised edev certs issued.",
+        "owner": "Infrastructure / DevOps",
+        "validation": "nslookup edev.pngrb.gov.in returns NXDOMAIN externally"
+      },
+      {
+        "tier": 1,
+        "title": "Upgrade DMARC from p=quarantine to p=reject",
+        "severity": "critical",
+        "host": "pngrb.gov.in (email)",
+        "cve": null,
+        "fix": "Monitor 30 days of rua reports for legitimate-sender failures; then change DMARC TXT to p=reject.",
+        "owner": "IT / Email Security",
+        "validation": "dig +short TXT _dmarc.pngrb.gov.in returns p=reject"
+      },
+      {
+        "tier": 1,
+        "title": "Confirm Windows + IIS patch level; apply current monthly cumulative updates",
+        "severity": "critical",
+        "host": "pngrb.gov.in",
+        "cve": "CVE-2023-36434, CVE-2023-21809",
+        "fix": "Get-ItemProperty HKLM:\\Software\\Microsoft\\InetStp for IIS version. wmic qfe list for KB inventory. Apply current Windows monthly cumulative.",
+        "owner": "Infrastructure / Windows Administration",
+        "validation": "wmic qfe list shows current month's KB; Microsoft Update history clean"
+      },
+      {
+        "tier": 2,
+        "title": "Suppress IIS ETag header or randomise to prevent fingerprinting",
+        "severity": "high",
+        "host": "pngrb.gov.in",
+        "cve": null,
+        "fix": "web.config customHeaders: <add name='ETag' value='' /> or use opaque ETag pattern.",
+        "owner": "Infrastructure / IIS Administration",
+        "validation": "curl -i pngrb.gov.in | grep -i etag returns empty or opaque"
+      },
+      {
+        "tier": 2,
+        "title": "Audit .NET deserialization usage; replace BinaryFormatter with JSON",
+        "severity": "high",
+        "host": "pngrb.gov.in",
+        "cve": null,
+        "fix": "grep -r BinaryFormatter | LosFormatter | NetDataContractSerializer in codebase. Migrate to System.Text.Json with strict type binding. ysoserial.net testing.",
+        "owner": "Backend Engineering",
+        "validation": "ysoserial.net payloads rejected"
+      },
+      {
+        "tier": 3,
+        "title": "Implement CT monitoring for all PNGRB subdomains",
+        "severity": "medium",
+        "host": "*.pngrb.gov.in",
+        "cve": null,
+        "fix": "CAA records: 'CAA 0 issue \"globalsign.com\"'. Censys/SSLMate/certspotter monitoring on *.pngrb.gov.in.",
+        "owner": "Infrastructure / PKI",
+        "validation": "dig pngrb.gov.in CAA shows GlobalSign restriction; CT monitor active"
+      }
+    ],
+    "headlineQuestion": "Why does PNGRB maintain a publicly DNS-indexed development environment (edev.pngrb.gov.in), and what is the incident response if dev configuration data has been harvested?"
+  }
 }

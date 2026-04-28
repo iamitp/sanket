@@ -46,5 +46,132 @@
     "Single subdomain (www only) — minimal CT footprint"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "www.oil-india.com",
+        "stack": "Drupal 9.x or 10.x + Citrix NetScaler gateway (X-Drupal-* + NetScaler integration markers)",
+        "versions": [
+          "Drupal version not exposed; NetScaler version hidden"
+        ],
+        "eolFlags": [
+          "NetScaler version unknown; if vulnerable to CVE-2025-7775 / CVE-2025-5777, Tier 1 critical"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "Citrix NetScaler pre-auth RCE (CVE-2025-7775)",
+        "priority": 1,
+        "entry": "If NetScaler externally accessible and unpatched (pre-14.1.47.48), memory corruption in packet processing yields unauthenticated RCE.",
+        "pivot": "Compromise NetScaler appliance; bypass Drupal layer; direct internal-network access; VPN tunnel compromise; credential harvest.",
+        "objective": "Lateral movement to Oil India backend; domain pivot.",
+        "effort": "hours",
+        "detection": "high"
+      },
+      {
+        "id": "B",
+        "name": "Drupal object injection → RCE (CVE-2024-55637)",
+        "priority": 1,
+        "entry": "Unsafe unserialize() in contrib module or custom code chains with core gadget sequence.",
+        "pivot": "Inject serialised PHP object via POST/form; deserialisation triggers gadget chain.",
+        "objective": "RCE as web-server user; DB access; lateral movement.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "NTLM relay (CVE-2025-33073) if Windows AD backend",
+        "priority": 2,
+        "entry": "Conditional on Windows AD + NTLM auth (typical PSU IT). Attacker on same network or via compromised app.",
+        "pivot": "Trigger SMB client auth to attacker server; relay captured NTLM hash to internal service without SMB signing.",
+        "objective": "Domain user privilege escalation; SAP / ERP access.",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "D",
+        "name": "Ransomware via credential compromise",
+        "priority": 2,
+        "entry": "Weak Drupal admin or credential reuse; password spray on SSH/RDP if exposed.",
+        "pivot": "Reverse shell; ransomware deployment; encrypt NAS/backup.",
+        "objective": "Production shutdown — 2022 Oil India incident demanded ₹57 crore.",
+        "effort": "days",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "NetScaler appliance compromise → firewall/VPN reconfiguration",
+          "mythos": "Network chokepoint compromise; perimeter eliminated; if VPN to remote drilling platforms, attacker pivots to OT control",
+          "factor": "~8–15× (NetScaler is APT priority target; 2022 Oil India lateral movement was via VPN appliance)"
+        },
+        {
+          "pathId": "B",
+          "preAi": "Drupal RCE → app-level execution → DB dump",
+          "mythos": "Web layer contained unless monolithic; intelligence leakage + supply-chain visibility",
+          "factor": "~3–4×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Citrix NetScaler ADC/Gateway upgrade to 14.1.47.48+",
+        "severity": "critical",
+        "host": "www.oil-india.com (NetScaler gateway)",
+        "cve": "CVE-2025-7775",
+        "fix": "NetScaler System → Diagnostics → System Information → NS Version. Upgrade to 14.1-47.48+ minimum. Backup config first. Post-upgrade test VPN clients.",
+        "owner": "OIL Network Ops / NetScaler Admin",
+        "validation": "show ns version in NetScaler CLI returns ≥ 14.1-47.48"
+      },
+      {
+        "tier": 1,
+        "title": "Drupal core upgrade for CVE-2024-55637",
+        "severity": "critical",
+        "host": "www.oil-india.com",
+        "cve": "CVE-2024-55637",
+        "fix": "drush status to identify version. Upgrade to 10.2.11+ / 10.3.9+ / 11.0.8+. composer require drupal/core:^10.2.11. drush cache:rebuild.",
+        "owner": "OIL Web Ops / Drupal Admin",
+        "validation": "drush eval 'echo Drupal::VERSION' confirms patched version"
+      },
+      {
+        "tier": 1,
+        "title": "Enable SMB signing portfolio-wide (CVE-2025-33073 mitigation)",
+        "severity": "high",
+        "host": "Internal Windows AD",
+        "cve": "CVE-2025-33073",
+        "fix": "Group Policy: 'Microsoft network client: Digitally sign communications (if server agrees)' → Required. gpupdate /force. Get-SmbClientConfiguration | Select RequireSecuritySignature.",
+        "owner": "OIL AD / Windows Admin",
+        "validation": "PowerShell shows RequireSecuritySignature=True"
+      },
+      {
+        "tier": 2,
+        "title": "Audit Drupal contrib modules for unserialize() usage",
+        "severity": "high",
+        "host": "www.oil-india.com",
+        "cve": "CVE-2024-55637",
+        "fix": "drush pm:uninstall non-essential contrib modules. grep -r 'unserialize' modules/custom/ — refactor to JSON.",
+        "owner": "OIL Web Ops / Code Review",
+        "validation": "grep returns 0; only trusted modules enabled"
+      },
+      {
+        "tier": 2,
+        "title": "TLS renewal — GeoTrust G1 expires Nov 2026",
+        "severity": "high",
+        "host": "www.oil-india.com",
+        "cve": null,
+        "fix": "Schedule renewal 60 days before expiry (early September 2026). Procure DigiCert or equivalent.",
+        "owner": "OIL IT / TLS Admin",
+        "validation": "openssl s_client | x509 -dates shows notAfter > 2027"
+      }
+    ],
+    "headlineQuestion": "Is the NetScaler appliance running a CVE-2025-7775-vulnerable version, and is it externally reachable? If yes, it bypasses Drupal entirely and is the highest-priority entry point for OIL.",
+    "coverageNotes": "NetScaler version not externally exposed; inferred present via Drupal integration. Drupal version not visible; no admin-endpoint probing per carve-out. SMB signing internal-network-scope unverified."
+  }
 }

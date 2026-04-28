@@ -51,5 +51,148 @@
     "CodeIgniter framework visible (set-cookie ci_session)"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "ppac.gov.in",
+        "stack": "CodeIgniter (ci_session cookie visible) + PHP, Sectigo DV TLS",
+        "versions": [
+          "CodeIgniter (version not exposed; ci_session pattern)",
+          "Sectigo Public Server Auth DV R36"
+        ],
+        "eolFlags": [
+          "CodeIgniter 3 EOL since 2022 (if running 3.x); CodeIgniter 4.x watch CVE-2025-54418"
+        ]
+      },
+      {
+        "host": "data.ppac.gov.in",
+        "stack": "Java backend with JSESSIONID, /PPAC/index path",
+        "versions": [],
+        "eolFlags": []
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "CodeIgniter version confirmation → unpatched RCE chain",
+        "priority": 1,
+        "entry": "ci_session cookie confirms CodeIgniter framework. Version not exposed; if 3.x (EOL since 2022), multiple unpatched RCE routes via PHP object injection / file upload.",
+        "pivot": "Craft serialised PHP object with gadget chain; trigger via form submission. /uploads directory enumeration.",
+        "objective": "RCE, read DB credentials, exfiltrate data.ppac.gov.in contents.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "Missing hardening headers → reflected XSS + clickjacking",
+        "priority": 2,
+        "entry": "All 6 hardening headers missing on apex; CSP present but permissive (unsafe-inline).",
+        "pivot": "Inject reflected XSS via query params; frame in iframe overlay for clickjacking.",
+        "objective": "Harvest session cookies, redirect to phishing, persistent XSS via stored injection.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "DMARC absence + soft-fail SPF → email spoofing for inter-ministry impersonation",
+        "priority": 2,
+        "entry": "DMARC entirely absent; SPF soft-fail. Attacker sends from ppac@ppac.gov.in to MoPNG/PNGRB staff.",
+        "pivot": "Phishing email with regulatory-traffic plausibility (PPAC is the canonical petroleum-data org).",
+        "objective": "Credential harvest, lateral movement via inter-ministry trust.",
+        "effort": "hours",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "5 hours (CodeIgniter vuln research + gadget chain + serialised payload + upload fuzzing)",
+          "mythos": "1 hour (pre-cached CI3 RCE library, automated gadget generation)",
+          "factor": "~5×"
+        },
+        {
+          "pathId": "B",
+          "preAi": "3 hours (XSS payload + CSP-bypass research + clickjacking setup)",
+          "mythos": "30 min (mutation, CSP-safe encoding, iframe templates)",
+          "factor": "~6×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Confirm CodeIgniter version; if 3.x, plan migration to 4.6.2+",
+        "severity": "critical",
+        "host": "ppac.gov.in",
+        "cve": "CVE-2025-54418 if 4.x ImageMagick handler enabled; multiple unpatched if 3.x",
+        "fix": "grep CI_VERSION in source. CI3 → migrate to CI 4.6.2+. Major version: audit all controllers/routes/models. Until migrated, deploy WAF rules blocking CI3 RCE patterns (unserialization, file inclusion).",
+        "owner": "Application Development",
+        "validation": "composer show codeigniter/framework | grep 4.6.2; unit tests pass"
+      },
+      {
+        "tier": 1,
+        "title": "Deploy all 6 hardening headers (HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy)",
+        "severity": "critical",
+        "host": "ppac.gov.in",
+        "cve": null,
+        "fix": "Configure in Nginx/Apache or PHP header() calls. CSP: default-src 'self'; script-src 'self' 'nonce-{random}'; object-src 'none'.",
+        "owner": "Infrastructure / Security",
+        "validation": "securityheaders.com scan returns A or A+"
+      },
+      {
+        "tier": 1,
+        "title": "Remove unsafe-inline from CSP; nonce-based execution",
+        "severity": "critical",
+        "host": "ppac.gov.in",
+        "cve": null,
+        "fix": "Generate per-request nonce (32 bytes, base64). Update all inline <script> tags. Test with Report-Only header before enforcement.",
+        "owner": "Frontend / Security",
+        "validation": "Page source shows nonces; injected scripts without nonce blocked"
+      },
+      {
+        "tier": 1,
+        "title": "Publish DMARC p=reject; harden SPF",
+        "severity": "critical",
+        "host": "ppac.gov.in (email)",
+        "cve": null,
+        "fix": "DMARC: 'v=DMARC1; p=reject; rua=mailto:security@ppac.gov.in; fo=1'. SPF: explicit 'v=spf1 include:mgovcloud.in -all'.",
+        "owner": "IT / Email Security",
+        "validation": "dig +short TXT _dmarc.ppac.gov.in returns p=reject; spoofed mail bounces"
+      },
+      {
+        "tier": 2,
+        "title": "Audit file uploads; move upload directory outside web root",
+        "severity": "high",
+        "host": "ppac.gov.in",
+        "cve": null,
+        "fix": "Move /uploads outside web root. Disable script execution. Magic-byte file-type validation (not extension). ClamAV on upload.",
+        "owner": "Application Security / DevOps",
+        "validation": "POST .php file returns 403; no script execution from upload dir"
+      },
+      {
+        "tier": 2,
+        "title": "Replace string concatenation with parameterised queries",
+        "severity": "high",
+        "host": "ppac.gov.in / data.ppac.gov.in",
+        "cve": null,
+        "fix": "Audit all DB queries. Use CI4 query builder or PDO prepared statements. SQLMap scan for residual injection points.",
+        "owner": "Backend Engineering",
+        "validation": "SQLMap finds 0 injection points"
+      },
+      {
+        "tier": 3,
+        "title": "Rate-limit + CAPTCHA on login + data endpoints",
+        "severity": "medium",
+        "host": "ppac.gov.in / data.ppac.gov.in",
+        "cve": null,
+        "fix": "5 login attempts per IP per 15 min; CAPTCHA after 2 failures; reCAPTCHA v3 on submit forms.",
+        "owner": "Application Security",
+        "validation": "6th login attempt in 1 min returns 429 or CAPTCHA challenge"
+      }
+    ],
+    "headlineQuestion": "What CodeIgniter version is PPAC running today, and if it is 3.x (EOL since 2022), who owns the migration plan to a supported framework?"
+  }
 }

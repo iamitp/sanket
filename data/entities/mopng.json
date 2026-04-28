@@ -68,5 +68,136 @@
     "AWS typosquat cluster (50.16.218.27) bulk-registers .org/.net/.co/.com"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "mopng.gov.in",
+        "stack": "Nginx reverse proxy + Java/Spring backend, eMudhra DV TLS",
+        "versions": [
+          "TLS 1.2+",
+          "eMudhra emSign CA-G2A-1"
+        ],
+        "eolFlags": []
+      },
+      {
+        "host": "dashboard.mopng.gov.in",
+        "stack": "Nginx + custom backend with ST01* session cookies",
+        "versions": [],
+        "eolFlags": []
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "SPF bypass → email spoofing → cross-ministry phishing",
+        "priority": 1,
+        "entry": "SPF v=spf1 -all rejects all senders; mgovcloud.in MX is live so legitimate mail fails. Attacker spoofs Secretary/CMD identity from external IPs unchallenged.",
+        "pivot": "Phishing campaign targeting subordinate ministries; DMARC p=reject blocks recovery for legitimate users; SideCopy-class TTPs documented for HPCL/OISD lures since 2024.",
+        "objective": "Credential harvest, malware delivery, lateral movement into dghindia.gov.in or pngrb.gov.in.",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "Public dashboard enumeration → sensitive data exposure",
+        "priority": 2,
+        "entry": "dashboard.mopng.gov.in publicly indexed; pariyojana.mopng.gov.in is project-portal subdomain.",
+        "pivot": "Enumerate Pariyojana API endpoints; ST01* session tokens may be deterministic.",
+        "objective": "Exfiltrate project status, budget data, stakeholder lists; identify procurement schedules.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "AWS typosquat cluster → domain-takeover staging",
+        "priority": 2,
+        "entry": "Phase 1 confirmed mopng.gov.org/.net/.co/.com all on 50.16.218.27.",
+        "pivot": "Pre-stage lookalike with attacker-issued TLS; phishing links to mopng-secure.com.",
+        "objective": "Harvest credentials, bypass mail filters, persistent backdoor via typosquat MTA.",
+        "effort": "hours",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "4 hours (SPF audit + recon + domain registration + phishing template)",
+          "mythos": "1.5 hours (automated domain generation + header crafting + .gov.in template cache)",
+          "factor": "~2.7×"
+        },
+        {
+          "pathId": "B",
+          "preAi": "3 hours (dashboard enumeration + API fuzzing + token analysis)",
+          "mythos": "45 min (multi-threaded discovery, JWT pattern cracking, schema-aware filtering)",
+          "factor": "~4×"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "Fix broken SPF (currently -all without authorised senders)",
+        "severity": "critical",
+        "host": "mopng.gov.in",
+        "cve": null,
+        "fix": "Replace 'v=spf1 -all' with 'v=spf1 include:mgovcloud.in -all' covering actual mail infrastructure. Audit all MX records. Test 100+ legitimate-sender deliveries before enforcement.",
+        "owner": "Network Engineering / Email Security",
+        "validation": "mxtoolbox SPF check shows no soft-fail; spoofed mail hard-bounces"
+      },
+      {
+        "tier": 1,
+        "title": "Restrict dashboard.mopng.gov.in to VPN / IP-allowlist",
+        "severity": "high",
+        "host": "dashboard.mopng.gov.in",
+        "cve": null,
+        "fix": "Move dashboard off public DNS or restrict access to ministry gateway IPs. Add WAF rules for enumeration probes; rate-limit session-token endpoint.",
+        "owner": "Application Security",
+        "validation": "external nmap times out or returns 403; ministry IPs succeed"
+      },
+      {
+        "tier": 2,
+        "title": "Strengthen CSP — add upgrade-insecure-requests + block-all-mixed-content",
+        "severity": "high",
+        "host": "mopng.gov.in",
+        "cve": null,
+        "fix": "Add 'upgrade-insecure-requests' and 'block-all-mixed-content'. Migrate inline scripts to nonce-based execution.",
+        "owner": "Frontend Engineering / Security",
+        "validation": "curl -i mopng.gov.in | grep CSP shows new directives"
+      },
+      {
+        "tier": 2,
+        "title": "Audit Pariyojana API authentication and rate limiting",
+        "severity": "high",
+        "host": "pariyojana.mopng.gov.in",
+        "cve": null,
+        "fix": "OAuth 2.0 / API token auth on all endpoints. 100 req/min rate limit per IP/user. HMAC-signed responses.",
+        "owner": "Application Development",
+        "validation": "curl without auth returns 401; 101 reqs/min triggers 429"
+      },
+      {
+        "tier": 2,
+        "title": "Implement DNS CAA records to restrict cert issuance",
+        "severity": "medium",
+        "host": "mopng.gov.in",
+        "cve": null,
+        "fix": "Publish: 'CAA 0 issue \"emudhra.com\"; CAA 0 issuewild \"emudhra.com\"'. Subscribe to CT monitoring (Censys, certspotter).",
+        "owner": "Infrastructure / PKI",
+        "validation": "dig mopng.gov.in CAA shows eMudhra restrictions"
+      },
+      {
+        "tier": 3,
+        "title": "Audit ST01* session-token generation entropy",
+        "severity": "medium",
+        "host": "dashboard.mopng.gov.in / pariyojana.mopng.gov.in",
+        "cve": null,
+        "fix": "Confirm tokens generated via cryptographic RNG (≥128-bit entropy). Implement 15-min idle / 8-hr absolute timeout.",
+        "owner": "Backend Engineering",
+        "validation": "1000-token entropy check (Shannon ≥7.9 bits/byte); zero collisions over 7-day run"
+      }
+    ],
+    "headlineQuestion": "Given the broken SPF and the publicly indexed dashboard subdomain, how is MoPNG currently detecting spoofed emails claiming to be from the ministry, and is Pariyojana project data encrypted at rest?"
+  }
 }

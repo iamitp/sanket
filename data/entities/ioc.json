@@ -50,5 +50,162 @@
     "Strict SPF (-all), DMARC p=quarantine — solid email auth"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27"
+  "scanDate": "2026-04-27",
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "iocl.com",
+        "stack": "Sucuri WAF + GoDaddy TLS + ASP.NET Core",
+        "versions": [
+          "Sucuri/Cloudproxy",
+          "GoDaddy G2 TLS (expires 2026-06-12 — 45d)"
+        ],
+        "eolFlags": [
+          "Cert rotation in 45 days; Sucuri version not disclosed"
+        ]
+      },
+      {
+        "host": "admin.iocl.com",
+        "stack": "cPanel/WHM control panel",
+        "versions": [
+          "cPanel/WHM"
+        ],
+        "eolFlags": [
+          "Admin path publicly enumerated in CT logs"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "A",
+        "name": "TLS rotation interception + subdomain takeover",
+        "priority": 1,
+        "entry": "Monitor WHOIS + CT for June 2026 renewal; submit unauthorised CSR or DNS hijack via registrar compromise.",
+        "pivot": "Valid TLS cert allows MITM on admin.iocl.com traffic through Sucuri WAF.",
+        "objective": "Intercept admin tokens; compromise dealer portal; exfiltrate customer data.",
+        "effort": "days",
+        "detection": "low"
+      },
+      {
+        "id": "B",
+        "name": "F5 BIG-IP CVE-2025-53521 (if APM deployed in backend)",
+        "priority": 2,
+        "entry": "If F5 BIG-IP APM in stack: pre-auth RCE.",
+        "pivot": "RCE on F5 → extract auth tokens → cPanel admin compromise.",
+        "objective": "Arbitrary command execution; alter dealer locator; inject malware.",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "C",
+        "name": "Dealer portal SQL injection via locator.iocl.com",
+        "priority": 3,
+        "entry": "Fuzz /locator/search?location=X for SQLi on unparameterised queries.",
+        "pivot": "Extract dealer DB creds, payment data via MSSQL backend.",
+        "objective": "Credential harvest from dealer network; supply-chain intel.",
+        "effort": "days",
+        "detection": "high"
+      },
+      {
+        "id": "D",
+        "name": "Email spoofing + executive phishing",
+        "priority": 2,
+        "entry": "iocl.com SPF tight (-all); admin subdomain may lack SPF.",
+        "pivot": "Phishing from admin@iocl.com → CEO → procurement VPN, financials.",
+        "objective": "Executive credential theft; lateral move.",
+        "effort": "days",
+        "detection": "low"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "A",
+          "preAi": "TLS rotation = known attack window (cf. Triton/TRISIS cert abuse)",
+          "mythos": "Pre-registration of attacker domain + DNS hijack during renewal — high-confidence state-level pattern",
+          "factor": "~3× if registrar compromised; detection negligible if Let's Encrypt race condition"
+        },
+        {
+          "pathId": "C",
+          "preAi": "Standard OWASP A1 SQLi on geospatial queries",
+          "mythos": "Dealer networks = soft underbelly; SQLi → credential harvest → lateral via dealer workstation (cf. Colonial Pipeline 2021)",
+          "factor": "~2–5×; Sucuri blocks union-based, misses time-blind"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "TLS rotation procedure audit + DNSSEC + CT monitoring",
+        "severity": "critical",
+        "host": "iocl.com",
+        "cve": null,
+        "fix": "Certificate pinning via HPKP. Enable DNSSEC. MFA-only registrar account. CT monitoring (certspotter). Rotate GoDaddy API keys.",
+        "owner": "Infrastructure / Security",
+        "validation": "dig +dnssec; CT log monitoring active"
+      },
+      {
+        "tier": 1,
+        "title": "F5 BIG-IP CVE-2025-53521 patch (if applicable)",
+        "severity": "critical",
+        "host": "iocl.com backend (if F5 APM)",
+        "cve": "CVE-2025-53521",
+        "fix": "Upgrade F5 BIG-IP to 17.5.1.3 / 17.1.3 / 16.1.6.1 / 15.1.10.8. CISA KEV deadline 2026-03-30.",
+        "owner": "Infrastructure / Network Ops",
+        "validation": "F5 version scan confirms patched"
+      },
+      {
+        "tier": 1,
+        "title": "Restrict admin.iocl.com — IP allowlist + 2FA",
+        "severity": "critical",
+        "host": "admin.iocl.com",
+        "cve": null,
+        "fix": "Move admin off public DNS or IP-allowlist on WHM ports 2087/2083. Enforce 2FA. Key-based SSH only. Rotate admin SSH keys.",
+        "owner": "Infrastructure / SysAdmin",
+        "validation": "External admin.iocl.com unreachable; 2FA enforced"
+      },
+      {
+        "tier": 2,
+        "title": "Dealer locator SQLi remediation",
+        "severity": "high",
+        "host": "locator.iocl.com",
+        "cve": "CWE-89",
+        "fix": "Parameterise queries. Allowlist input validation. Sucuri WAF SQLi rules. Rate-limit /locator/search.",
+        "owner": "Development / QA",
+        "validation": "sqlmap finds 0 injection points"
+      },
+      {
+        "tier": 2,
+        "title": "Email spoofing prevention — SPF on admin subdomain + DMARC p=reject",
+        "severity": "high",
+        "host": "iocl.com",
+        "cve": null,
+        "fix": "Add explicit SPF for admin.iocl.com. DMARC parent policy p=reject. DKIM keys.",
+        "owner": "Email Security",
+        "validation": "mxtoolbox SPF/DMARC audit; spoofed mail bounces"
+      },
+      {
+        "tier": 2,
+        "title": "WordPress plugin security on news.iocl.com / wowstories.iocl.com",
+        "severity": "high",
+        "host": "news.iocl.com / wowstories.iocl.com",
+        "cve": "CVE-2025-8489",
+        "fix": "Audit plugins. King Addons → 51.1.35+. Admin-only registration. WAF block on /wp-admin/admin-ajax.php admin payloads.",
+        "owner": "Content Management",
+        "validation": "WPScan; registration admin-only"
+      },
+      {
+        "tier": 3,
+        "title": "HTTP security headers verification across iocl.com surface",
+        "severity": "medium",
+        "host": "iocl.com",
+        "cve": null,
+        "fix": "All 6 headers; OWASP ZAP scan; remove server banner.",
+        "owner": "Development",
+        "validation": "securityheaders.com returns A+"
+      }
+    ],
+    "headlineQuestion": "Given the June 2026 TLS rotation window and admin.iocl.com publicly enumerated in CT, what controls prevent DNS hijack or unauthorised CSR submission during renewal — and has the GoDaddy registrar account been audited for compromise?"
+  }
 }
