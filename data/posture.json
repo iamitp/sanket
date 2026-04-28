@@ -1,0 +1,26 @@
+{
+  "score": 74,
+  "label": "Elevated",
+  "asOf": "2026-04-27",
+  "topSignals": [
+    {
+      "severity": "Critical",
+      "title": "Process control",
+      "blurb": "OEM support access and dual-homed engineering context remain the first priority."
+    },
+    {
+      "severity": "High",
+      "title": "Policy lures",
+      "blurb": "Oil-and-gas document lures can reach executive and ministry workflows quickly."
+    },
+    {
+      "severity": "High",
+      "title": "Retail trust",
+      "blurb": "Dealer, LPG, and loyalty surfaces convert cyber pressure into public-trust events."
+    }
+  ],
+  "topPriority": {
+    "name": "Process control",
+    "vector": "OEM support path into dual-homed engineering context — broker every OEM session through recorded jump hosts."
+  }
+}

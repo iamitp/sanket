@@ -1,0 +1,27 @@
+[
+  {
+    "title": "CyberPeace / Autobot refinery-sector attack telemetry",
+    "url": "https://cio.economictimes.indiatimes.com/news/digital-security/indian-petroleum-refineries-network-faces-enormous-cyber-attacks-from-october-2021-to-april-2022/90994677",
+    "sub": "Use as pressure evidence, corrected to roughly 3.6 lakh events on simulated refinery-sector sensors, not 3.6 million real refinery breaches."
+  },
+  {
+    "title": "Seqrite SideCopy analysis",
+    "url": "https://www.seqrite.com/blog/goodbye-hta-hello-msi-new-ttps-and-clusters-of-an-apt-driven-by-multi-platform-attacks/",
+    "sub": "Use as phishing and oil-and-gas lure evidence: HPCL-themed cybersecurity-guideline decoys, MSI staging, CurlBack RAT, Spark RAT, and Xeno RAT."
+  },
+  {
+    "title": "Oil India ransomware incident record",
+    "url": "https://timesofindia.indiatimes.com/city/guwahati/hackers-demand-7-5mn-from-oil-to-unlock-computer-network/articleshow/90831861.cms",
+    "sub": "Use as Indian oil-and-gas incident precedent: ransomware demand, G&R workstation, network outage, and central-agency response."
+  },
+  {
+    "title": "Anthropic Project Glasswing",
+    "url": "https://www.anthropic.com/glasswing",
+    "sub": "Use as frontier-cyber-AI context: restricted Mythos Preview access for defensive vulnerability discovery and critical-software hardening."
+  },
+  {
+    "title": "Guardian reporting on Mythos access concerns",
+    "url": "https://www.theguardian.com/technology/2026/apr/22/anthropic-investigates-report-of-rogue-access-to-hack-enabling-mythos-ai",
+    "sub": "Use as control-plane caution: powerful defensive cyber-AI access itself becomes a security object."
+  }
+]

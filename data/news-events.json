@@ -1,0 +1,37 @@
+[
+  {
+    "date": "7 Apr 2026",
+    "headline": "Anthropic announces Project Glasswing and Claude Mythos Preview.",
+    "flag": "Frontier cyber-AI capability. Use: compress patch and compensating-control timelines.",
+    "url": "https://www.anthropic.com/glasswing",
+    "source": "Anthropic"
+  },
+  {
+    "date": "22 Apr 2026",
+    "headline": "Public reporting says unauthorized users accessed Mythos through a third-party environment.",
+    "flag": "Control-plane risk around powerful defensive/offensive cyber models.",
+    "url": "https://www.theguardian.com/technology/2026/apr/22/anthropic-investigates-report-of-rogue-access-to-hack-enabling-mythos-ai",
+    "source": "The Guardian"
+  },
+  {
+    "date": "Dec 2024",
+    "headline": "Seqrite reports SideCopy lures using HPCL-themed cybersecurity-guideline documents.",
+    "flag": "Policy-document lure. Use: harden mailbox, file-share, and executive-document workflows.",
+    "url": "https://www.seqrite.com/blog/goodbye-hta-hello-msi-new-ttps-and-clusters-of-an-apt-driven-by-multi-platform-attacks/",
+    "source": "Seqrite"
+  },
+  {
+    "date": "Apr 2022",
+    "headline": "Oil India Duliajan ransomware incident becomes the key public Indian oil-and-gas precedent.",
+    "flag": "Ransomware business-continuity stress. Use: rehearse recovery and executive communications.",
+    "url": "https://timesofindia.indiatimes.com/city/guwahati/hackers-demand-7-5mn-from-oil-to-unlock-computer-network/articleshow/90831861.cms",
+    "source": "Times of India"
+  },
+  {
+    "date": "Oct 2021–Apr 2022",
+    "headline": "CyberPeace / Autobot refinery-sector simulated sensors record roughly 3.6 lakh attack events.",
+    "flag": "Protocol pressure. Use: model common exposed-service and industrial-protocol attack paths.",
+    "url": "https://cio.economictimes.indiatimes.com/news/digital-security/indian-petroleum-refineries-network-faces-enormous-cyber-attacks-from-october-2021-to-april-2022/90994677",
+    "source": "ET CIO"
+  }
+]

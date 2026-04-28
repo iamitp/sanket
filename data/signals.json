@@ -1,0 +1,62 @@
+[
+  {
+    "id": "oem",
+    "severity": "Critical",
+    "title": "OEM remote-access concentration",
+    "summary": "Vendor support paths can become a high-leverage bridge into plant context.",
+    "body": "Third-party vendor support paths bypass perimeter controls entirely. A single compromised OEM account can reach historians, DCS engineering stations, and control networks through a trusted support relationship — without triggering standard corporate perimeter alerts.",
+    "keyAction": "Issue an OEM access governance order — jump-host brokering, session recording, time-bound credentials, and named ownership for every active support path across CII-designated assets.",
+    "decisionRole": "CMD",
+    "decisionPoint": "Is every active OEM support path inventoried, recorded, and terminable in under one hour?"
+  },
+  {
+    "id": "soc",
+    "severity": "Critical",
+    "title": "Plant SOC / corporate SOC seam",
+    "summary": "Watch the handoff gap between OT detection, corporate identity, and escalation.",
+    "body": "The detection gap between OT monitoring and corporate security operations is where lateral movement most often goes undetected. Shift handoffs and high alert volumes widen this window. The adversary's advantage is the delay between a plant-level alarm and a decision-maker being notified.",
+    "keyAction": "Define the escalation path from plant alarm to CMD notification. Run a cross-boundary drill before the next board cycle — the test, not the policy, reveals the actual gap.",
+    "decisionRole": "CMD",
+    "decisionPoint": "Who notifies you personally, at what threshold, if a plant control network is accessed?"
+  },
+  {
+    "id": "lure",
+    "severity": "High",
+    "title": "Policy-document lures",
+    "summary": "Oil-and-gas decoys and cybersecurity-guideline lures hit executive and policy workflows.",
+    "body": "SideCopy APT uses HPCL cybersecurity guidelines, OISD circulars, and MoPNG policy documents as phishing bait. These reach executive and secretariat inboxes because they look like legitimate regulatory traffic — the kind of file a CMD or Secretary would open without hesitation.",
+    "keyAction": "Run a targeted phishing simulation against executive and ministry-adjacent workflows. Harden document-sharing and email attachment handling before the next policy cycle.",
+    "decisionRole": "CMD",
+    "decisionPoint": "Have you and your senior leadership completed a phishing simulation in the last 12 months?"
+  },
+  {
+    "id": "retail",
+    "severity": "High",
+    "title": "Retail and consumer fraud surface",
+    "summary": "Dealer portals, loyalty flows, LPG subsidy messages, and fuel-discount scams convert cyber events into public-trust events quickly.",
+    "body": "Dealer portals, LPG subsidy channels, and consumer apps are high-volume, publicly visible surfaces. A breach here becomes a customer trust and reputational event within hours — before the technical picture is clear to leadership. The communications gap is as damaging as the breach itself.",
+    "keyAction": "Implement step-up authentication on dealer and high-risk consumer login flows. Pre-stage customer fraud communications before an event occurs — do not draft them during one.",
+    "decisionRole": "CMD",
+    "decisionPoint": "Is there a pre-approved customer communication template ready for a fraud event today?"
+  },
+  {
+    "id": "ai",
+    "severity": "Critical",
+    "title": "Frontier cyber-AI gap",
+    "summary": "AI-assisted vulnerability discovery shortens defender timelines.",
+    "body": "AI-assisted vulnerability discovery compresses the window from known flaw to active exploitation. Legacy OT systems and unpatched edge devices that previously had weeks of triage runway now face days. Security teams using old patch-cycle assumptions are already behind.",
+    "keyAction": "Move patch triage to an executive-scheduled decision rather than a backlog queue. Include AI-assisted attack assumptions in the next sector tabletop exercise.",
+    "decisionRole": "CMD",
+    "decisionPoint": "What is the current patch cycle for your process control and pipeline SCADA systems?"
+  },
+  {
+    "id": "refinery",
+    "severity": "Watch",
+    "title": "Refinery-sim telemetry",
+    "summary": "Public telemetry showed sustained hits against simulated refinery-sector sensors, especially common industrial protocols.",
+    "body": "CyberPeace / Autobot honeypot data recorded 3.6 lakh attack events against simulated refinery sensors using Modbus, DNP3, and similar industrial protocols. This establishes documented threat interest — the attack techniques are known and being exercised against this sector's specific control system surface.",
+    "keyAction": "Audit exposed services against common industrial protocol lists. Segment any internet-facing service using Modbus, DNP3, or similar from plant and control networks.",
+    "decisionRole": "CISO",
+    "decisionPoint": "Does your team have an up-to-date inventory of industrial protocol services exposed beyond plant network boundaries?"
+  }
+]
