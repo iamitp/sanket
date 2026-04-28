@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { loadAllEntities } from '../lib/entities';
-import { TierDistributionBar } from '../components/tier-distribution-bar';
+import { PostureDistributionChart } from '../components/posture-distribution-chart';
 import { TodaySpear } from '../components/today-spear';
 import { EntityConstellation } from '../components/entity-constellation';
 
@@ -33,7 +33,7 @@ export default function Home() {
         </div>
 
         <div className="mt-6">
-          <TierDistributionBar entities={entities} />
+          <PostureDistributionChart entities={entities} />
         </div>
 
         {/* Stats stack — three big numbers + one statement */}
