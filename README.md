@@ -59,3 +59,4 @@ No traffic generated against scanned entity infrastructure beyond what an ordina
 ## License and attribution
 
 Methodology is open. Data is public. Republish with attribution.
+
