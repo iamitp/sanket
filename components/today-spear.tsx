@@ -1,0 +1,86 @@
+import Link from 'next/link';
+import type { EntityReport } from '../lib/entities';
+
+type Props = { entities: EntityReport[] };
+
+// Pick the single most time-pressing item across the portfolio.
+// Priority: smallest days from urgentActions OR smallest TLS daysToExpiry where < 30.
+type Spear = {
+  entity: EntityReport;
+  what: string;
+  due: string;
+  days: number;
+  kind: 'urgent-action' | 'cert-expiry';
+};
+
+function pickSpear(entities: EntityReport[]): Spear | null {
+  const candidates: Spear[] = [];
+  for (const e of entities) {
+    for (const a of e.urgentActions) {
+      candidates.push({
+        entity: e,
+        what: a.what,
+        due: a.due,
+        days: a.days,
+        kind: 'urgent-action',
+      });
+    }
+    if (e.tls.daysToExpiry != null && e.tls.daysToExpiry < 30 && e.tls.expiresOn) {
+      candidates.push({
+        entity: e,
+        what: `Rotate TLS certificate before expiry`,
+        due: e.tls.expiresOn,
+        days: e.tls.daysToExpiry,
+        kind: 'cert-expiry',
+      });
+    }
+  }
+  if (candidates.length === 0) return null;
+  return candidates.sort((a, b) => a.days - b.days)[0];
+}
+
+export function TodaySpear({ entities }: Props) {
+  const spear = pickSpear(entities);
+  if (!spear) return null;
+
+  const dayColor =
+    spear.days <= 7 ? 'text-red-400' : spear.days <= 14 ? 'text-amber-400' : 'text-lime-400';
+
+  return (
+    <Link
+      href={`/entity/${spear.entity.slug}`}
+      className="block rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.08)] hover:bg-[rgba(239,71,111,0.12)] transition px-5 py-5 group"
+      style={{ borderLeftColor: 'var(--sanket-accent)' }}
+    >
+      <div className="flex items-start justify-between gap-5 flex-wrap sm:flex-nowrap">
+        <div className="flex-1 min-w-0">
+          <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-accent font-semibold mb-2">
+            Today's spear · highest-priority item right now
+          </p>
+          <h3 className="m-0 font-serif text-2xl sm:text-3xl s-fg leading-tight mb-1.5 group-hover:text-[var(--sanket-accent-soft)] transition">
+            {spear.what}
+          </h3>
+          <p className="m-0 s-dim text-sm">
+            <span className="font-mono text-[11px] uppercase tracking-[0.12em] s-fade">
+              {spear.entity.short}
+            </span>
+            <span className="mx-2 s-fade">·</span>
+            <code className="font-mono text-[12px] s-dim bg-white/5 px-1.5 py-0.5 rounded">
+              {spear.entity.domain}
+            </code>
+            <span className="mx-2 s-fade">·</span>
+            <span className="s-fade">due {spear.due}</span>
+          </p>
+        </div>
+        <div className="text-right shrink-0">
+          <div className={`font-serif text-6xl sm:text-7xl font-semibold tabular-nums leading-none ${dayColor}`}>
+            {spear.days}
+          </div>
+          <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] s-fade">
+            day{spear.days === 1 ? '' : 's'}
+          </div>
+        </div>
+      </div>
+    </Link>
+  );
+}
