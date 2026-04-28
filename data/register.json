@@ -1,0 +1,144 @@
+{
+  "meta": {
+    "tagline": "MoPNG digital-estate cyber-posture register. Public passive reconnaissance, methodology transparent.",
+    "scanDate": "2026-04-27",
+    "entityCount": 19,
+    "methodology": "Passive reconnaissance only. Sources: certificate-transparency logs (crt.sh), public DNS queries (dig), HTTP header inspection (curl), public search-engine queries (Google site-restricted dorks), public breach databases (HaveIBeenPwned, IntelX surface), public infrastructure indexes (Shodan, Censys), and public web archives (Wayback Machine). No traffic generated against scanned entity infrastructure beyond what an ordinary visitor's browser produces. No port scanning, no vulnerability scanners, no authentication probing, no fuzzing. Subdomain takeover candidates are identified passively but withheld from public publication for 90 days under industry-standard responsible-disclosure practice."
+  },
+  "urgent": [
+    "<strong>MRPL cert expires 2026-05-05</strong> — 8 days from scan. <code>mrpl.co.in</code> primary certificate. Imminent outage if not rotated.",
+    "<strong>RGIPT wildcard cert expires 2026-05-09</strong> — 12 days from scan. <code>*.rgipt.ac.in</code>.",
+    "<strong>Engineers India Ltd directory listing fully indexed</strong>: <code>engineersindia.com/wp-content/uploads/cache/...</code> — Google-discoverable project documents in public listing.",
+    "<strong>OISD cert expires 2026-05-17</strong> — 20 days from scan. CN mismatch (CN=www, apex unmatched). Zero hardening headers."
+  ],
+  "crossCutting": [
+    {
+      "title": "Two organised typosquat-operator clusters across the portfolio",
+      "summary": "Bulk registration of MoPNG / PSU domain names on third-party cloud infrastructure (one cluster on Amazon Web Services, one on a RIPE-allocated EU cloud). ICANN 2025 privacy redaction prevents registrant identification from open sources. Pattern is consistent with brand-protection registration (most likely), domain-investor parking, or phishing pre-staging. Specific IPs and the full domain list are held in the private register and not published here, to avoid signalling actor surveillance until intel is firmer. Investigation pending via CERT-In disclosure-request channel."
+    },
+    {
+      "title": "Email-authentication posture is uneven across the portfolio",
+      "summary": "Strict (DMARC p=reject) on 2 entities. Strong (p=quarantine) on 7. Weak (p=none / DMARC absent) on 4. SPF broken or missing on 3 (Ministry, OISD, ONGC). Six of nineteen entities therefore have material spoofing surface from email-authentication misconfiguration. The fix is documented and well-known; the gap is operational priority."
+    },
+    {
+      "title": "Subdomain inventory leak via certificate transparency is portfolio-wide",
+      "summary": "Public certificate-transparency logs immutably record every issued public-CA certificate. Most entities issue per-environment certificates that publish dev / staging / test / uat / internal hostnames to public CT, mapping internal infrastructure topology for any adversary willing to query crt.sh. Mitigation is forward-only: route internal-only services through a private CA (Microsoft AD CS, HashiCorp Vault) that does not submit to public CT logs. Existing exposure cannot be retracted."
+    }
+  ],
+  "entities": [
+    {
+      "name": "Petroleum Planning & Analysis Cell",
+      "domain": "ppac.gov.in",
+      "tier": "HIGH",
+      "findings": "DMARC absent. All six hardening headers missing. Permissive CSP (unsafe-inline)."
+    },
+    {
+      "name": "Engineers India Ltd",
+      "domain": "engineersindia.com",
+      "tier": "HIGH",
+      "findings": "Public directory listing exposed (CPP Angul Smelter project files indexed by Google). Apache 2.4.29 EOL. No SPF, no DMARC. Missing CSP."
+    },
+    {
+      "name": "Rajiv Gandhi Institute of Petroleum Technology",
+      "domain": "rgipt.ac.in",
+      "tier": "HIGH",
+      "findings": "Wildcard cert expires 2026-05-09 (12 days from scan). DMARC absent. Strong header posture otherwise."
+    },
+    {
+      "name": "Mangalore Refinery and Petrochemicals Ltd",
+      "domain": "mrpl.co.in",
+      "tier": "HIGH",
+      "findings": "Cert expires 2026-05-05 (8 days from scan). Missing CSP and Referrer-Policy."
+    },
+    {
+      "name": "Oil Industry Safety Directorate",
+      "domain": "oisd.gov.in",
+      "tier": "HIGH",
+      "findings": "Cert CN mismatch (CN=www.oisd.gov.in, apex unmatched). Cert expires 2026-05-17 (20 days). Zero hardening headers. Broken SPF (-all without DMARC recovery path)."
+    },
+    {
+      "name": "Bharat Petroleum Corporation Ltd",
+      "domain": "bharatpetroleum.in",
+      "tier": "HIGH",
+      "findings": "Test and QA environments named in public CT logs (adfstest, qa.convenience, qa.speed). Loose SPF (~all). Header posture verifiable only via active scan."
+    },
+    {
+      "name": "Hindustan Petroleum Corporation Ltd",
+      "domain": "hindustanpetroleum.com",
+      "tier": "HIGH",
+      "findings": "All six hardening headers missing. SPF ~all with +a +mx (broad spoofing surface). DMARC p=quarantine."
+    },
+    {
+      "name": "Bharat PetroResources Ltd",
+      "domain": "bharatpetroresources.com",
+      "tier": "PROVISIONAL",
+      "findings": "Canonical domain pending verification with BPCL parent. Initial-assumed canonical (bprlindia.com) returned no DNS A record. Excluded from this publication; row will appear in next refresh after BPCL confirms canonical."
+    },
+    {
+      "name": "Numaligarh Refinery Ltd",
+      "domain": "nrl.co.in",
+      "tier": "MEDIUM",
+      "findings": "Forty-five plus subdomains visible in CT logs (vpn, adss, ieddms across dev/uat/prod tiers). Public tender PDFs include governance frameworks. No active breach detected. Site returned 503 at scan time; baseline retry pending next scan."
+    },
+    {
+      "name": "Ministry of Petroleum & Natural Gas",
+      "domain": "mopng.gov.in",
+      "tier": "MEDIUM",
+      "findings": "SPF v=spf1 -all without includes is broken — MX records confirm mgovcloud.in is the live mail infrastructure but SPF rejects all senders, so outbound mail fails authentication at every receiver. Otherwise solid: 6/6 hardening headers, p=reject DMARC."
+    },
+    {
+      "name": "Directorate General of Hydrocarbons",
+      "domain": "dghindia.gov.in",
+      "tier": "MEDIUM",
+      "findings": "CSP permits unsafe-inline and unsafe-eval. Missing Referrer-Policy. Soft-fail SPF."
+    },
+    {
+      "name": "Petroleum and Natural Gas Regulatory Board",
+      "domain": "pngrb.gov.in",
+      "tier": "MEDIUM",
+      "findings": "edev subdomain exposed in CT logs. IIS ETag fingerprint leak. Soft-fail SPF."
+    },
+    {
+      "name": "Oil and Natural Gas Corporation",
+      "domain": "ongcindia.com",
+      "tier": "MEDIUM",
+      "findings": "Weak CSP. Missing DMARC. SPF entirely missing (TXT records are non-SPF labels and verification tokens, no v=spf1 record)."
+    },
+    {
+      "name": "Indian Oil Corporation",
+      "domain": "iocl.com",
+      "tier": "MEDIUM",
+      "findings": "admin.iocl.com exposed in CT logs. Sucuri WAF in front. Loose CSP (upgrade-insecure-requests only)."
+    },
+    {
+      "name": "Petronet LNG",
+      "domain": "petronetlng.com",
+      "tier": "MEDIUM",
+      "findings": "Zero hardening headers despite strong email authentication. ADFS endpoint visible in CT logs. Cert expires September 2026."
+    },
+    {
+      "name": "GAIL India",
+      "domain": "gailonline.com",
+      "tier": "MEDIUM",
+      "findings": "CSP unsafe-inline + unsafe-eval in script-src (XSS surface). Otherwise strong: HSTS, p=reject DMARC, tight SPF."
+    },
+    {
+      "name": "Chennai Petroleum Corporation Ltd",
+      "domain": "cpcl.co.in",
+      "tier": "MEDIUM",
+      "findings": "WordPress fingerprint exposed via /wp-json/. Missing CSP."
+    },
+    {
+      "name": "Petroleum Conservation Research Association",
+      "domain": "pcra.org",
+      "tier": "MEDIUM",
+      "findings": "Missing SPF and DMARC. Cloudflare-fronted."
+    },
+    {
+      "name": "Oil India Ltd",
+      "domain": "oil-india.com",
+      "tier": "LOW",
+      "findings": "Strict SPF (v=spf1 -all). DMARC p=reject. Strong CSP. Drupal + Citrix NetScaler. Single subdomain only. Cleanest in portfolio."
+    }
+  ]
+}
