@@ -42,12 +42,12 @@ export function EntityConstellation({ entities }: Props) {
   });
 
   return (
-    <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4">
+    <div className="grid gap-3 grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 auto-rows-fr">
       {sorted.map((e) => (
         <Link
           key={e.slug}
           href={`/entity/${e.slug}`}
-          className={`group relative rounded-lg border border-l-4 s-border ${TIER_BORDER[e.tier]} s-surface p-4 transition-all hover-s-border hover:bg-[rgba(255,255,255,0.02)] ${TIER_GLOW[e.tier]}`}
+          className={`group relative flex flex-col rounded-lg border border-l-4 s-border ${TIER_BORDER[e.tier]} s-surface p-4 transition-all hover-s-border hover:bg-[rgba(255,255,255,0.02)] ${TIER_GLOW[e.tier]}`}
         >
           <div className="flex items-baseline justify-between gap-2 mb-2">
             <span
@@ -55,17 +55,19 @@ export function EntityConstellation({ entities }: Props) {
             >
               {e.tier}
             </span>
-            {e.phase2 && (
+            {e.phase2 ? (
               <span className="font-mono text-[9px] uppercase tracking-[0.16em] s-accent-green">
                 ▸ Phase 2
               </span>
+            ) : (
+              <span aria-hidden className="invisible font-mono text-[9px]">▸</span>
             )}
           </div>
 
           <h3 className="m-0 font-serif text-xl s-fg leading-tight group-hover:text-[var(--sanket-accent-soft)] transition">
             {e.short}
           </h3>
-          <code className="font-mono text-[11px] s-dim bg-white/5 px-1 py-0.5 rounded inline-block mt-1.5">
+          <code className="font-mono text-[11px] s-dim bg-white/5 px-1 py-0.5 rounded inline-block mt-1.5 self-start">
             {e.domain}
           </code>
 
@@ -80,20 +82,26 @@ export function EntityConstellation({ entities }: Props) {
             </span>
           </div>
 
-          <p className="mt-2.5 m-0 s-dim text-[12.5px] leading-snug line-clamp-2 min-h-[2.4em]">
+          <p className="mt-2.5 m-0 s-dim text-[12.5px] leading-snug line-clamp-2 h-[2.6em]">
             {e.oneLine}
           </p>
 
-          {e.urgentActions.length > 0 && (
-            <div className="mt-2.5 pt-2.5 border-t s-border flex items-center gap-2">
-              <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-red-400 font-semibold">
-                {Math.min(...e.urgentActions.map((a) => a.days))}d
+          <div className="mt-auto pt-2.5 border-t s-border flex items-center gap-2 min-h-[1.75rem]">
+            {e.urgentActions.length > 0 ? (
+              <>
+                <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-red-400 font-semibold tabular-nums">
+                  {Math.min(...e.urgentActions.map((a) => a.days))}d
+                </span>
+                <span className="text-[11px] s-fade truncate flex-1">
+                  {e.urgentActions[0].what}
+                </span>
+              </>
+            ) : (
+              <span className="font-mono text-[9px] uppercase tracking-[0.16em] s-fade">
+                no time-bound actions
               </span>
-              <span className="text-[11px] s-fade truncate flex-1">
-                {e.urgentActions[0].what}
-              </span>
-            </div>
-          )}
+            )}
+          </div>
         </Link>
       ))}
     </div>

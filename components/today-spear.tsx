@@ -49,38 +49,26 @@ export function TodaySpear({ entities }: Props) {
   return (
     <Link
       href={`/entity/${spear.entity.slug}`}
-      className="block rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.08)] hover:bg-[rgba(239,71,111,0.12)] transition px-5 py-5 group"
+      className="flex flex-col h-full rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.06)] hover:bg-[rgba(239,71,111,0.1)] transition px-5 py-4 group"
       style={{ borderLeftColor: 'var(--sanket-accent)' }}
     >
-      <div className="flex items-start justify-between gap-5 flex-wrap sm:flex-nowrap">
-        <div className="flex-1 min-w-0">
-          <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-accent font-semibold mb-2">
-            Today's spear · highest-priority item right now
-          </p>
-          <h3 className="m-0 font-serif text-2xl sm:text-3xl s-fg leading-tight mb-1.5 group-hover:text-[var(--sanket-accent-soft)] transition">
-            {spear.what}
-          </h3>
-          <p className="m-0 s-dim text-sm">
-            <span className="font-mono text-[11px] uppercase tracking-[0.12em] s-fade">
-              {spear.entity.short}
-            </span>
-            <span className="mx-2 s-fade">·</span>
-            <code className="font-mono text-[12px] s-dim bg-white/5 px-1.5 py-0.5 rounded">
-              {spear.entity.domain}
-            </code>
-            <span className="mx-2 s-fade">·</span>
-            <span className="s-fade">due {spear.due}</span>
-          </p>
-        </div>
-        <div className="text-right shrink-0">
-          <div className={`font-serif text-6xl sm:text-7xl font-semibold tabular-nums leading-none ${dayColor}`}>
-            {spear.days}
-          </div>
-          <div className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] s-fade">
-            day{spear.days === 1 ? '' : 's'}
-          </div>
-        </div>
+      <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-accent font-semibold mb-3">
+        Today's spear
+      </p>
+      <div className="flex items-baseline gap-3 mb-3">
+        <span className={`font-serif text-5xl font-semibold tabular-nums leading-none ${dayColor}`}>
+          {spear.days}
+        </span>
+        <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
+          day{spear.days === 1 ? '' : 's'} to {spear.due}
+        </span>
       </div>
+      <p className="m-0 s-fg text-[14.5px] leading-snug font-medium mb-2 group-hover:text-[var(--sanket-accent-soft)] transition">
+        {spear.what}
+      </p>
+      <p className="m-0 mt-auto s-fade text-[12px] font-mono uppercase tracking-[0.12em]">
+        {spear.entity.short} · {spear.entity.domain}
+      </p>
     </Link>
   );
 }

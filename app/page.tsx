@@ -19,11 +19,16 @@ export default function Home() {
   );
   const sortedUrgent = allUrgent.sort((a, b) => a.days - b.days);
 
+  const avgScore = Math.round(
+    entities.filter((e) => e.postureScore > 0).reduce((s, e) => s + e.postureScore, 0) /
+      Math.max(1, entities.filter((e) => e.postureScore > 0).length),
+  );
+
   return (
     <div className="py-7 sm:py-9">
-      {/* Hero — portfolio shape at a glance */}
-      <section className="mb-8">
-        <div className="flex items-baseline justify-between mb-2 flex-wrap gap-2">
+      {/* Hero band — label row + chart full width */}
+      <section className="mb-10">
+        <div className="flex items-baseline justify-between mb-6 flex-wrap gap-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] s-accent-green">
             Sanket cyber-posture register · scan {scanDate}
           </p>
@@ -32,43 +37,80 @@ export default function Home() {
           </p>
         </div>
 
-        <div className="mt-6">
-          <PostureDistributionChart entities={entities} />
-        </div>
+        <PostureDistributionChart entities={entities} />
 
-        {/* Stats stack — three big numbers + one statement */}
-        <div className="mt-10 grid gap-6 lg:grid-cols-[1.4fr_1fr] items-start">
-          <div>
-            <h1 className="font-serif text-5xl sm:text-6xl md:text-7xl font-semibold tracking-tight s-fg leading-[0.95]">
-              {counts.HIGH ?? 0} of {entities.length} entities flagged{' '}
-              <span className="text-red-400">HIGH</span>
-            </h1>
-            <p className="mt-4 s-dim text-base sm:text-lg max-w-2xl leading-relaxed">
-              Sanket is a public passive-reconnaissance register on the Indian Ministry of
-              Petroleum and Natural Gas digital estate. Civic-tech transparency, refreshed weekly.
-              Click any tile in the bar above or any card below for the full per-entity assessment.
+        {/* Single serif statement under the chart */}
+        <h1 className="mt-10 font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight s-fg leading-[1.05] max-w-4xl">
+          {counts.HIGH ?? 0} of {entities.length} entities flagged{' '}
+          <span className="text-red-400">HIGH</span>.
+        </h1>
+
+        <p className="mt-4 s-dim text-base sm:text-lg max-w-3xl leading-relaxed">
+          Sanket is a public passive-reconnaissance register on the Indian Ministry of Petroleum
+          and Natural Gas digital estate. Civic-tech transparency, refreshed weekly. Click any bar
+          above or any tile below for the full per-entity assessment.
+        </p>
+      </section>
+
+      {/* Three balanced equal-height cards: spear · stats · cadence */}
+      <section className="mb-12">
+        <div className="grid gap-3 sm:grid-cols-2 lg:grid-cols-3 auto-rows-fr">
+          {/* Today's spear */}
+          <TodaySpear entities={entities} />
+
+          {/* Posture distribution stats */}
+          <div className="flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
+              Posture distribution
+            </p>
+            <div className="flex items-baseline gap-2 mb-3">
+              <span className="font-serif text-5xl font-semibold tabular-nums s-fg leading-none">
+                {avgScore}
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
+                avg score · 0 worst · 100 best
+              </span>
+            </div>
+            <ul className="m-0 mt-auto p-0 list-none space-y-1 text-[13px]">
+              <StatRow label="HIGH" count={counts.HIGH ?? 0} colorClass="text-red-400" />
+              <StatRow label="MEDIUM" count={counts.MEDIUM ?? 0} colorClass="text-amber-400" />
+              <StatRow label="LOW" count={counts.LOW ?? 0} colorClass="text-lime-400" />
+              {(counts.PROVISIONAL ?? 0) > 0 && (
+                <StatRow
+                  label="PROVISIONAL"
+                  count={counts.PROVISIONAL!}
+                  colorClass="s-fade"
+                />
+              )}
+            </ul>
+          </div>
+
+          {/* Phase 2 + cadence */}
+          <div className="flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
+            <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
+              Coverage
+            </p>
+            <div className="flex items-baseline gap-2 mb-3">
+              <span className="font-serif text-5xl font-semibold tabular-nums s-fg leading-none">
+                {phase2Count}
+              </span>
+              <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
+                Phase 2 active of {entities.length}
+              </span>
+            </div>
+            <p className="m-0 s-dim text-[13px] leading-relaxed mb-2">
+              Phase 1 (passive) covers all {entities.length} entities. Phase 2 (active scan +
+              Mythos simulation + CISO patch list) requires per-entity ethical-hacking
+              authorisation.
+            </p>
+            <p className="m-0 mt-auto font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
+              Re-scan cadence · weekly via launchd
             </p>
           </div>
-
-          <div className="grid grid-cols-2 gap-3">
-            <StatCard label="HIGH" value={counts.HIGH ?? 0} color="text-red-400" />
-            <StatCard label="MEDIUM" value={counts.MEDIUM ?? 0} color="text-amber-400" />
-            <StatCard label="LOW" value={counts.LOW ?? 0} color="text-lime-400" />
-            <StatCard
-              label="Phase 2 active"
-              value={phase2Count}
-              color="text-[var(--sanket-accent-soft)]"
-            />
-          </div>
         </div>
       </section>
 
-      {/* Today's spear — featured countdown */}
-      <section className="mb-12">
-        <TodaySpear entities={entities} />
-      </section>
-
-      {/* Constellation grid */}
+      {/* Constellation directory */}
       <section className="mb-12">
         <div className="flex items-baseline justify-between mb-4 flex-wrap gap-2">
           <div>
@@ -104,7 +146,7 @@ export default function Home() {
                   className="flex items-baseline gap-3 py-2.5 first:pt-0 last:pb-0 text-sm"
                 >
                   <span
-                    className={`shrink-0 font-mono text-[11px] uppercase tracking-[0.12em] tabular-nums font-semibold ${
+                    className={`shrink-0 font-mono text-[11px] uppercase tracking-[0.12em] tabular-nums font-semibold w-10 text-right ${
                       u.days <= 7 ? 'text-red-400' : u.days <= 30 ? 'text-amber-400' : 's-fade'
                     }`}
                   >
@@ -138,28 +180,29 @@ export default function Home() {
           warns.
         </p>
         <p className="m-0">
-          Phase 1 (passive recon) covers all {entities.length} entities and is unconditional. Phase
-          2 (active vulnerability assessment, Mythos-class adversary simulation, CISO patch list)
-          requires per-entity ethical-hacking authorisation. Re-scan cadence: weekly via launchd.
+          Methodology is reproducible by any visitor with{' '}
+          <code className="font-mono text-xs s-dim bg-white/5 px-1 py-0.5 rounded">curl</code>,{' '}
+          <code className="font-mono text-xs s-dim bg-white/5 px-1 py-0.5 rounded">dig</code>, and{' '}
+          <code className="font-mono text-xs s-dim bg-white/5 px-1 py-0.5 rounded">openssl</code>.
         </p>
       </footer>
     </div>
   );
 }
 
-function StatCard({
+function StatRow({
   label,
-  value,
-  color,
+  count,
+  colorClass,
 }: {
   label: string;
-  value: number;
-  color: string;
+  count: number;
+  colorClass: string;
 }) {
   return (
-    <div className="rounded-lg border s-border s-surface px-4 py-4">
-      <div className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade mb-1">{label}</div>
-      <div className={`font-serif text-4xl tabular-nums leading-none ${color}`}>{value}</div>
-    </div>
+    <li className="flex items-baseline justify-between font-mono uppercase tracking-[0.12em]">
+      <span className={`text-[10px] ${colorClass}`}>{label}</span>
+      <span className={`tabular-nums font-semibold text-sm ${colorClass}`}>{count}</span>
+    </li>
   );
 }
