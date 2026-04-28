@@ -1,0 +1,418 @@
+{
+  "slug": "nrl",
+  "name": "Numaligarh Refinery Limited",
+  "short": "NRL",
+  "category": "refiner",
+  "domain": "nrl.co.in",
+  "tier": "MEDIUM",
+  "postureScore": 62,
+  "postureLabel": "Watch",
+  "oneLine": "45+ subdomains visible in CT including VPN, AD, document mgmt; no breach detected",
+  "tls": {
+    "state": "pass",
+    "issuer": "DigiCert G2",
+    "expiresOn": "2026-11-30",
+    "daysToExpiry": 216,
+    "note": "cert chain valid; testssl HPKP SPKI mismatch — minor"
+  },
+  "headers": {
+    "hsts": true,
+    "csp": true,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "strict",
+    "dkim": "present",
+    "dmarc": "quarantine",
+    "note": "Tighten to p=reject after 30-day report monitoring; verify mailersend.net include is current"
+  },
+  "topology": {
+    "totalSubdomains": 45,
+    "sensitiveCount": 10,
+    "sensitive": [
+      {
+        "name": "vpn.nrl.co.in",
+        "category": "auth"
+      },
+      {
+        "name": "adss.nrl.co.in",
+        "category": "auth"
+      },
+      {
+        "name": "ieddms.dev.nrl.co.in",
+        "category": "dev"
+      },
+      {
+        "name": "ieddms.uat.nrl.co.in",
+        "category": "dev"
+      },
+      {
+        "name": "ieddms.prod.nrl.co.in",
+        "category": "docmgmt"
+      },
+      {
+        "name": "mgpnrl.dev.nrl.co.in",
+        "category": "dev"
+      },
+      {
+        "name": "mgptest.nrl.co.in",
+        "category": "dev"
+      },
+      {
+        "name": "b2b.nrl.co.in",
+        "category": "portal"
+      },
+      {
+        "name": "open-web-ui.nrlrag.nrl.co.in",
+        "category": "api"
+      },
+      {
+        "name": "hmis.nrl.co.in",
+        "category": "app"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "nrl.co.com",
+      "resolvesTo": "169.60.151.233 (RIPE-allocated cloud, typosquat cluster)"
+    },
+    {
+      "domain": "nrl.in",
+      "resolvesTo": "54.195.35.206 (third-party)"
+    },
+    {
+      "domain": "nrl.com",
+      "note": "Australian National Rugby League — distinct org"
+    }
+  ],
+  "findings": [
+    "45+ subdomains visible in public CT logs — full infrastructure topology mappable from outside",
+    "VPN gateway (vpn.nrl.co.in) and AD-related service (adss.nrl.co.in) named publicly",
+    "Document management exposed across dev/uat/prod tiers (ieddms.*)",
+    "Self-hosted RAG/LLM tool visible (open-web-ui.nrlrag) — introduces AI-specific threat surface",
+    "Public tender PDFs include Enterprise Risk Management Framework (governance content alongside tender attachments)",
+    "No breach evidence in HIBP, IntelX, GitHub code search, paste archives, or S3/Azure bucket guessing",
+    "Email auth strong (DMARC p=quarantine, strict SPF)"
+  ],
+  "urgentActions": [],
+  "phase2": {
+    "runDate": "2026-04-28",
+    "fingerprints": [
+      {
+        "host": "hmis.nrl.co.in",
+        "stack": "Apache 2.4.6 + PHP 7.4.28 + OpenSSL 1.0.2k-fips",
+        "versions": [
+          "Apache/2.4.6",
+          "PHP/7.4.28",
+          "OpenSSL/1.0.2k-fips"
+        ],
+        "eolFlags": [
+          "PHP 7.4 EOL 2022-11-28",
+          "OpenSSL 1.0.2 EOL 2019-12-31",
+          "Apache 2.4.6 very old"
+        ]
+      },
+      {
+        "host": "nrlportal.nrl.co.in",
+        "stack": "Apache 2.4.6 + OpenSSL 1.0.2k-fips (CentOS)",
+        "versions": [
+          "Apache/2.4.6",
+          "OpenSSL/1.0.2k-fips"
+        ],
+        "eolFlags": [
+          "Apache 2.4.6 very old",
+          "OpenSSL 1.0.2 EOL 2019-12-31",
+          "currently 503 maintenance"
+        ]
+      },
+      {
+        "host": "inetdemo.nrl.co.in",
+        "stack": "Microsoft IIS 10.0 + ASP.NET 4.0.30319",
+        "versions": [
+          "IIS/10.0",
+          "ASP.NET 4.0.30319"
+        ],
+        "eolFlags": [
+          "IIS 10.0 mainstream EOL 2025-10-14"
+        ]
+      },
+      {
+        "host": "websvc.nrl.co.in",
+        "stack": "Microsoft IIS 10.0 + ASP.NET",
+        "versions": [
+          "IIS/10.0"
+        ],
+        "eolFlags": [
+          "IIS 10.0 mainstream EOL 2025-10-14"
+        ]
+      },
+      {
+        "host": "shapp.nrl.co.in",
+        "stack": "Apache Tomcat 9.0.70 (AWS ALB-fronted)",
+        "versions": [
+          "Tomcat/9.0.70"
+        ],
+        "eolFlags": [
+          "Tomcat 9.0.70 stale (current 9.0.99+)"
+        ]
+      },
+      {
+        "host": "stps.nrl.co.in",
+        "stack": "nginx 1.20.1 + Express (Node.js)",
+        "versions": [
+          "nginx/1.20.1"
+        ],
+        "eolFlags": [
+          "nginx 1.20.1 stale"
+        ]
+      },
+      {
+        "host": "procurixai.nrl.co.in",
+        "stack": "nginx 1.30.0 (AWS ALB-fronted, AI tool)",
+        "versions": [
+          "nginx/1.30.0"
+        ],
+        "eolFlags": []
+      },
+      {
+        "host": "vpn.nrl.co.in",
+        "stack": "Unknown (likely FortiGate/Citrix/F5/Cisco — not externally fingerprintable)",
+        "versions": [],
+        "eolFlags": [
+          "VPN appliance brand to be confirmed by CISO"
+        ]
+      },
+      {
+        "host": "www.nrl.co.in",
+        "stack": "ASP.NET (X-AspNet-Version: MyServer1 — version obfuscated)",
+        "versions": [],
+        "eolFlags": [
+          "version obfuscated; CISO confirms internally"
+        ]
+      },
+      {
+        "host": "mgpnrl.nrl.co.in",
+        "stack": "ASP.NET (MyServer1 obfuscation, shared IP cluster)",
+        "versions": [],
+        "eolFlags": [
+          "version obfuscated"
+        ]
+      }
+    ],
+    "attackPaths": [
+      {
+        "id": "B",
+        "name": "VPN appliance pre-auth RCE",
+        "priority": 1,
+        "entry": "Pre-auth RCE on VPN appliance (CVE depends on brand: F5 CVE-2025-53521, Citrix CVE-2025-7775/5777, Fortinet CVE-2023-27997)",
+        "pivot": "Session-token theft, MFA bypass via memory leak (CitrixBleed-class)",
+        "objective": "Authenticated VPN session as legitimate-looking user; internal network access",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "A",
+        "name": "hmis triple-EOL exploitation",
+        "priority": 2,
+        "entry": "Any unpatched PHP 7.4 / OpenSSL 1.0.2 / Apache 2.4.6 CVE since 2022",
+        "pivot": "Web shell deployment, lateral movement via stolen credentials",
+        "objective": "Foothold in NRL corporate estate via the HMIS host",
+        "effort": "hours",
+        "detection": "medium"
+      },
+      {
+        "id": "E",
+        "name": "AI surface prompt-injection / vector-store exfil",
+        "priority": 2,
+        "entry": "Malicious document submitted to RAG knowledge base, or prompt injection via user channel",
+        "pivot": "Extract API keys via LLM-mediated channel; manipulate model output trusted by automation",
+        "objective": "Data exfiltration or trust manipulation in NRL's AI tooling",
+        "effort": "hours",
+        "detection": "low"
+      },
+      {
+        "id": "C",
+        "name": "Policy-document lure to executive mailbox",
+        "priority": 3,
+        "entry": "SideCopy-style HPCL/OISD/MoPNG-themed phishing email",
+        "pivot": "CurlBack/Spark/Xeno RAT installation, credential theft",
+        "objective": "Corporate VPN access via legitimate user session",
+        "effort": "days",
+        "detection": "medium"
+      },
+      {
+        "id": "D",
+        "name": "IIS/ASP.NET fingerprint to RCE",
+        "priority": 4,
+        "entry": "HTTP.sys or IIS-specific CVE on inetdemo or websvc (CVE-2023-36434)",
+        "pivot": "SYSTEM-level access on Windows IIS host",
+        "objective": "Foothold in Windows estate",
+        "effort": "days",
+        "detection": "high"
+      }
+    ],
+    "mythosCompression": {
+      "paths": [
+        {
+          "pathId": "B",
+          "preAi": "days (CVE-to-exploit chaining)",
+          "mythos": "hours",
+          "factor": "3-5x"
+        },
+        {
+          "pathId": "A",
+          "preAi": "days (CVE enumeration + chain)",
+          "mythos": "hours",
+          "factor": "3-5x"
+        },
+        {
+          "pathId": "E",
+          "preAi": "weeks (novel technique)",
+          "mythos": "hours",
+          "factor": "50x+"
+        },
+        {
+          "pathId": "C",
+          "preAi": "days (lure crafting)",
+          "mythos": "days (delivery still human-paced)",
+          "factor": "modest"
+        },
+        {
+          "pathId": "D",
+          "preAi": "days",
+          "mythos": "days (CVE conditions narrow)",
+          "factor": "modest"
+        }
+      ]
+    },
+    "cisoPatchList": [
+      {
+        "tier": 1,
+        "title": "hmis.nrl.co.in triple-EOL stack migration",
+        "severity": "critical",
+        "host": "hmis.nrl.co.in",
+        "fix": "Migrate to RHEL 9 / Ubuntu 24.04 LTS (Apache 2.4.62+, PHP 8.x, OpenSSL 3.x). Interim: IP-allowlist via firewall.",
+        "owner": "Head, IT",
+        "validation": "curl -sI https://hmis.nrl.co.in | grep -iE 'server|x-powered-by' shows Apache 2.4.62+ and PHP 8.x"
+      },
+      {
+        "tier": 1,
+        "title": "nrlportal.nrl.co.in stack upgrade during 503 window",
+        "severity": "critical",
+        "host": "nrlportal.nrl.co.in",
+        "fix": "Same as hmis. Currently in 503 maintenance — opportune upgrade window.",
+        "owner": "Head, IT",
+        "validation": "curl -sI https://nrlportal.nrl.co.in returns HTTP/2 200 with Apache 2.4.62+ and OpenSSL 3.x"
+      },
+      {
+        "tier": 1,
+        "title": "VPN appliance brand confirmation + KEV patch",
+        "severity": "critical",
+        "host": "vpn.nrl.co.in",
+        "cve": "CVE-2025-53521 / CVE-2025-7775 / CVE-2025-5777 / CVE-2023-27997 (depends on brand)",
+        "fix": "CISO confirms appliance brand internally. Apply current vendor patch for that brand. Enforce session-token rotation post-patch.",
+        "owner": "Head, IT (perimeter)",
+        "validation": "Vendor command (e.g. 'get system status' on FortiGate) shows firmware at or above patched version"
+      },
+      {
+        "tier": 1,
+        "title": "IIS 10.0 monthly SU + version-leak suppression",
+        "severity": "critical",
+        "host": "inetdemo, websvc",
+        "cve": "CVE-2023-36434 (HTTP/2 Rapid Reset)",
+        "fix": "Apply current Windows monthly cumulative update. Strip Server and X-AspNet-Version headers via URL Rewrite.",
+        "owner": "Head, IT (Windows platform)",
+        "validation": "curl -sI shows headers absent or generic"
+      },
+      {
+        "tier": 2,
+        "title": "ASP.NET MyServer1 cluster version audit + header strip",
+        "severity": "high",
+        "host": "mgpnrl, mgptest, mgpext, portal2, www.nrl.co.in",
+        "fix": "CISO confirms ASP.NET runtime version internally. Set httpRuntime enableVersionHeader=false in Web.config.",
+        "owner": "Head, IT",
+        "validation": "curl -sI shows no X-AspNet-Version header"
+      },
+      {
+        "tier": 2,
+        "title": "Apache Tomcat 9.0.70 → 9.0.99+",
+        "severity": "high",
+        "host": "shapp.nrl.co.in",
+        "cve": "CVE-2024-50379, CVE-2024-21733, CVE-2023-46589",
+        "fix": "Standard Tomcat upgrade: download 9.0.99, swap bin/lib, retain conf/webapps, restart.",
+        "owner": "Head, IT (Java platform)",
+        "validation": "curl -sI https://shapp.nrl.co.in | grep -i server shows Tomcat 9.0.99+"
+      },
+      {
+        "tier": 2,
+        "title": "nginx 1.20.1 → 1.26.x or 1.28.x stable",
+        "severity": "high",
+        "host": "stps.nrl.co.in",
+        "cve": "CVE-2024-7347 (mp4 module)",
+        "fix": "OS-distribution package upgrade.",
+        "owner": "Head, IT (Linux platform)",
+        "validation": "curl -sI https://stps.nrl.co.in | grep -i server shows nginx 1.26+"
+      },
+      {
+        "tier": 2,
+        "title": "procurixai AI surface threat-model audit",
+        "severity": "high",
+        "host": "procurixai.nrl.co.in",
+        "fix": "WAF + rate-limiting + API key audit + SSO with conditional access + full request/response logging.",
+        "owner": "Head, IT + application owner",
+        "validation": "WAF rules in place; audit log of last 30 days; SSO confirmed"
+      },
+      {
+        "tier": 3,
+        "title": "Publish /.well-known/security.txt",
+        "severity": "medium",
+        "host": "all NRL domains",
+        "fix": "Static file at /.well-known/security.txt with Contact/Expires/Encryption/Acknowledgments per RFC 9116.",
+        "owner": "Head, IT (corporate website)",
+        "validation": "curl -s https://www.nrl.co.in/.well-known/security.txt returns content"
+      },
+      {
+        "tier": 3,
+        "title": "Forward-only certificate-transparency policy",
+        "severity": "medium",
+        "host": "future internal services",
+        "fix": "New internal-only services use private CA (AD CS / Vault PKI). External services use wildcard certs at apex.",
+        "owner": "Head, IT (PKI)",
+        "validation": "New internal service certificates after policy adoption do not appear in crt.sh queries"
+      },
+      {
+        "tier": 3,
+        "title": "DMARC tighten to p=reject",
+        "severity": "medium",
+        "host": "nrl.co.in",
+        "fix": "30-day report monitoring; verify mailersend.net include; update DMARC TXT to p=reject.",
+        "owner": "IT (email)",
+        "validation": "dig +short TXT _dmarc.nrl.co.in returns p=reject"
+      },
+      {
+        "tier": 3,
+        "title": "Internal-IP cluster network audit",
+        "severity": "medium",
+        "host": "125.19.23.188 cluster, 59.144.123.x cluster",
+        "fix": "For internal-only services: remove public DNS records (split-horizon DNS). For internet-exposed but firewall-blocked: document the rule.",
+        "owner": "Head, IT (network)",
+        "validation": "Internal subdomains no longer appear in external DNS"
+      },
+      {
+        "tier": 3,
+        "title": "RAG governance audit (open-web-ui.nrlrag)",
+        "severity": "medium",
+        "host": "open-web-ui.nrlrag.nrl.co.in",
+        "fix": "Document RAG sources, audit API key handling, enforce SSO, conversation logging to SOC, output-trust validation.",
+        "owner": "Head, IT (app platform) + CISO",
+        "validation": "Governance review document on file; SSO enforced; logs in SOC tooling"
+      }
+    ],
+    "headlineQuestion": "What is the firmware version of the NRL VPN appliance, and is it patched against the KEV-listed pre-authentication RCE for that brand?"
+  },
+  "scanDate": "2026-04-27"
+}

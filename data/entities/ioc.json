@@ -1,0 +1,54 @@
+{
+  "slug": "ioc",
+  "name": "Indian Oil Corporation",
+  "short": "IOC",
+  "category": "omc",
+  "domain": "iocl.com",
+  "tier": "MEDIUM",
+  "postureScore": 66,
+  "postureLabel": "Watch",
+  "oneLine": "admin.iocl.com exposed in CT; Sucuri WAF in front",
+  "tls": {
+    "state": "pass",
+    "issuer": "GoDaddy G2",
+    "expiresOn": "2026-06-12",
+    "daysToExpiry": 45
+  },
+  "headers": {
+    "hsts": true,
+    "csp": "permissive",
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "strict",
+    "dkim": "present",
+    "dmarc": "quarantine"
+  },
+  "topology": {
+    "totalSubdomains": 13,
+    "sensitiveCount": 1,
+    "sensitive": [
+      {
+        "name": "admin.iocl.com",
+        "category": "admin"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "iocl.net",
+      "resolvesTo": "76.223.54.146 (AWS Global Accelerator, third-party)"
+    }
+  ],
+  "findings": [
+    "admin.iocl.com publicly visible in CT logs",
+    "Sucuri WAF fronts the origin (good)",
+    "CSP loose (upgrade-insecure-requests only)",
+    "Strict SPF (-all), DMARC p=quarantine — solid email auth"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

@@ -1,0 +1,72 @@
+{
+  "slug": "mopng",
+  "name": "Ministry of Petroleum & Natural Gas",
+  "short": "MoPNG",
+  "category": "ministry",
+  "domain": "mopng.gov.in",
+  "tier": "MEDIUM",
+  "postureScore": 68,
+  "postureLabel": "Watch",
+  "oneLine": "SPF broken (rejects all senders despite live MX); otherwise hardened",
+  "tls": {
+    "state": "pass",
+    "issuer": "GoI internal CA",
+    "expiresOn": "2026-07-21",
+    "daysToExpiry": 84,
+    "note": "CN wildcard *.mopng.gov.in"
+  },
+  "headers": {
+    "hsts": true,
+    "csp": true,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "broken",
+    "dkim": "unknown",
+    "dmarc": "reject",
+    "note": "v=spf1 -all without includes — but MX records confirm mgovcloud.in is the live mail infrastructure. Outbound mail fails SPF at every receiver."
+  },
+  "topology": {
+    "totalSubdomains": 4,
+    "sensitiveCount": 2,
+    "sensitive": [
+      {
+        "name": "dashboard.mopng.gov.in",
+        "category": "portal"
+      },
+      {
+        "name": "pariyojana.mopng.gov.in",
+        "category": "portal"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "mopng.gov.com",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    },
+    {
+      "domain": "mopng.gov.org",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    },
+    {
+      "domain": "mopng.gov.net",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    },
+    {
+      "domain": "mopng.gov.co",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    }
+  ],
+  "findings": [
+    "SPF v=spf1 -all with no includes is broken — outbound mail from @mopng.gov.in fails authentication at every receiver",
+    "All 6 hardening headers present (HSTS, CSP, X-Frame, X-Content-Type, Referrer, Permissions)",
+    "DMARC p=reject — strict",
+    "AWS typosquat cluster (50.16.218.27) bulk-registers .org/.net/.co/.com"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

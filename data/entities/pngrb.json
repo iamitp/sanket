@@ -1,0 +1,54 @@
+{
+  "slug": "pngrb",
+  "name": "Petroleum and Natural Gas Regulatory Board",
+  "short": "PNGRB",
+  "category": "regulator",
+  "domain": "pngrb.gov.in",
+  "tier": "MEDIUM",
+  "postureScore": 64,
+  "postureLabel": "Watch",
+  "oneLine": "edev.* dev environment exposed in CT; IIS ETag fingerprint leak",
+  "tls": {
+    "state": "pass",
+    "issuer": "GlobalSign OV",
+    "expiresOn": "2027-03-21",
+    "daysToExpiry": 327
+  },
+  "headers": {
+    "hsts": true,
+    "csp": true,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "soft",
+    "dkim": "unknown",
+    "dmarc": "quarantine"
+  },
+  "topology": {
+    "totalSubdomains": 6,
+    "sensitiveCount": 1,
+    "sensitive": [
+      {
+        "name": "edev.pngrb.gov.in",
+        "category": "dev"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "pngrb.gov.com",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    }
+  ],
+  "findings": [
+    "edev.pngrb.gov.in subdomain in CT logs — internal/dev environment named publicly",
+    "IIS Server header restricted but ETag visible — partial fingerprint leak",
+    "Soft-fail SPF (~all) allows downgrade attacks",
+    "All 6 hardening headers present"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

@@ -1,0 +1,48 @@
+{
+  "slug": "gail",
+  "name": "GAIL India",
+  "short": "GAIL",
+  "category": "gas",
+  "domain": "gailonline.com",
+  "tier": "MEDIUM",
+  "postureScore": 70,
+  "postureLabel": "Watch",
+  "oneLine": "CSP unsafe-inline + unsafe-eval (XSS surface); otherwise strong",
+  "tls": {
+    "state": "pass",
+    "issuer": "eMudhra emSign G1",
+    "expiresOn": "2026-07-27",
+    "daysToExpiry": 90
+  },
+  "headers": {
+    "hsts": true,
+    "csp": "permissive",
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "strict",
+    "dkim": "present",
+    "dmarc": "reject"
+  },
+  "topology": {
+    "totalSubdomains": 2,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "gailonline.net",
+      "resolvesTo": "192.64.119.199 (third-party)"
+    }
+  ],
+  "findings": [
+    "CSP includes unsafe-inline AND unsafe-eval in script-src — significant XSS surface",
+    "Otherwise solid: HSTS, p=reject DMARC, tight SPF",
+    "Apache backend, 2 subdomains only — minimal CT footprint"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

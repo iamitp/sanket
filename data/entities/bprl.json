@@ -1,0 +1,48 @@
+{
+  "slug": "bprl",
+  "name": "Bharat PetroResources Limited",
+  "short": "BPRL",
+  "category": "upstream",
+  "domain": "bharatpetroresources.com",
+  "tier": "PROVISIONAL",
+  "postureScore": 0,
+  "postureLabel": "Watch",
+  "oneLine": "Canonical pending verification with BPCL parent; assumed canonical bprlindia.com had no DNS",
+  "tls": {
+    "state": "unknown",
+    "issuer": "—",
+    "note": "canonical not yet confirmed"
+  },
+  "headers": {
+    "hsts": false,
+    "csp": false,
+    "xFrame": false,
+    "xContentType": false,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "missing",
+    "dkim": "unknown",
+    "dmarc": "absent"
+  },
+  "topology": {
+    "totalSubdomains": 0,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [],
+  "findings": [
+    "bprlindia.com (initial assumed canonical) returned no DNS A record",
+    "bharatpetroresources.com (likely canonical) — Cloudflare front, LiteSpeed origin, scheduled-maintenance mode",
+    "bharatpetroresources.in also live (ASP.NET stack) — needs verification: legitimate alternate or impersonation"
+  ],
+  "urgentActions": [
+    {
+      "what": "Confirm canonical domain via BPCL parent or MoPNG annual report reference",
+      "due": "before public publication",
+      "days": 30
+    }
+  ],
+  "scanDate": "2026-04-27"
+}

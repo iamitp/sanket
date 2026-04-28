@@ -1,0 +1,53 @@
+{
+  "slug": "cpcl",
+  "name": "Chennai Petroleum Corporation Ltd",
+  "short": "CPCL",
+  "category": "refiner",
+  "domain": "cpcl.co.in",
+  "tier": "MEDIUM",
+  "postureScore": 60,
+  "postureLabel": "Watch",
+  "oneLine": "WordPress fingerprint exposed via /wp-json/; missing CSP",
+  "tls": {
+    "state": "pass",
+    "issuer": "Sectigo Public Server Auth CA OV R36",
+    "expiresOn": "2026-10-25",
+    "daysToExpiry": 180
+  },
+  "headers": {
+    "hsts": true,
+    "csp": false,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "soft",
+    "dkim": "present",
+    "dmarc": "quarantine"
+  },
+  "topology": {
+    "totalSubdomains": 2,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "cpcl.co.com",
+      "resolvesTo": "169.60.151.233 (RIPE-allocated cloud, typosquat cluster)"
+    },
+    {
+      "domain": "cpcl.in",
+      "resolvesTo": "202.71.129.6 (third-party)"
+    }
+  ],
+  "findings": [
+    "WordPress fingerprint exposed via Link headers (rel=alternate to /wp-json/v2)",
+    "Missing CSP",
+    "Permissions-Policy permits payment and fullscreen — broader than typical",
+    "Soft-fail SPF"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

@@ -1,0 +1,70 @@
+{
+  "slug": "rgipt",
+  "name": "Rajiv Gandhi Institute of Petroleum Technology",
+  "short": "RGIPT",
+  "category": "education",
+  "domain": "rgipt.ac.in",
+  "tier": "HIGH",
+  "postureScore": 42,
+  "postureLabel": "Critical",
+  "oneLine": "Wildcard cert expires 2026-05-09 (12 days); DMARC absent",
+  "tls": {
+    "state": "warn",
+    "issuer": "Sectigo RSA",
+    "expiresOn": "2026-05-09",
+    "daysToExpiry": 11,
+    "note": "IMMINENT EXPIRY — wildcard *.rgipt.ac.in"
+  },
+  "headers": {
+    "hsts": true,
+    "csp": false,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "soft",
+    "dkim": "unknown",
+    "dmarc": "absent"
+  },
+  "topology": {
+    "totalSubdomains": 6,
+    "sensitiveCount": 1,
+    "sensitive": [
+      {
+        "name": "moodle.rgipt.ac.in",
+        "category": "app"
+      },
+      {
+        "name": "admissions.rgipt.ac.in",
+        "category": "portal"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "rgipt.co.in",
+      "resolvesTo": "3.33.130.143 (AWS, third-party)"
+    }
+  ],
+  "findings": [
+    "Wildcard cert expires 2026-05-09 — 11 days remaining",
+    "DMARC absent",
+    "Missing CSP and Referrer-Policy",
+    "Soft-fail SPF (~all)"
+  ],
+  "urgentActions": [
+    {
+      "what": "Rotate wildcard *.rgipt.ac.in cert before May 9",
+      "due": "2026-05-09",
+      "days": 11
+    },
+    {
+      "what": "Add DMARC record (start with p=none for reporting, then tighten)",
+      "due": "2026-05-31",
+      "days": 33
+    }
+  ],
+  "scanDate": "2026-04-27"
+}

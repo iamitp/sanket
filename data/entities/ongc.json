@@ -1,0 +1,50 @@
+{
+  "slug": "ongc",
+  "name": "Oil and Natural Gas Corporation",
+  "short": "ONGC",
+  "category": "upstream",
+  "domain": "ongcindia.com",
+  "tier": "MEDIUM",
+  "postureScore": 56,
+  "postureLabel": "Watch",
+  "oneLine": "SPF entirely missing; DMARC absent; weak CSP",
+  "tls": {
+    "state": "pass",
+    "issuer": "DigiCert G2",
+    "expiresOn": "2027-02-28",
+    "daysToExpiry": 306
+  },
+  "headers": {
+    "hsts": true,
+    "csp": "permissive",
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "missing",
+    "dkim": "unknown",
+    "dmarc": "absent",
+    "note": "No v=spf1 record exists. TXT records observed are non-SPF labels and verification tokens."
+  },
+  "topology": {
+    "totalSubdomains": 2,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "ongcindia.co.in",
+      "resolvesTo": "185.53.177.29 (Everdata/CDN, third-party owned)"
+    }
+  ],
+  "findings": [
+    "SPF entirely missing — anyone can spoof @ongcindia.com",
+    "DMARC absent",
+    "CSP weak (upgrade-insecure-requests only)",
+    "Liferay Portal stack visible (JSESSIONID/COOKIE_SUPPORT)"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

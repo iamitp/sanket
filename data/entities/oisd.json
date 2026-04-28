@@ -1,0 +1,67 @@
+{
+  "slug": "oisd",
+  "name": "Oil Industry Safety Directorate",
+  "short": "OISD",
+  "category": "safety",
+  "domain": "oisd.gov.in",
+  "tier": "HIGH",
+  "postureScore": 36,
+  "postureLabel": "Critical",
+  "oneLine": "Cert CN mismatch (CN=www, apex unmatched); cert expires 2026-05-17; 0/6 hardening headers",
+  "tls": {
+    "state": "warn",
+    "issuer": "DigiCert RapidSSL",
+    "expiresOn": "2026-05-17",
+    "daysToExpiry": 19,
+    "note": "IMMINENT EXPIRY + CN/SAN mismatch (CN=www.oisd.gov.in but apex doesn't match)"
+  },
+  "headers": {
+    "hsts": false,
+    "csp": false,
+    "xFrame": false,
+    "xContentType": false,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "broken",
+    "dkim": "unknown",
+    "dmarc": "reject",
+    "note": "SPF v=spf1 -all hard-fails everything; no DMARC recovery path"
+  },
+  "topology": {
+    "totalSubdomains": 0,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "oisd.com",
+      "resolvesTo": "76.223.54.146 (third-party)"
+    }
+  ],
+  "findings": [
+    "Cert CN/SAN mismatch — CN=www.oisd.gov.in but apex unmatched",
+    "Cert expires 2026-05-17 (19 days)",
+    "Zero standard hardening headers (0/6)",
+    "Broken SPF (-all rejects all senders, no DMARC recovery path)"
+  ],
+  "urgentActions": [
+    {
+      "what": "Rotate TLS certificate before May 17 + correct CN/SAN to cover apex",
+      "due": "2026-05-17",
+      "days": 19
+    },
+    {
+      "what": "Add HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy headers",
+      "due": "2026-05-31",
+      "days": 33
+    },
+    {
+      "what": "Fix SPF: include actual mail infrastructure or set neutral if no mail sent from domain",
+      "due": "2026-05-15",
+      "days": 17
+    }
+  ],
+  "scanDate": "2026-04-27"
+}

@@ -1,0 +1,66 @@
+{
+  "slug": "pcra",
+  "name": "Petroleum Conservation Research Association",
+  "short": "PCRA",
+  "category": "education",
+  "domain": "pcra.org",
+  "tier": "MEDIUM",
+  "postureScore": 58,
+  "postureLabel": "Watch",
+  "oneLine": "Missing SPF and DMARC; Cloudflare-fronted",
+  "tls": {
+    "state": "pass",
+    "issuer": "Let's Encrypt E8",
+    "expiresOn": "2026-07-25",
+    "daysToExpiry": 88
+  },
+  "headers": {
+    "hsts": true,
+    "csp": false,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "missing",
+    "dkim": "unknown",
+    "dmarc": "absent"
+  },
+  "topology": {
+    "totalSubdomains": 12,
+    "sensitiveCount": 0,
+    "sensitive": [
+      {
+        "name": "webmail.pcra.org",
+        "category": "infra"
+      },
+      {
+        "name": "mail.pcra.org",
+        "category": "infra"
+      },
+      {
+        "name": "owa.pcra.org",
+        "category": "auth"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "pcra.net",
+      "resolvesTo": "207.148.248.143 (third-party)"
+    },
+    {
+      "domain": "pcra.in",
+      "resolvesTo": "76.223.67.189 (third-party)"
+    }
+  ],
+  "findings": [
+    "SPF and DMARC entirely missing — anyone can spoof @pcra.org",
+    "Cloudflare-fronted origin (good)",
+    "OWA endpoint exposed in CT",
+    "Missing CSP and Referrer-Policy"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

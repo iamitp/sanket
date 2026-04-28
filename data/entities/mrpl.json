@@ -1,0 +1,65 @@
+{
+  "slug": "mrpl",
+  "name": "Mangalore Refinery and Petrochemicals Ltd",
+  "short": "MRPL",
+  "category": "refiner",
+  "domain": "mrpl.co.in",
+  "tier": "HIGH",
+  "postureScore": 40,
+  "postureLabel": "Critical",
+  "oneLine": "Cert expires 2026-05-05 (8 days from scan); missing CSP and Referrer-Policy",
+  "tls": {
+    "state": "warn",
+    "issuer": "GlobalSign RSA OV SSL CA 2018",
+    "expiresOn": "2026-05-05",
+    "daysToExpiry": 7,
+    "note": "IMMINENT EXPIRY — outage risk if not rotated"
+  },
+  "headers": {
+    "hsts": true,
+    "csp": false,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": false,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "strict",
+    "dkim": "present",
+    "dmarc": "quarantine"
+  },
+  "topology": {
+    "totalSubdomains": 0,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "mrpl.co.com",
+      "resolvesTo": "169.60.151.233 (RIPE-allocated cloud, typosquat cluster)"
+    },
+    {
+      "domain": "mrpl.in",
+      "resolvesTo": "109.71.252.143 (third-party)"
+    }
+  ],
+  "findings": [
+    "TLS cert expires 2026-05-05 — 7 days remaining at this writing",
+    "Missing CSP and Referrer-Policy headers",
+    "Email auth strong (DMARC p=quarantine, SPF strict)",
+    "Site connectivity issues at scan time"
+  ],
+  "urgentActions": [
+    {
+      "what": "Rotate TLS certificate before May 5 to avoid outage",
+      "due": "2026-05-05",
+      "days": 7
+    },
+    {
+      "what": "Add CSP and Referrer-Policy headers",
+      "due": "2026-05-31",
+      "days": 33
+    }
+  ],
+  "scanDate": "2026-04-27"
+}

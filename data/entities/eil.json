@@ -1,0 +1,73 @@
+{
+  "slug": "eil",
+  "name": "Engineers India Limited",
+  "short": "EIL",
+  "category": "epc",
+  "domain": "engineersindia.com",
+  "tier": "HIGH",
+  "postureScore": 38,
+  "postureLabel": "Elevated",
+  "oneLine": "Indexed directory listing exposes CPP-Angul-Smelter project files; Apache 2.4.29 EOL; no SPF/DMARC",
+  "tls": {
+    "state": "pass",
+    "issuer": "DigiCert RapidSSL G1",
+    "expiresOn": "2026-10-23",
+    "daysToExpiry": 178
+  },
+  "headers": {
+    "hsts": true,
+    "csp": false,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "missing",
+    "dkim": "missing",
+    "dmarc": "absent"
+  },
+  "topology": {
+    "totalSubdomains": 1,
+    "sensitiveCount": 1,
+    "sensitive": [
+      {
+        "name": "/wp-content/uploads/cache/2019/01/CPP-ANGUL-SMELTER_full/",
+        "category": "docmgmt"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "engineersindia.net",
+      "resolvesTo": "198.49.23.145 (third-party)"
+    },
+    {
+      "domain": "engineers-india.com",
+      "resolvesTo": "72.1.241.142 (third-party)"
+    },
+    {
+      "domain": "engineersindia.in",
+      "resolvesTo": "104.21.3.133 (Cloudflare, third-party)"
+    }
+  ],
+  "findings": [
+    "Public directory listing on /wp-content/uploads/cache/2019/01/CPP-ANGUL-SMELTER_full/ — Google-indexed, project documents exposed",
+    "Apache 2.4.29 EOL (current is 2.4.64)",
+    "No SPF, no DMARC — both entirely absent",
+    "Missing CSP"
+  ],
+  "urgentActions": [
+    {
+      "what": "Disable directory indexing on /wp-content/uploads/",
+      "due": "immediately",
+      "days": 3
+    },
+    {
+      "what": "Submit Google de-index request for the exposed CPP-Angul-Smelter folder",
+      "due": "this week",
+      "days": 7
+    }
+  ],
+  "scanDate": "2026-04-27"
+}

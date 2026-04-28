@@ -1,0 +1,50 @@
+{
+  "slug": "oil-india",
+  "name": "Oil India Limited",
+  "short": "Oil India",
+  "category": "upstream",
+  "domain": "oil-india.com",
+  "tier": "LOW",
+  "postureScore": 88,
+  "postureLabel": "Normal",
+  "oneLine": "Cleanest in portfolio: strict SPF -all, p=reject DMARC, strong CSP",
+  "tls": {
+    "state": "pass",
+    "issuer": "GeoTrust CA G1",
+    "expiresOn": "2026-11-14",
+    "daysToExpiry": 200
+  },
+  "headers": {
+    "hsts": true,
+    "csp": true,
+    "xFrame": true,
+    "xContentType": true,
+    "referrerPolicy": true,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "strict",
+    "dkim": "unknown",
+    "dmarc": "reject"
+  },
+  "topology": {
+    "totalSubdomains": 1,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "oilindia.com",
+      "resolvesTo": "208.91.196.93 (Confluence Networks, third-party)"
+    }
+  ],
+  "findings": [
+    "Strict SPF (v=spf1 -all)",
+    "DMARC p=reject — strictest in portfolio",
+    "Strong CSP, all 6 hardening headers present (Permissions-Policy minimal)",
+    "Drupal stack + Citrix NetScaler frontend",
+    "Single subdomain (www only) — minimal CT footprint"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

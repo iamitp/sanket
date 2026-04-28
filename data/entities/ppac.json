@@ -1,0 +1,55 @@
+{
+  "slug": "ppac",
+  "name": "Petroleum Planning & Analysis Cell",
+  "short": "PPAC",
+  "category": "regulator",
+  "domain": "ppac.gov.in",
+  "tier": "HIGH",
+  "postureScore": 42,
+  "postureLabel": "Elevated",
+  "oneLine": "DMARC absent + 6/6 hardening headers missing + permissive CSP",
+  "tls": {
+    "state": "pass",
+    "issuer": "Sectigo",
+    "expiresOn": "2026-12-18",
+    "daysToExpiry": 234,
+    "note": "CN www.ppac.gov.in"
+  },
+  "headers": {
+    "hsts": false,
+    "csp": "permissive",
+    "xFrame": false,
+    "xContentType": false,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "soft",
+    "dkim": "unknown",
+    "dmarc": "absent",
+    "note": "SPF includes mgovcloud.in with ~all soft-fail; DMARC entirely absent"
+  },
+  "topology": {
+    "totalSubdomains": 2,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "ppac.gov.com",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    },
+    {
+      "domain": "ppac.gov.org",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    }
+  ],
+  "findings": [
+    "DMARC entirely absent — major spoofing surface for tender / pricing-circular impersonation",
+    "All 6 standard hardening headers missing",
+    "CSP present but permissive (unsafe-inline)",
+    "CodeIgniter framework visible (set-cookie ci_session)"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

@@ -1,0 +1,59 @@
+{
+  "slug": "dgh",
+  "name": "Directorate General of Hydrocarbons",
+  "short": "DGH",
+  "category": "regulator",
+  "domain": "dghindia.gov.in",
+  "tier": "MEDIUM",
+  "postureScore": 60,
+  "postureLabel": "Watch",
+  "oneLine": "CSP permits unsafe-inline + unsafe-eval; missing Referrer-Policy",
+  "tls": {
+    "state": "pass",
+    "issuer": "eMudhra emSign",
+    "expiresOn": "2027-01-10",
+    "daysToExpiry": 257,
+    "note": "wildcard *.dghindia.gov.in"
+  },
+  "headers": {
+    "hsts": true,
+    "csp": "permissive",
+    "xFrame": true,
+    "xContentType": false,
+    "referrerPolicy": false,
+    "permissionsPolicy": true
+  },
+  "emailAuth": {
+    "spf": "soft",
+    "dkim": "unknown",
+    "dmarc": "quarantine"
+  },
+  "topology": {
+    "totalSubdomains": 6,
+    "sensitiveCount": 0,
+    "sensitive": [
+      {
+        "name": "ebidding.dghindia.gov.in",
+        "category": "portal"
+      },
+      {
+        "name": "e-bidding.dghindia.gov.in",
+        "category": "portal"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "dghindia.gov.com",
+      "resolvesTo": "50.16.218.27 (AWS — typosquat cluster)"
+    }
+  ],
+  "findings": [
+    "CSP permits unsafe-inline and unsafe-eval — XSS surface",
+    "Missing Referrer-Policy header",
+    "Apache + CodeIgniter stack (versions hidden but fingerprint visible)",
+    "Soft-fail SPF"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

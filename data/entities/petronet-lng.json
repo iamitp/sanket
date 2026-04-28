@@ -1,0 +1,62 @@
+{
+  "slug": "petronet-lng",
+  "name": "Petronet LNG",
+  "short": "Petronet LNG",
+  "category": "gas",
+  "domain": "petronetlng.com",
+  "tier": "MEDIUM",
+  "postureScore": 58,
+  "postureLabel": "Watch",
+  "oneLine": "0/6 hardening headers despite strong email auth; ADFS exposed in CT",
+  "tls": {
+    "state": "pass",
+    "issuer": "GoDaddy G2",
+    "expiresOn": "2026-09-12",
+    "daysToExpiry": 137
+  },
+  "headers": {
+    "hsts": false,
+    "csp": false,
+    "xFrame": false,
+    "xContentType": false,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "strict",
+    "dkim": "present",
+    "dmarc": "reject"
+  },
+  "topology": {
+    "totalSubdomains": 6,
+    "sensitiveCount": 2,
+    "sensitive": [
+      {
+        "name": "adfs.petronetlng.com",
+        "category": "auth"
+      },
+      {
+        "name": "smtpdahej.petronetlng.com",
+        "category": "infra"
+      },
+      {
+        "name": "smtpdelhi.petronetlng.com",
+        "category": "infra"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "petronetlng.net",
+      "resolvesTo": "15.197.225.128 (AWS, entity-owned alternate)"
+    }
+  ],
+  "findings": [
+    "All 6 hardening headers missing (HTTP 405 response on root)",
+    "ADFS endpoint visible in CT logs",
+    "Strong email-auth posture (SPF strict, DMARC p=reject)",
+    "Cert expires September 2026"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

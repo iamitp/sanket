@@ -1,0 +1,67 @@
+{
+  "slug": "bpcl",
+  "name": "Bharat Petroleum Corporation Ltd",
+  "short": "BPCL",
+  "category": "omc",
+  "domain": "bharatpetroleum.in",
+  "tier": "HIGH",
+  "postureScore": 44,
+  "postureLabel": "Elevated",
+  "oneLine": "Test/QA environments named in CT (adfstest, qa.convenience, qa.speed)",
+  "tls": {
+    "state": "pass",
+    "issuer": "DigiCert Global G3 ECC",
+    "expiresOn": "2026-12-01",
+    "daysToExpiry": 217
+  },
+  "headers": {
+    "hsts": false,
+    "csp": false,
+    "xFrame": false,
+    "xContentType": false,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "soft",
+    "dkim": "present",
+    "dmarc": "reject",
+    "note": "SPF ~all soft-fail; Cloudflare 403 unbypassable for header verification"
+  },
+  "topology": {
+    "totalSubdomains": 30,
+    "sensitiveCount": 3,
+    "sensitive": [
+      {
+        "name": "adfstest.bharatpetroleum.in",
+        "category": "auth"
+      },
+      {
+        "name": "qa.convenience.bharatpetroleum.in",
+        "category": "dev"
+      },
+      {
+        "name": "qa.speed.bharatpetroleum.in",
+        "category": "dev"
+      }
+    ]
+  },
+  "lookalikes": [
+    {
+      "domain": "bharatpetroleum.co.in",
+      "resolvesTo": "52.66.101.246 (AWS EC2, third-party)"
+    },
+    {
+      "domain": "bharatpetroleum.net",
+      "resolvesTo": "76.223.67.189 (AWS, third-party)"
+    }
+  ],
+  "findings": [
+    "ADFS test endpoint exposed in CT logs (adfstest.bharatpetroleum.in)",
+    "QA convenience and speed-store environments named publicly",
+    "Loose SPF (~all)",
+    "Cloudflare 403 prevents external header verification — Phase 2 active scan needed"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}

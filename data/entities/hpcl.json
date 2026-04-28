@@ -1,0 +1,54 @@
+{
+  "slug": "hpcl",
+  "name": "Hindustan Petroleum Corporation Ltd",
+  "short": "HPCL",
+  "category": "omc",
+  "domain": "hindustanpetroleum.com",
+  "tier": "HIGH",
+  "postureScore": 46,
+  "postureLabel": "Elevated",
+  "oneLine": "All 6 hardening headers missing; SPF ~all +a +mx (broad spoofing surface)",
+  "tls": {
+    "state": "pass",
+    "issuer": "Google Trust Services WE1",
+    "expiresOn": "2026-07-14",
+    "daysToExpiry": 77
+  },
+  "headers": {
+    "hsts": false,
+    "csp": false,
+    "xFrame": false,
+    "xContentType": false,
+    "referrerPolicy": false,
+    "permissionsPolicy": false
+  },
+  "emailAuth": {
+    "spf": "soft",
+    "dkim": "unknown",
+    "dmarc": "quarantine",
+    "note": "SPF ~all with +a +mx — any host with an A or MX record can send mail as @hindustanpetroleum.com"
+  },
+  "topology": {
+    "totalSubdomains": 0,
+    "sensitiveCount": 0,
+    "sensitive": []
+  },
+  "lookalikes": [
+    {
+      "domain": "hindustanpetroleum.co.in",
+      "resolvesTo": "162.215.226.6 (Unified Layer, third-party)"
+    },
+    {
+      "domain": "hindustanpetroleum.co",
+      "note": "blocked by Airtel spam RPZ"
+    }
+  ],
+  "findings": [
+    "All 6 standard hardening headers missing (HTTP 200 confirmed by quality re-pass)",
+    "SPF includes +a +mx — broad spoofing surface from any A/MX record",
+    "DMARC p=quarantine, not p=reject",
+    "Cloudflare-fronted origin"
+  ],
+  "urgentActions": [],
+  "scanDate": "2026-04-27"
+}
