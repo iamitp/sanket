@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "Sectigo",
     "expiresOn": "2026-12-18",
-    "daysToExpiry": 234,
+    "daysToExpiry": 233,
     "note": "CN www.ppac.gov.in"
   },
   "headers": {
@@ -51,7 +51,7 @@
     "CodeIgniter framework visible (set-cookie ci_session)"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

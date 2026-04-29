@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "Google Trust Services WE1",
     "expiresOn": "2026-07-14",
-    "daysToExpiry": 77
+    "daysToExpiry": 76
   },
   "headers": {
     "hsts": false,
@@ -50,7 +50,7 @@
     "Cloudflare-fronted origin"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

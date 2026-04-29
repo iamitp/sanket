@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "GoDaddy G2",
     "expiresOn": "2026-06-12",
-    "daysToExpiry": 45
+    "daysToExpiry": 44
   },
   "headers": {
     "hsts": true,
@@ -50,7 +50,7 @@
     "Strict SPF (-all), DMARC p=quarantine — solid email auth"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

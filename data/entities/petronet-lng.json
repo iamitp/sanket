@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "GoDaddy G2",
     "expiresOn": "2026-09-12",
-    "daysToExpiry": 137
+    "daysToExpiry": 136
   },
   "headers": {
     "hsts": false,
@@ -58,7 +58,7 @@
     "Cert expires September 2026"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

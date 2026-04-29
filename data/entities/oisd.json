@@ -12,7 +12,7 @@
     "state": "warn",
     "issuer": "DigiCert RapidSSL",
     "expiresOn": "2026-05-17",
-    "daysToExpiry": 19,
+    "daysToExpiry": 18,
     "note": "IMMINENT EXPIRY + CN/SAN mismatch (CN=www.oisd.gov.in but apex doesn't match)"
   },
   "headers": {
@@ -50,20 +50,20 @@
     {
       "what": "Rotate TLS certificate before May 17 + correct CN/SAN to cover apex",
       "due": "2026-05-17",
-      "days": 19
+      "days": 18
     },
     {
       "what": "Add HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy headers",
       "due": "2026-05-31",
-      "days": 33
+      "days": 32
     },
     {
       "what": "Fix SPF: include actual mail infrastructure or set neutral if no mail sent from domain",
       "due": "2026-05-15",
-      "days": 17
+      "days": 16
     }
   ],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "GlobalSign OV",
     "expiresOn": "2027-03-21",
-    "daysToExpiry": 327
+    "daysToExpiry": 326
   },
   "headers": {
     "hsts": true,
@@ -50,7 +50,7 @@
     "All 6 hardening headers present"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

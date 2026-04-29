@@ -1,15 +1,15 @@
 {
   "meta": {
     "tagline": "MoPNG digital-estate cyber-posture register. Public passive reconnaissance, methodology transparent.",
-    "scanDate": "2026-04-27",
+    "scanDate": "2026-04-29",
     "entityCount": 19,
     "methodology": "Passive reconnaissance only. Sources: certificate-transparency logs (crt.sh), public DNS queries (dig), HTTP header inspection (curl), public search-engine queries (Google site-restricted dorks), public breach databases (HaveIBeenPwned, IntelX surface), public infrastructure indexes (Shodan, Censys), and public web archives (Wayback Machine). No traffic generated against scanned entity infrastructure beyond what an ordinary visitor's browser produces. No port scanning, no vulnerability scanners, no authentication probing, no fuzzing. Subdomain takeover candidates are identified passively but withheld from public publication for 90 days under industry-standard responsible-disclosure practice."
   },
   "urgent": [
-    "<strong>MRPL cert expires 2026-05-05</strong> — 8 days from scan. <code>mrpl.co.in</code> primary certificate. Imminent outage if not rotated.",
-    "<strong>RGIPT wildcard cert expires 2026-05-09</strong> — 12 days from scan. <code>*.rgipt.ac.in</code>.",
-    "<strong>Engineers India Ltd directory listing fully indexed</strong>: <code>engineersindia.com/wp-content/uploads/cache/...</code> — Google-discoverable project documents in public listing.",
-    "<strong>OISD cert expires 2026-05-17</strong> — 20 days from scan. CN mismatch (CN=www, apex unmatched). Zero hardening headers."
+    "<strong>MRPL cert expires 2026-05-05</strong> — 6 days from scan. <code>mrpl.co.in</code>. IMMINENT EXPIRY — outage risk if not rotated.",
+    "<strong>RGIPT cert expires 2026-05-09</strong> — 10 days from scan. <code>rgipt.ac.in</code>. IMMINENT EXPIRY — wildcard *.rgipt.ac.in.",
+    "<strong>OISD cert expires 2026-05-17</strong> — 18 days from scan. <code>oisd.gov.in</code>. IMMINENT EXPIRY + CN/SAN mismatch (CN=www.oisd.gov.in but apex doesn't match).",
+    "<strong>Engineers India Ltd directory listing fully indexed</strong>: <code>engineersindia.com/wp-content/uploads/cache/...</code> — Google-discoverable project documents in public listing."
   ],
   "crossCutting": [
     {

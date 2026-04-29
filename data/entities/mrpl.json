@@ -12,7 +12,7 @@
     "state": "warn",
     "issuer": "GlobalSign RSA OV SSL CA 2018",
     "expiresOn": "2026-05-05",
-    "daysToExpiry": 7,
+    "daysToExpiry": 6,
     "note": "IMMINENT EXPIRY — outage risk if not rotated"
   },
   "headers": {
@@ -53,15 +53,15 @@
     {
       "what": "Rotate TLS certificate before May 5 to avoid outage",
       "due": "2026-05-05",
-      "days": 7
+      "days": 6
     },
     {
       "what": "Add CSP and Referrer-Policy headers",
       "due": "2026-05-31",
-      "days": 33
+      "days": 32
     }
   ],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

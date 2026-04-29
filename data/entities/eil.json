@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "DigiCert RapidSSL G1",
     "expiresOn": "2026-10-23",
-    "daysToExpiry": 178
+    "daysToExpiry": 177
   },
   "headers": {
     "hsts": true,
@@ -69,7 +69,7 @@
       "days": 7
     }
   ],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [
