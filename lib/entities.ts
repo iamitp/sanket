@@ -115,6 +115,62 @@ export type EntityReport = {
   };
 };
 
+export type DailyEntityCheck = {
+  slug: string;
+  name: string;
+  short: string;
+  domain: string;
+  checkedAt: string;
+  checkedDate: string;
+  availability: {
+    ok: boolean;
+    statusCode?: number;
+    finalUrl?: string;
+    error?: string;
+  };
+  tls: EntityReport['tls'] & {
+    authorized?: boolean;
+    authorizationError?: string | null;
+  };
+  headers: EntityReport['headers'];
+  headerFindings: {
+    missing: string[];
+    permissive: string[];
+  };
+  emailAuth: EntityReport['emailAuth'] & {
+    spfRecord?: string | null;
+    dmarcRecord?: string | null;
+  };
+  findings: string[];
+  attentionScore: number;
+};
+
+export type DailyCheckReport = {
+  report: 'sanket-daily-passive-check';
+  version: number;
+  checkedAt: string;
+  checkedDate: string;
+  cadence: 'daily';
+  scope: string;
+  summary: {
+    entityCount: number;
+    okCount: number;
+    availabilityErrorCount: number;
+    tlsWarnCount: number;
+    tlsFailCount: number;
+    headerGapCount: number;
+    emailRiskCount: number;
+    topAttention: {
+      slug: string;
+      short: string;
+      domain: string;
+      score: number;
+      headline: string;
+    }[];
+  };
+  entities: DailyEntityCheck[];
+};
+
 export const ENTITY_SLUGS = [
   'mopng',
   'ppac',
@@ -139,7 +195,9 @@ export const ENTITY_SLUGS = [
 
 export type EntitySlug = (typeof ENTITY_SLUGS)[number];
 
-const dataDir = path.join(process.cwd(), 'data', 'entities');
+const dataRoot = path.join(process.cwd(), 'data');
+const dataDir = path.join(dataRoot, 'entities');
+const dailyCheckFile = path.join(dataRoot, 'daily-check.json');
 
 export function loadEntity(slug: string): EntityReport | null {
   if (!ENTITY_SLUGS.includes(slug as EntitySlug)) return null;
@@ -150,6 +208,40 @@ export function loadEntity(slug: string): EntityReport | null {
 
 export function loadAllEntities(): EntityReport[] {
   return ENTITY_SLUGS.map((s) => loadEntity(s)).filter((e): e is EntityReport => e !== null);
+}
+
+export function loadDailyCheck(): DailyCheckReport | null {
+  if (!fs.existsSync(dailyCheckFile)) return null;
+  return JSON.parse(fs.readFileSync(dailyCheckFile, 'utf-8')) as DailyCheckReport;
+}
+
+export function loadDailyEntityCheck(slug: string): DailyEntityCheck | null {
+  const report = loadDailyCheck();
+  return report?.entities.find((entity) => entity.slug === slug) ?? null;
+}
+
+function daysUntil(due: string, from: string): number | null {
+  if (!/^\d{4}-\d{2}-\d{2}$/.test(due) || !/^\d{4}-\d{2}-\d{2}$/.test(from)) return null;
+  const [dueYear, dueMonth, dueDay] = due.split('-').map(Number);
+  const [fromYear, fromMonth, fromDay] = from.split('-').map(Number);
+  const dueTime = Date.UTC(dueYear, dueMonth - 1, dueDay);
+  const fromTime = Date.UTC(fromYear, fromMonth - 1, fromDay);
+  return Math.ceil((dueTime - fromTime) / 86400000);
+}
+
+export function applyDailyCheck(entity: EntityReport, check: DailyEntityCheck | null): EntityReport {
+  if (!check) return entity;
+  return {
+    ...entity,
+    scanDate: check.checkedDate,
+    tls: check.tls,
+    headers: check.headers,
+    emailAuth: check.emailAuth,
+    urgentActions: entity.urgentActions.map((action) => {
+      const days = daysUntil(action.due, check.checkedDate);
+      return days == null ? action : { ...action, days };
+    }),
+  };
 }
 
 export function tierColor(tier: Tier): string {

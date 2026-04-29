@@ -5,7 +5,7 @@ import { SiteNav } from '../components/site-nav';
 export const metadata: Metadata = {
   title: 'Sanket — MoPNG cyber-posture register',
   description:
-    'Public passive-reconnaissance scorecard on the Indian Ministry of Petroleum & Natural Gas digital estate. Civic-tech transparency, refreshed weekly.',
+    'Public passive-reconnaissance scorecard on the Indian Ministry of Petroleum & Natural Gas digital estate. Civic-tech transparency, refreshed daily.',
 };
 
 const jsonLd = {

@@ -1,18 +1,26 @@
 import Link from 'next/link';
-import { loadAllEntities } from '../lib/entities';
+import { applyDailyCheck, loadAllEntities, loadDailyCheck } from '../lib/entities';
 import { PostureDistributionChart } from '../components/posture-distribution-chart';
 import { TodaySpear } from '../components/today-spear';
 import { EntityConstellation } from '../components/entity-constellation';
 
 export default function Home() {
-  const entities = loadAllEntities();
+  const baselineEntities = loadAllEntities();
+  const daily = loadDailyCheck();
+  const dailyBySlug = new Map(daily?.entities.map((entity) => [entity.slug, entity]) ?? []);
+  const entities = baselineEntities.map((entity) =>
+    applyDailyCheck(entity, dailyBySlug.get(entity.slug) ?? null),
+  );
   const counts = entities.reduce<Record<string, number>>(
     (acc, e) => ({ ...acc, [e.tier]: (acc[e.tier] || 0) + 1 }),
     {},
   );
 
   const phase2Count = entities.filter((e) => !!e.phase2).length;
-  const scanDate = entities[0]?.scanDate ?? '—';
+  const baselineScanDate = baselineEntities[0]?.scanDate ?? '—';
+  const scanLabel = daily
+    ? `baseline ${baselineScanDate} · daily passive check ${daily.checkedDate}`
+    : `scan ${baselineScanDate}`;
 
   const allUrgent = entities.flatMap((e) =>
     e.urgentActions.map((a) => ({ ...a, entity: e })),
@@ -30,7 +38,7 @@ export default function Home() {
       <section className="mb-10">
         <div className="flex items-baseline justify-between mb-6 flex-wrap gap-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] s-accent-green">
-            Sanket cyber-posture register · scan {scanDate}
+            Sanket cyber-posture register · {scanLabel}
           </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] s-fade">
             {entities.length} MoPNG entities · Phase 2 active on {phase2Count}
@@ -47,7 +55,7 @@ export default function Home() {
 
         <p className="mt-4 s-dim text-base sm:text-lg max-w-3xl leading-relaxed">
           Sanket is a public passive-reconnaissance register on the Indian Ministry of Petroleum
-          and Natural Gas digital estate. Civic-tech transparency, refreshed weekly. Click any bar
+          and Natural Gas digital estate. Civic-tech transparency, refreshed daily. Click any bar
           above or any tile below for the full per-entity assessment.
         </p>
       </section>
@@ -85,26 +93,30 @@ export default function Home() {
             </ul>
           </div>
 
-          {/* Phase 2 + cadence */}
+          {/* Daily passive refresh */}
           <div className="flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
-              Coverage
+              Daily check
             </p>
             <div className="flex items-baseline gap-2 mb-3">
               <span className="font-serif text-5xl font-semibold tabular-nums s-fg leading-none">
-                {phase2Count}
+                {daily?.summary.entityCount ?? entities.length}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
-                Phase 2 active of {entities.length}
+                entities checked
               </span>
             </div>
             <p className="m-0 s-dim text-[13px] leading-relaxed mb-2">
-              Phase 1 (passive) covers all {entities.length} entities. Phase 2 (active scan +
-              Mythos simulation + CISO patch list) requires per-entity ethical-hacking
-              authorisation.
+              {daily
+                ? `${daily.summary.okCount}/${daily.summary.entityCount} responded. ${
+                    daily.summary.tlsFailCount + daily.summary.tlsWarnCount
+                  } TLS watches, ${daily.summary.headerGapCount} header gaps, ${
+                    daily.summary.emailRiskCount
+                  } email-auth risks.`
+                : `Phase 1 passive checks cover all ${entities.length} entities. Run npm run checks:fresh to refresh TLS, headers, and email authentication.`}
             </p>
             <p className="m-0 mt-auto font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
-              Re-scan cadence · weekly via launchd
+              Re-scan cadence · daily at 09:00 IST
             </p>
           </div>
         </div>

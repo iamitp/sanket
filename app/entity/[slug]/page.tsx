@@ -2,10 +2,10 @@ import { notFound } from 'next/navigation';
 import Link from 'next/link';
 import {
   ENTITY_SLUGS,
+  applyDailyCheck,
   loadEntity,
+  loadDailyEntityCheck,
   tierColor,
-  postureLabelColor,
-  type EntitySlug,
 } from '../../../lib/entities';
 import { PostureGauge } from '../../../components/posture-gauge';
 import { HeaderHardeningMatrix } from '../../../components/header-hardening-matrix';
@@ -43,8 +43,10 @@ export default async function EntityPage({
   params: Promise<{ slug: string }>;
 }) {
   const { slug } = await params;
-  const e = loadEntity(slug);
-  if (!e) notFound();
+  const baseline = loadEntity(slug);
+  if (!baseline) notFound();
+  const daily = loadDailyEntityCheck(slug);
+  const e = applyDailyCheck(baseline, daily);
 
   return (
     <div className="py-7 sm:py-9">
@@ -70,10 +72,64 @@ export default async function EntityPage({
         <p className="s-dim text-base mb-2 max-w-3xl">{e.oneLine}</p>
         <p className="font-mono text-[11px] uppercase tracking-[0.16em] s-fade">
           <code className="bg-white/5 px-1.5 py-0.5 rounded mr-3">{e.domain}</code>
-          scan {e.scanDate}
+          baseline scan {baseline.scanDate}
+          {daily && <> · daily passive check {daily.checkedDate}</>}
           {e.phase2 && <> · Phase 2 active scan {e.phase2.runDate}</>}
         </p>
       </section>
+
+      {daily && (
+        <section className="rounded-lg border s-border s-raise px-5 py-4 mb-8">
+          <div className="flex items-baseline justify-between gap-3 flex-wrap mb-3">
+            <p className="font-mono text-[11px] uppercase tracking-[0.2em] s-accent-green font-semibold">
+              Daily passive check · {daily.checkedDate}
+            </p>
+            <p className="font-mono text-[11px] uppercase tracking-[0.16em] s-fade">
+              score {daily.attentionScore}
+            </p>
+          </div>
+          <div className="grid gap-3 md:grid-cols-4">
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] s-fade mb-1">
+                Availability
+              </p>
+              <p className="m-0 s-muted text-sm">
+                {daily.availability.ok
+                  ? `HTTP ${daily.availability.statusCode ?? 'ok'}`
+                  : daily.availability.error ?? 'No response'}
+              </p>
+            </div>
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] s-fade mb-1">
+                TLS
+              </p>
+              <p className="m-0 s-muted text-sm">
+                {daily.tls.expiresOn
+                  ? `${daily.tls.expiresOn} · ${daily.tls.daysToExpiry ?? 'n/a'}d`
+                  : daily.tls.state}
+              </p>
+            </div>
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] s-fade mb-1">
+                Headers
+              </p>
+              <p className="m-0 s-muted text-sm">
+                {daily.headerFindings.missing.length || daily.headerFindings.permissive.length
+                  ? `${daily.headerFindings.missing.length} missing · ${daily.headerFindings.permissive.length} permissive`
+                  : 'tracked set present'}
+              </p>
+            </div>
+            <div>
+              <p className="font-mono text-[10px] uppercase tracking-[0.16em] s-fade mb-1">
+                Email auth
+              </p>
+              <p className="m-0 s-muted text-sm">
+                SPF {daily.emailAuth.spf} · DMARC {daily.emailAuth.dmarc}
+              </p>
+            </div>
+          </div>
+        </section>
+      )}
 
       {/* Top row: posture gauge + urgent actions */}
       <section className="grid gap-4 lg:grid-cols-[260px_1fr] mb-8">
