@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "DigiCert G2",
     "expiresOn": "2027-02-28",
-    "daysToExpiry": 306
+    "daysToExpiry": 305
   },
   "headers": {
     "hsts": true,
@@ -46,7 +46,7 @@
     "Liferay Portal stack visible (JSESSIONID/COOKIE_SUPPORT)"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

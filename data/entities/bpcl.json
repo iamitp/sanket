@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "DigiCert Global G3 ECC",
     "expiresOn": "2026-12-01",
-    "daysToExpiry": 217
+    "daysToExpiry": 216
   },
   "headers": {
     "hsts": false,
@@ -63,7 +63,7 @@
     "Cloudflare 403 prevents external header verification — Phase 2 active scan needed"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

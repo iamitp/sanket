@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "eMudhra emSign G1",
     "expiresOn": "2026-07-27",
-    "daysToExpiry": 90
+    "daysToExpiry": 89
   },
   "headers": {
     "hsts": true,
@@ -44,7 +44,7 @@
     "Apache backend, 2 subdomains only — minimal CT footprint"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

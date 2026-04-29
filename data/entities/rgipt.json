@@ -12,7 +12,7 @@
     "state": "warn",
     "issuer": "Sectigo RSA",
     "expiresOn": "2026-05-09",
-    "daysToExpiry": 11,
+    "daysToExpiry": 10,
     "note": "IMMINENT EXPIRY — wildcard *.rgipt.ac.in"
   },
   "headers": {
@@ -58,15 +58,15 @@
     {
       "what": "Rotate wildcard *.rgipt.ac.in cert before May 9",
       "due": "2026-05-09",
-      "days": 11
+      "days": 10
     },
     {
       "what": "Add DMARC record (start with p=none for reporting, then tighten)",
       "due": "2026-05-31",
-      "days": 33
+      "days": 32
     }
   ],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "eMudhra emSign",
     "expiresOn": "2027-01-10",
-    "daysToExpiry": 257,
+    "daysToExpiry": 256,
     "note": "wildcard *.dghindia.gov.in"
   },
   "headers": {
@@ -55,7 +55,7 @@
     "Soft-fail SPF"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [

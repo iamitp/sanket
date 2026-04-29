@@ -12,7 +12,7 @@
     "state": "pass",
     "issuer": "Sectigo Public Server Auth CA OV R36",
     "expiresOn": "2026-10-25",
-    "daysToExpiry": 180
+    "daysToExpiry": 179
   },
   "headers": {
     "hsts": true,
@@ -49,7 +49,7 @@
     "Soft-fail SPF"
   ],
   "urgentActions": [],
-  "scanDate": "2026-04-27",
+  "scanDate": "2026-04-29",
   "phase2": {
     "runDate": "2026-04-28",
     "fingerprints": [
