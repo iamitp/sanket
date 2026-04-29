@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { applyDailyCheck, loadAllEntities, loadDailyCheck } from '../lib/entities';
-import { SecurityDistributionChart } from '../components/security-distribution-chart';
+import { CriticalSignal } from '../components/critical-signal';
 import { TodaySpear } from '../components/today-spear';
 import { EntityConstellation } from '../components/entity-constellation';
 
@@ -34,7 +34,6 @@ export default function Home() {
 
   return (
     <div className="py-7 sm:py-9">
-      {/* Hero band — label row + chart full width */}
       <section className="mb-10">
         <div className="flex items-baseline justify-between mb-6 flex-wrap gap-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] s-accent-green">
@@ -45,18 +44,21 @@ export default function Home() {
           </p>
         </div>
 
-        <SecurityDistributionChart entities={entities} />
+        <CriticalSignal
+          entities={entities}
+          checkedDate={daily?.checkedDate ?? baselineScanDate}
+          nearestActionDays={sortedUrgent[0]?.days ?? null}
+        />
 
-        {/* Single serif statement under the chart */}
-        <h1 className="mt-10 font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight s-fg leading-[1.05] max-w-4xl">
+        <h1 className="mt-9 font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight s-fg leading-[1.05] max-w-4xl">
           {counts.HIGH ?? 0} of {entities.length} entities flagged{' '}
           <span className="text-red-400">HIGH</span>.
         </h1>
 
         <p className="mt-4 s-dim text-base sm:text-lg max-w-3xl leading-relaxed">
           Sanket is a public passive-reconnaissance register on the Indian Ministry of Petroleum
-          and Natural Gas digital estate. Civic-tech transparency, refreshed daily. Click any bar
-          above or any tile below for the full per-entity assessment.
+          and Natural Gas digital estate. Civic-tech transparency, refreshed daily. Click any
+          signal above or any tile below for the full per-entity assessment.
         </p>
       </section>
 
