@@ -5,8 +5,8 @@
   "category": "education",
   "domain": "pcra.org",
   "tier": "MEDIUM",
-  "postureScore": 58,
-  "postureLabel": "Watch",
+  "securityScore": 58,
+  "riskLabel": "Watch",
   "oneLine": "Missing SPF and DMARC; Cloudflare-fronted",
   "tls": {
     "state": "pass",

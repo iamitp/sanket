@@ -5,8 +5,8 @@
   "category": "regulator",
   "domain": "pngrb.gov.in",
   "tier": "MEDIUM",
-  "postureScore": 64,
-  "postureLabel": "Watch",
+  "securityScore": 64,
+  "riskLabel": "Watch",
   "oneLine": "edev.* dev environment exposed in CT; IIS ETag fingerprint leak",
   "tls": {
     "state": "pass",

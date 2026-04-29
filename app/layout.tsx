@@ -3,7 +3,7 @@ import type { Metadata } from 'next';
 import { SiteNav } from '../components/site-nav';
 
 export const metadata: Metadata = {
-  title: 'Sanket — MoPNG cyber-posture register',
+  title: 'Sanket — MoPNG security register',
   description:
     'Public passive-reconnaissance scorecard on the Indian Ministry of Petroleum & Natural Gas digital estate. Civic-tech transparency, refreshed daily.',
 };

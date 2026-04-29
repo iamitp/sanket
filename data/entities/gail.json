@@ -5,8 +5,8 @@
   "category": "gas",
   "domain": "gailonline.com",
   "tier": "MEDIUM",
-  "postureScore": 70,
-  "postureLabel": "Watch",
+  "securityScore": 70,
+  "riskLabel": "Watch",
   "oneLine": "CSP unsafe-inline + unsafe-eval (XSS surface); otherwise strong",
   "tls": {
     "state": "pass",

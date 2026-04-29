@@ -7,10 +7,10 @@ import {
   loadDailyEntityCheck,
   tierColor,
 } from '../../../lib/entities';
-import { PostureGauge } from '../../../components/posture-gauge';
+import { SecurityGauge } from '../../../components/security-gauge';
 import { HeaderHardeningMatrix } from '../../../components/header-hardening-matrix';
 import { EmailAuthStrip } from '../../../components/email-auth-strip';
-import { TLSPostureCard } from '../../../components/tls-posture-card';
+import { TLSSecurityCard } from '../../../components/tls-security-card';
 import { TopologyGraph } from '../../../components/topology-graph';
 import { LookalikesCard } from '../../../components/lookalikes-card';
 import { FindingsList } from '../../../components/findings-list';
@@ -32,7 +32,7 @@ export async function generateMetadata({
   const e = loadEntity(slug);
   if (!e) return {};
   return {
-    title: `${e.short} — Sanket cyber-posture`,
+    title: `${e.short} — Sanket security`,
     description: e.oneLine,
   };
 }
@@ -131,18 +131,18 @@ export default async function EntityPage({
         </section>
       )}
 
-      {/* Top row: posture gauge + urgent actions */}
+      {/* Top row: security gauge + urgent actions */}
       <section className="grid gap-4 lg:grid-cols-[260px_1fr] mb-8">
-        <PostureGauge score={e.postureScore} label={e.postureLabel} />
+        <SecurityGauge score={e.securityScore} label={e.riskLabel} />
         <div className="space-y-4">
           <FindingsList findings={e.findings} title="Headline findings" />
           {e.urgentActions.length > 0 && <UrgentActionsStrip actions={e.urgentActions} />}
         </div>
       </section>
 
-      {/* Posture diagnostics row */}
+      {/* Security diagnostics row */}
       <section className="grid gap-4 md:grid-cols-2 mb-8">
-        <TLSPostureCard tls={e.tls} />
+        <TLSSecurityCard tls={e.tls} />
         <EmailAuthStrip emailAuth={e.emailAuth} />
         <HeaderHardeningMatrix headers={e.headers} />
         <LookalikesCard lookalikes={e.lookalikes} />

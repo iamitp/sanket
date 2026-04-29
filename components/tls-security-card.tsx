@@ -22,11 +22,11 @@ function stateColor(state: EntityReport['tls']['state']): string {
   }
 }
 
-export function TLSPostureCard({ tls }: Props) {
+export function TLSSecurityCard({ tls }: Props) {
   return (
     <div className="rounded-lg border s-border s-surface p-4">
       <div className="flex items-baseline justify-between mb-3">
-        <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade">TLS posture</p>
+        <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade">TLS security</p>
         <p
           className={`font-mono text-[11px] uppercase tracking-[0.16em] font-semibold ${stateColor(
             tls.state,

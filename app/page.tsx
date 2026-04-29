@@ -1,6 +1,6 @@
 import Link from 'next/link';
 import { applyDailyCheck, loadAllEntities, loadDailyCheck } from '../lib/entities';
-import { PostureDistributionChart } from '../components/posture-distribution-chart';
+import { SecurityDistributionChart } from '../components/security-distribution-chart';
 import { TodaySpear } from '../components/today-spear';
 import { EntityConstellation } from '../components/entity-constellation';
 
@@ -28,8 +28,8 @@ export default function Home() {
   const sortedUrgent = allUrgent.sort((a, b) => a.days - b.days);
 
   const avgScore = Math.round(
-    entities.filter((e) => e.postureScore > 0).reduce((s, e) => s + e.postureScore, 0) /
-      Math.max(1, entities.filter((e) => e.postureScore > 0).length),
+    entities.filter((e) => e.securityScore > 0).reduce((s, e) => s + e.securityScore, 0) /
+      Math.max(1, entities.filter((e) => e.securityScore > 0).length),
   );
 
   return (
@@ -38,14 +38,14 @@ export default function Home() {
       <section className="mb-10">
         <div className="flex items-baseline justify-between mb-6 flex-wrap gap-2">
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] s-accent-green">
-            Sanket cyber-posture register · {scanLabel}
+            Sanket security register · {scanLabel}
           </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] s-fade">
             {entities.length} MoPNG entities · Phase 2 active on {phase2Count}
           </p>
         </div>
 
-        <PostureDistributionChart entities={entities} />
+        <SecurityDistributionChart entities={entities} />
 
         {/* Single serif statement under the chart */}
         <h1 className="mt-10 font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight s-fg leading-[1.05] max-w-4xl">
@@ -66,10 +66,10 @@ export default function Home() {
           {/* Today's spear */}
           <TodaySpear entities={entities} />
 
-          {/* Posture distribution stats */}
+          {/* Security distribution stats */}
           <div className="flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
-              Posture distribution
+              Security distribution
             </p>
             <div className="flex items-baseline gap-2 mb-3">
               <span className="font-serif text-5xl font-semibold tabular-nums s-fg leading-none">

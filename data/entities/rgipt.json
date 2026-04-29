@@ -5,8 +5,8 @@
   "category": "education",
   "domain": "rgipt.ac.in",
   "tier": "HIGH",
-  "postureScore": 42,
-  "postureLabel": "Critical",
+  "securityScore": 42,
+  "riskLabel": "Critical",
   "oneLine": "Wildcard cert expires 2026-05-09 (12 days); DMARC absent",
   "tls": {
     "state": "warn",

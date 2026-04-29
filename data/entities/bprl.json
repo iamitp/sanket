@@ -5,8 +5,8 @@
   "category": "upstream",
   "domain": "bharatpetroresources.com",
   "tier": "PROVISIONAL",
-  "postureScore": 0,
-  "postureLabel": "Watch",
+  "securityScore": 0,
+  "riskLabel": "Watch",
   "oneLine": "Canonical pending verification with BPCL parent; assumed canonical bprlindia.com had no DNS",
   "tls": {
     "state": "unknown",
@@ -139,7 +139,7 @@
         "severity": "high",
         "host": "bharatpetroresources.com vs bharatpetroresources.in",
         "cve": null,
-        "fix": "BPRL leadership decides canonical. Implement 301 redirect on non-canonical. Audit .in (ASP.NET) for security posture; if not authorised, file impersonation complaint.",
+        "fix": "BPRL leadership decides canonical. Implement 301 redirect on non-canonical. Audit .in (ASP.NET) for security controls; if not authorised, file impersonation complaint.",
         "owner": "BPRL Leadership / IT Security",
         "validation": "HTTP GET non-canonical returns 301 to canonical"
       },

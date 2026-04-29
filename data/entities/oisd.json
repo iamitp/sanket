@@ -5,8 +5,8 @@
   "category": "safety",
   "domain": "oisd.gov.in",
   "tier": "HIGH",
-  "postureScore": 36,
-  "postureLabel": "Critical",
+  "securityScore": 36,
+  "riskLabel": "Critical",
   "oneLine": "Cert CN mismatch (CN=www, apex unmatched); cert expires 2026-05-17; 0/6 hardening headers",
   "tls": {
     "state": "warn",

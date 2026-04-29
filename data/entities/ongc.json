@@ -5,8 +5,8 @@
   "category": "upstream",
   "domain": "ongcindia.com",
   "tier": "MEDIUM",
-  "postureScore": 56,
-  "postureLabel": "Watch",
+  "securityScore": 56,
+  "riskLabel": "Watch",
   "oneLine": "SPF entirely missing; DMARC absent; weak CSP",
   "tls": {
     "state": "pass",

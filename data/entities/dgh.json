@@ -5,8 +5,8 @@
   "category": "regulator",
   "domain": "dghindia.gov.in",
   "tier": "MEDIUM",
-  "postureScore": 60,
-  "postureLabel": "Watch",
+  "securityScore": 60,
+  "riskLabel": "Watch",
   "oneLine": "CSP permits unsafe-inline + unsafe-eval; missing Referrer-Policy",
   "tls": {
     "state": "pass",

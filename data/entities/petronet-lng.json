@@ -5,8 +5,8 @@
   "category": "gas",
   "domain": "petronetlng.com",
   "tier": "MEDIUM",
-  "postureScore": 58,
-  "postureLabel": "Watch",
+  "securityScore": 58,
+  "riskLabel": "Watch",
   "oneLine": "0/6 hardening headers despite strong email auth; ADFS exposed in CT",
   "tls": {
     "state": "pass",
@@ -54,7 +54,7 @@
   "findings": [
     "All 6 hardening headers missing (HTTP 405 response on root)",
     "ADFS endpoint visible in CT logs",
-    "Strong email-auth posture (SPF strict, DMARC p=reject)",
+    "Strong email-auth controls (SPF strict, DMARC p=reject)",
     "Cert expires September 2026"
   ],
   "urgentActions": [],

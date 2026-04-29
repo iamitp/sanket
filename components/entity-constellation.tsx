@@ -26,7 +26,7 @@ const TIER_TEXT: Record<Tier, string> = {
   PROVISIONAL: 's-fade italic',
 };
 
-const POSTURE_TEXT: Record<EntityReport['postureLabel'], string> = {
+const RISK_TEXT: Record<EntityReport['riskLabel'], string> = {
   Critical: 'text-red-400',
   Elevated: 'text-amber-400',
   Watch: 'text-yellow-300',
@@ -38,7 +38,7 @@ export function EntityConstellation({ entities }: Props) {
   const sorted = [...entities].sort((a, b) => {
     const t = TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier);
     if (t !== 0) return t;
-    return a.postureScore - b.postureScore;
+    return a.securityScore - b.securityScore;
   });
 
   return (
@@ -73,12 +73,12 @@ export function EntityConstellation({ entities }: Props) {
 
           <div className="mt-3 flex items-baseline gap-2">
             <span className="font-serif text-5xl tabular-nums s-fg leading-none">
-              {e.postureScore || '—'}
+              {e.securityScore || '—'}
             </span>
             <span
-              className={`font-mono text-[10px] uppercase tracking-[0.16em] ${POSTURE_TEXT[e.postureLabel]}`}
+              className={`font-mono text-[10px] uppercase tracking-[0.16em] ${RISK_TEXT[e.riskLabel]}`}
             >
-              {e.postureLabel}
+              {e.riskLabel}
             </span>
           </div>
 

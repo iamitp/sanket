@@ -5,8 +5,8 @@
   "category": "refiner",
   "domain": "nrl.co.in",
   "tier": "MEDIUM",
-  "postureScore": 62,
-  "postureLabel": "Watch",
+  "securityScore": 62,
+  "riskLabel": "Watch",
   "oneLine": "45+ subdomains visible in CT including VPN, AD, document mgmt; no breach detected",
   "tls": {
     "state": "pass",

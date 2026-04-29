@@ -5,8 +5,8 @@
   "category": "ministry",
   "domain": "mopng.gov.in",
   "tier": "MEDIUM",
-  "postureScore": 68,
-  "postureLabel": "Watch",
+  "securityScore": 68,
+  "riskLabel": "Watch",
   "oneLine": "SPF broken (rejects all senders despite live MX); otherwise hardened",
   "tls": {
     "state": "pass",

@@ -5,8 +5,8 @@
   "category": "refiner",
   "domain": "cpcl.co.in",
   "tier": "MEDIUM",
-  "postureScore": 60,
-  "postureLabel": "Watch",
+  "securityScore": 60,
+  "riskLabel": "Watch",
   "oneLine": "WordPress fingerprint exposed via /wp-json/; missing CSP",
   "tls": {
     "state": "pass",

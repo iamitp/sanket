@@ -5,8 +5,8 @@
   "category": "regulator",
   "domain": "ppac.gov.in",
   "tier": "HIGH",
-  "postureScore": 42,
-  "postureLabel": "Elevated",
+  "securityScore": 42,
+  "riskLabel": "Elevated",
   "oneLine": "DMARC absent + 6/6 hardening headers missing + permissive CSP",
   "tls": {
     "state": "pass",

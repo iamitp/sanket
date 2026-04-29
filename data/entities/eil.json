@@ -5,8 +5,8 @@
   "category": "epc",
   "domain": "engineersindia.com",
   "tier": "HIGH",
-  "postureScore": 38,
-  "postureLabel": "Elevated",
+  "securityScore": 38,
+  "riskLabel": "Elevated",
   "oneLine": "Indexed directory listing exposes CPP-Angul-Smelter project files; Apache 2.4.29 EOL; no SPF/DMARC",
   "tls": {
     "state": "pass",

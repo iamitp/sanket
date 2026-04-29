@@ -5,8 +5,8 @@
   "category": "omc",
   "domain": "iocl.com",
   "tier": "MEDIUM",
-  "postureScore": 66,
-  "postureLabel": "Watch",
+  "securityScore": 66,
+  "riskLabel": "Watch",
   "oneLine": "admin.iocl.com exposed in CT; Sucuri WAF in front",
   "tls": {
     "state": "pass",

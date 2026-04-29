@@ -26,12 +26,12 @@ const TIER_TEXT: Record<Tier, string> = {
   PROVISIONAL: 's-fade',
 };
 
-export function PostureDistributionChart({ entities }: Props) {
+export function SecurityDistributionChart({ entities }: Props) {
   // Sort worst → best (lower score = worse)
   const sorted = [...entities].sort((a, b) => {
     const t = TIER_ORDER.indexOf(a.tier) - TIER_ORDER.indexOf(b.tier);
     if (t !== 0) return t;
-    return a.postureScore - b.postureScore;
+    return a.securityScore - b.securityScore;
   });
 
   const counts = entities.reduce<Record<Tier, number>>(
@@ -62,18 +62,18 @@ export function PostureDistributionChart({ entities }: Props) {
             {/* Bars */}
             <div className="relative flex items-end gap-[3px] h-24 sm:h-28">
               {sorted.map((e) => {
-                const score = e.postureScore || 6; // floor for provisional/zero
+                const score = e.securityScore || 6; // floor for provisional/zero
                 return (
                   <Link
                     key={e.slug}
                     href={`/entity/${e.slug}`}
-                    title={`${e.short} · score ${e.postureScore} · ${e.tier}`}
+                    title={`${e.short} · score ${e.securityScore} · ${e.tier}`}
                     className={`group flex-1 relative bg-zinc-900/70 border-t-2 ${TIER_TOP_BORDER[e.tier]} ${TIER_HOVER_GLOW[e.tier]} transition-colors`}
                     style={{ height: `${score}%` }}
                   >
                     {/* Hover label */}
                     <span className="absolute -top-5 left-1/2 -translate-x-1/2 font-mono text-[9px] uppercase tracking-[0.08em] s-fade opacity-0 group-hover:opacity-100 transition-opacity whitespace-nowrap pointer-events-none">
-                      {e.short} · {e.postureScore}
+                      {e.short} · {e.securityScore}
                     </span>
                   </Link>
                 );
@@ -119,7 +119,7 @@ export function PostureDistributionChart({ entities }: Props) {
           )}
         </div>
         <p className="font-mono text-[10px] uppercase tracking-[0.12em] s-fade">
-          posture score · 0 worst · 100 best
+          security score · 0 worst · 100 best
         </p>
       </div>
     </div>

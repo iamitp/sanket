@@ -30,8 +30,8 @@ export type EntityReport = {
   category: 'ministry' | 'regulator' | 'omc' | 'upstream' | 'gas' | 'refiner' | 'epc' | 'safety' | 'education' | 'jv';
   domain: string;
   tier: Tier;
-  postureScore: number; // 0-100, lower is worse
-  postureLabel: 'Critical' | 'Elevated' | 'Watch' | 'Normal';
+  securityScore: number; // 0-100, lower is worse
+  riskLabel: 'Critical' | 'Elevated' | 'Watch' | 'Normal';
   scanDate: string;
   oneLine: string;
 
@@ -257,7 +257,7 @@ export function tierColor(tier: Tier): string {
   }
 }
 
-export function postureLabelColor(label: EntityReport['postureLabel']): string {
+export function riskLabelColor(label: EntityReport['riskLabel']): string {
   switch (label) {
     case 'Critical':
       return 'text-red-400';

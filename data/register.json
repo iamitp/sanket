@@ -1,6 +1,6 @@
 {
   "meta": {
-    "tagline": "MoPNG digital-estate cyber-posture register. Public passive reconnaissance, methodology transparent.",
+    "tagline": "MoPNG digital-estate security register. Public passive reconnaissance, methodology transparent.",
     "scanDate": "2026-04-27",
     "entityCount": 19,
     "methodology": "Passive reconnaissance only. Sources: certificate-transparency logs (crt.sh), public DNS queries (dig), HTTP header inspection (curl), public search-engine queries (Google site-restricted dorks), public breach databases (HaveIBeenPwned, IntelX surface), public infrastructure indexes (Shodan, Censys), and public web archives (Wayback Machine). No traffic generated against scanned entity infrastructure beyond what an ordinary visitor's browser produces. No port scanning, no vulnerability scanners, no authentication probing, no fuzzing. Subdomain takeover candidates are identified passively but withheld from public publication for 90 days under industry-standard responsible-disclosure practice."
@@ -17,7 +17,7 @@
       "summary": "Bulk registration of MoPNG / PSU domain names on third-party cloud infrastructure (one cluster on Amazon Web Services, one on a RIPE-allocated EU cloud). ICANN 2025 privacy redaction prevents registrant identification from open sources. Pattern is consistent with brand-protection registration (most likely), domain-investor parking, or phishing pre-staging. Specific IPs and the full domain list are held in the private register and not published here, to avoid signalling actor surveillance until intel is firmer. Investigation pending via CERT-In disclosure-request channel."
     },
     {
-      "title": "Email-authentication posture is uneven across the portfolio",
+      "title": "Email-authentication coverage is uneven across the portfolio",
       "summary": "Strict (DMARC p=reject) on 2 entities. Strong (p=quarantine) on 7. Weak (p=none / DMARC absent) on 4. SPF broken or missing on 3 (Ministry, OISD, ONGC). Six of nineteen entities therefore have material spoofing surface from email-authentication misconfiguration. The fix is documented and well-known; the gap is operational priority."
     },
     {
@@ -42,7 +42,7 @@
       "name": "Rajiv Gandhi Institute of Petroleum Technology",
       "domain": "rgipt.ac.in",
       "tier": "HIGH",
-      "findings": "Wildcard cert expires 2026-05-09 (12 days from scan). DMARC absent. Strong header posture otherwise."
+      "findings": "Wildcard cert expires 2026-05-09 (12 days from scan). DMARC absent. Strong header controls otherwise."
     },
     {
       "name": "Mangalore Refinery and Petrochemicals Ltd",
@@ -60,7 +60,7 @@
       "name": "Bharat Petroleum Corporation Ltd",
       "domain": "bharatpetroleum.in",
       "tier": "HIGH",
-      "findings": "Test and QA environments named in public CT logs (adfstest, qa.convenience, qa.speed). Loose SPF (~all). Header posture verifiable only via active scan."
+      "findings": "Test and QA environments named in public CT logs (adfstest, qa.convenience, qa.speed). Loose SPF (~all). Header controls verifiable only via active scan."
     },
     {
       "name": "Hindustan Petroleum Corporation Ltd",

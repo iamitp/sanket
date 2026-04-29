@@ -5,8 +5,8 @@
   "category": "upstream",
   "domain": "oil-india.com",
   "tier": "LOW",
-  "postureScore": 88,
-  "postureLabel": "Normal",
+  "securityScore": 88,
+  "riskLabel": "Normal",
   "oneLine": "Cleanest in portfolio: strict SPF -all, p=reject DMARC, strong CSP",
   "tls": {
     "state": "pass",

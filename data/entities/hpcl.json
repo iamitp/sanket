@@ -5,8 +5,8 @@
   "category": "omc",
   "domain": "hindustanpetroleum.com",
   "tier": "HIGH",
-  "postureScore": 46,
-  "postureLabel": "Elevated",
+  "securityScore": 46,
+  "riskLabel": "Elevated",
   "oneLine": "All 6 hardening headers missing; SPF ~all +a +mx (broad spoofing surface)",
   "tls": {
     "state": "pass",

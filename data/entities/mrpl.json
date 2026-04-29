@@ -5,8 +5,8 @@
   "category": "refiner",
   "domain": "mrpl.co.in",
   "tier": "HIGH",
-  "postureScore": 40,
-  "postureLabel": "Critical",
+  "securityScore": 40,
+  "riskLabel": "Critical",
   "oneLine": "Cert expires 2026-05-05 (8 days from scan); missing CSP and Referrer-Policy",
   "tls": {
     "state": "warn",
