@@ -49,7 +49,7 @@ export function TodaySpear({ entities }: Props) {
   return (
     <Link
       href={`/entity/${spear.entity.slug}`}
-      className="flex flex-col h-full rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.06)] hover:bg-[rgba(239,71,111,0.1)] transition px-5 py-4 group"
+      className="kinetic-card kinetic-card--critical flex flex-col h-full rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.06)] hover:bg-[rgba(239,71,111,0.1)] transition px-5 py-4 group"
       style={{ borderLeftColor: 'var(--sanket-accent)' }}
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-accent font-semibold mb-3">

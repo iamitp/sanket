@@ -1,6 +1,5 @@
 import Link from 'next/link';
 import { applyDailyCheck, loadAllEntities, loadDailyCheck } from '../lib/entities';
-import { CriticalSignal } from '../components/critical-signal';
 import { TodaySpear } from '../components/today-spear';
 import { EntityConstellation } from '../components/entity-constellation';
 
@@ -44,12 +43,6 @@ export default function Home() {
           </p>
         </div>
 
-        <CriticalSignal
-          entities={entities}
-          checkedDate={daily?.checkedDate ?? baselineScanDate}
-          nearestActionDays={sortedUrgent[0]?.days ?? null}
-        />
-
         <h1 className="mt-9 font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight s-fg leading-[1.05] max-w-4xl">
           {counts.HIGH ?? 0} of {entities.length} entities flagged{' '}
           <span className="text-red-400">HIGH</span>.
@@ -57,8 +50,8 @@ export default function Home() {
 
         <p className="mt-4 s-dim text-base sm:text-lg max-w-3xl leading-relaxed">
           Sanket is a public passive-reconnaissance register on the Indian Ministry of Petroleum
-          and Natural Gas digital estate. Civic-tech transparency, refreshed daily. Click any
-          signal above or any tile below for the full per-entity assessment.
+          and Natural Gas digital estate. Civic-tech transparency, refreshed daily. Click any tile
+          below for the full per-entity assessment.
         </p>
       </section>
 
@@ -69,7 +62,7 @@ export default function Home() {
           <TodaySpear entities={entities} />
 
           {/* Security distribution stats */}
-          <div className="flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
+          <div className="kinetic-card kinetic-card--watch flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
               Security distribution
             </p>
@@ -96,7 +89,7 @@ export default function Home() {
           </div>
 
           {/* Daily passive refresh */}
-          <div className="flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
+          <div className="kinetic-card flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
               Daily check
             </p>
