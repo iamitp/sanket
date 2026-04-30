@@ -40,7 +40,7 @@ export function SecurityGauge({ score, label, size = 220 }: Props) {
           y={cy - 8}
           textAnchor="middle"
           className="fill-[var(--sanket-fg)]"
-          style={{ fontFamily: 'Source Serif 4, Georgia, serif', fontSize: size * 0.32, fontWeight: 600 }}
+          style={{ fontFamily: '"Inter", ui-sans-serif, -apple-system, sans-serif', fontSize: size * 0.32, fontWeight: 600 }}
         >
           {score}
         </text>

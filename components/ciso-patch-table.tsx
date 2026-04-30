@@ -51,7 +51,7 @@ export function CISOPatchTable({ patches }: Props) {
                     >
                       {p.severity}
                     </span>
-                    <h4 className="m-0 flex-1 font-serif text-base s-fg leading-snug">
+                    <h4 className="m-0 flex-1 font-sans font-semibold text-[15px] s-fg leading-snug tracking-tight">
                       {p.title}
                     </h4>
                   </div>

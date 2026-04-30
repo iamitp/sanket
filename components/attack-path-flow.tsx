@@ -61,7 +61,7 @@ export function AttackPathFlow({ paths }: Props) {
                   {pri.label}
                 </span>
                 <div className="flex-1 min-w-0">
-                  <h4 className="m-0 font-serif text-lg s-fg leading-snug">
+                  <h4 className="m-0 font-sans font-semibold text-base s-fg leading-snug tracking-tight">
                     Path {p.id}: {p.name}
                   </h4>
                 </div>

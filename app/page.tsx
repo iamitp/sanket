@@ -62,12 +62,12 @@ export default function Home() {
           <TodaySpear entities={entities} />
 
           {/* Security distribution stats */}
-          <div className="kinetic-card kinetic-card--watch flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
+          <div className="kinetic-card kinetic-card--watch flex flex-col h-full rounded-lg border s-border s-surface px-6 py-5">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
               Security distribution
             </p>
             <div className="flex items-baseline gap-2 mb-3">
-              <span className="font-serif text-5xl font-semibold tabular-nums s-fg leading-none">
+              <span className="font-sans font-semibold text-5xl tabular-nums s-fg leading-none">
                 {avgScore}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
@@ -89,12 +89,12 @@ export default function Home() {
           </div>
 
           {/* Daily passive refresh */}
-          <div className="kinetic-card flex flex-col h-full rounded-lg border s-border s-surface px-5 py-4">
+          <div className="kinetic-card flex flex-col h-full rounded-lg border s-border s-surface px-6 py-5">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade font-semibold mb-3">
               Daily check
             </p>
             <div className="flex items-baseline gap-2 mb-3">
-              <span className="font-serif text-5xl font-semibold tabular-nums s-fg leading-none">
+              <span className="font-sans font-semibold text-5xl tabular-nums s-fg leading-none">
                 {daily?.summary.entityCount ?? entities.length}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">

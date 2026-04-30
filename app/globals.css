@@ -1,4 +1,4 @@
-@import url('https://fonts.googleapis.com/css2?family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&family=JetBrains+Mono:wght@400;500;600;700&family=Source+Serif+4:ital,opsz,wght@0,8..60,400;0,8..60,600;0,8..60,700;1,8..60,400&display=swap');
 @import "tailwindcss";
 
 /* Sanket — sibling of Sanjaya. Same warm-stone dark palette, accent shifted to
@@ -8,9 +8,9 @@
 
 :root {
   --sanket-bg: #090c10;
-  --sanket-bg-raise: #121820;
-  --sanket-bg-card: #0f141b;
-  --sanket-border: #2b3038;
+  --sanket-bg-raise: #18222e;
+  --sanket-bg-card: #1b2638;
+  --sanket-border: #313c4d;
   --sanket-border-soft: #3a414b;
   --sanket-fg: #fafaf9;
   --sanket-muted: #e3e0da;
@@ -36,7 +36,7 @@
   --color-sanket-accent: var(--sanket-accent);
   --color-sanket-accent-soft: var(--sanket-accent-soft);
   --color-sanket-accent-green: var(--sanket-accent-green);
-  --font-sans: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  --font-sans: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   --font-serif: "Source Serif 4", "Source Serif Pro", Georgia, serif;
   --font-mono: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
 }
@@ -47,7 +47,7 @@ html { background: var(--sanket-bg); }
 body {
   background: var(--sanket-bg);
   color: var(--sanket-muted);
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   font-size: 16px;
   line-height: 1.55;
   letter-spacing: 0;
@@ -56,7 +56,7 @@ body {
 }
 
 h1, h2, h3, h4, h5, h6 {
-  font-family: ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
+  font-family: "Inter", ui-sans-serif, -apple-system, BlinkMacSystemFont, "Segoe UI", sans-serif;
   color: var(--sanket-fg);
   letter-spacing: 0;
 }
@@ -78,8 +78,8 @@ main :is(.border-zinc-800, .border-stone-800), nav :is(.border-zinc-800, .border
   border-color: var(--sanket-border);
 }
 
-/* Mono for tabular data (numbers, deltas, dates). */
-[class*="tabular-nums"], .font-mono {
+/* Mono utility for dense technical data. */
+.font-mono {
   font-family: "JetBrains Mono", "SF Mono", Menlo, Consolas, monospace;
   font-weight: 500;
 }
@@ -87,7 +87,7 @@ main :is(.border-zinc-800, .border-stone-800), nav :is(.border-zinc-800, .border
 /* Semantic colour utilities — same naming as Sanjaya's `s-*` so class
    compositions translate directly. */
 .s-bg { background-color: var(--sanket-bg); }
-.s-surface { background-color: var(--sanket-bg-card); }
+.s-surface { background-color: var(--sanket-bg-card); box-shadow: 0 1px 4px rgba(0,0,0,0.45), inset 0 1px 0 rgba(255,255,255,0.04); }
 .s-raise { background-color: var(--sanket-bg-raise); }
 .s-border { border-color: var(--sanket-border); }
 .s-border-soft { border-color: var(--sanket-border-soft); }
@@ -101,10 +101,16 @@ main :is(.border-zinc-800, .border-stone-800), nav :is(.border-zinc-800, .border
 .s-accent-green { color: var(--sanket-accent-green); }
 .hover-s-fg:hover { color: var(--sanket-fg); }
 .hover-s-accent:hover { color: var(--sanket-accent); }
+.hover-s-dim:hover { color: var(--sanket-dim); }
 .hover-s-border:hover { border-color: var(--sanket-border-soft); }
 
 .s-link { color: var(--sanket-accent-soft); text-decoration: none; }
 .s-link:hover { color: var(--sanket-accent); text-decoration: underline; }
+
+.text-fade-out {
+  mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+  -webkit-mask-image: linear-gradient(to bottom, black 55%, transparent 100%);
+}
 
 .kinetic-card {
   position: relative;

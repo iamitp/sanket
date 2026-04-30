@@ -55,7 +55,7 @@ export function EntityConstellation({ entities }: Props) {
           <Link
             key={e.slug}
             href={`/entity/${e.slug}`}
-            className={`group relative flex flex-col rounded-lg border border-l-4 s-border ${TIER_BORDER[e.tier]} s-surface p-4 transition-all hover-s-border hover:bg-[rgba(255,255,255,0.02)] ${TIER_GLOW[e.tier]} ${kineticClass}`}
+            className={`group relative flex flex-col rounded-lg border border-l-4 s-border ${TIER_BORDER[e.tier]} s-surface p-5 transition-all hover-s-border hover:bg-[rgba(255,255,255,0.02)] ${TIER_GLOW[e.tier]} ${kineticClass}`}
           >
             <div className="flex items-baseline justify-between gap-2 mb-2">
               <span
@@ -64,15 +64,15 @@ export function EntityConstellation({ entities }: Props) {
                 {e.tier}
               </span>
               {e.phase2 ? (
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] s-accent-green">
+                <span className="font-mono text-[10px] uppercase tracking-[0.16em] s-accent-green">
                   ▸ Phase 2
                 </span>
               ) : (
-                <span aria-hidden className="invisible font-mono text-[9px]">▸</span>
+                <span aria-hidden className="invisible font-mono text-[10px]">▸</span>
               )}
             </div>
 
-            <h3 className="m-0 font-serif text-xl s-fg leading-tight group-hover:text-[var(--sanket-accent-soft)] transition">
+            <h3 className="m-0 font-sans font-semibold text-[17px] s-fg leading-tight tracking-tight group-hover:text-[var(--sanket-accent-soft)] transition">
               {e.short}
             </h3>
             <code className="font-mono text-[11px] s-dim bg-white/5 px-1 py-0.5 rounded inline-block mt-1.5 self-start">
@@ -80,7 +80,7 @@ export function EntityConstellation({ entities }: Props) {
             </code>
 
             <div className="mt-3 flex items-baseline gap-2">
-              <span className="font-serif text-5xl tabular-nums s-fg leading-none">
+              <span className="font-sans font-semibold text-4xl tabular-nums s-fg leading-none">
                 {e.securityScore || '—'}
               </span>
               <span
@@ -90,14 +90,14 @@ export function EntityConstellation({ entities }: Props) {
               </span>
             </div>
 
-            <p className="mt-2.5 m-0 s-dim text-[12.5px] leading-snug line-clamp-2 h-[2.6em]">
-              {e.oneLine}
-            </p>
+            <div className="text-fade-out mt-2.5 h-[2.8em] overflow-hidden">
+              <p className="m-0 s-dim text-[12.5px] leading-snug">{e.oneLine}</p>
+            </div>
 
             <div className="mt-auto pt-2.5 border-t s-border flex items-center gap-2 min-h-[1.75rem]">
               {e.urgentActions.length > 0 ? (
                 <>
-                  <span className="font-mono text-[9px] uppercase tracking-[0.16em] text-red-400 font-semibold tabular-nums">
+                  <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-red-400 font-semibold tabular-nums">
                     {Math.min(...e.urgentActions.map((a) => a.days))}d
                   </span>
                   <span className="text-[11px] s-fade truncate flex-1">
@@ -105,7 +105,7 @@ export function EntityConstellation({ entities }: Props) {
                   </span>
                 </>
               ) : (
-                <span className="font-mono text-[9px] uppercase tracking-[0.16em] s-fade">
+                <span className="font-mono text-[10px] uppercase tracking-[0.16em] s-fade">
                   no time-bound actions
                 </span>
               )}

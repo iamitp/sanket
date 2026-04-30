@@ -34,7 +34,7 @@ export function SignalCard({ signal }: { signal: Signal }) {
       >
         {signal.severity}
       </span>
-      <h3 className="mt-2 font-serif text-xl s-fg leading-snug">{signal.title}</h3>
+      <h3 className="mt-2 font-sans font-semibold text-[18px] s-fg leading-snug tracking-tight">{signal.title}</h3>
       <p className="mt-2 s-dim text-[15px] leading-relaxed">{signal.summary}</p>
       <button
         type="button"

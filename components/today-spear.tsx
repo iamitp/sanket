@@ -49,14 +49,14 @@ export function TodaySpear({ entities }: Props) {
   return (
     <Link
       href={`/entity/${spear.entity.slug}`}
-      className="kinetic-card kinetic-card--critical flex flex-col h-full rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.06)] hover:bg-[rgba(239,71,111,0.1)] transition px-5 py-4 group"
+      className="kinetic-card kinetic-card--critical flex flex-col h-full rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.06)] hover:bg-[rgba(239,71,111,0.1)] transition px-6 py-5 group"
       style={{ borderLeftColor: 'var(--sanket-accent)' }}
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-accent font-semibold mb-3">
         Today's spear
       </p>
       <div className="flex items-baseline gap-3 mb-3">
-        <span className={`font-serif text-5xl font-semibold tabular-nums leading-none ${dayColor}`}>
+        <span className={`font-sans font-semibold text-5xl tabular-nums leading-none ${dayColor}`}>
           {spear.days}
         </span>
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
