@@ -14,21 +14,23 @@ export function SiteNav() {
       </div>
       <ul className="m-0 flex list-none flex-wrap items-baseline gap-[14px] p-0 sm:gap-[22px]">
         <li>
-          <a href="https://amitpatnaik.com/essays/" className="s-fade hover-s-fg">
-            Essays
+          <a href="https://amitpatnaik.com/products/" className="s-fade hover-s-fg">
+            Products
           </a>
         </li>
         <li>
-          <a href="https://sanjaya.amitpatnaik.com" className="s-fade hover-s-fg">
-            Sanjaya
+          <a href="https://amitpatnaik.com/writing/" className="s-fade hover-s-fg">
+            Writing
           </a>
         </li>
         <li>
-          <span className="s-fg">Sanket</span>
+          <a href="https://amitpatnaik.com/about/" className="s-fade hover-s-fg">
+            About
+          </a>
         </li>
         <li>
-          <a href="https://amitpatnaik.com/tools/" className="s-fade hover-s-fg">
-            Tools
+          <a href="https://amitpatnaik.com/search/" className="s-fade hover-s-fg">
+            Search
           </a>
         </li>
       </ul>
