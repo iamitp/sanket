@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import { applyDailyCheck, loadAllEntities, loadDailyCheck } from '../lib/entities';
+import { actionTimeLabel, applyDailyCheck, loadAllEntities, loadDailyCheck } from '../lib/entities';
 import { TodaySpear } from '../components/today-spear';
 import { EntityConstellation } from '../components/entity-constellation';
 
@@ -39,12 +39,12 @@ export default function Home() {
             Sanket security register · {scanLabel}
           </p>
           <p className="font-mono text-[11px] uppercase tracking-[0.18em] s-fade">
-            {entities.length} MoPNG entities · Phase 2 active on {phase2Count}
+            {entities.length} MoPNG entities · {phase2Count} historical phase 2 records
           </p>
         </div>
 
         <h1 className="mt-9 font-serif text-4xl sm:text-5xl md:text-6xl font-semibold tracking-tight s-fg leading-[1.05] max-w-4xl">
-          {counts.HIGH ?? 0} of {entities.length} entities flagged{' '}
+          Baseline: {counts.HIGH ?? 0} of {entities.length} entities flagged{' '}
           <span className="text-red-400">HIGH</span>.
         </h1>
 
@@ -71,7 +71,7 @@ export default function Home() {
                 {avgScore}
               </span>
               <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
-                avg score · 0 worst · 100 best
+                baseline avg score · 0 worst · 100 best
               </span>
             </div>
             <ul className="m-0 mt-auto p-0 list-none space-y-1 text-[13px]">
@@ -123,7 +123,7 @@ export default function Home() {
           <div>
             <p className="font-mono text-[11px] uppercase tracking-[0.18em] s-fade">Directory</p>
             <h2 className="m-0 mt-1 text-xl font-semibold tracking-tight s-fg sm:text-2xl">
-              {entities.length} entities · sorted worst-first
+            {entities.length} entities · sorted by baseline assessment
             </h2>
           </div>
           <p className="font-mono text-[11px] uppercase tracking-[0.16em] s-fade">
@@ -140,7 +140,7 @@ export default function Home() {
             Portfolio-urgent
           </p>
           <h2 className="text-xl font-semibold tracking-tight s-fg sm:text-2xl mb-4">
-            All time-bound items, soonest first
+            Current observed TLS deadlines
           </h2>
           <div
             className="rounded-lg border-l-2 border s-border bg-[rgba(239,71,111,0.04)] px-5 py-4"
@@ -157,7 +157,7 @@ export default function Home() {
                       u.days <= 7 ? 'text-red-400' : u.days <= 30 ? 'text-amber-400' : 's-fade'
                     }`}
                   >
-                    {u.days}d
+                      {actionTimeLabel(u.days)}
                   </span>
                   <Link
                     href={`/entity/${u.entity.slug}`}
@@ -183,8 +183,8 @@ export default function Home() {
           <a href="https://sanjaya.amitpatnaik.com" className="s-link">
             Sanjaya
           </a>{' '}
-          — fuel-pricing transparency on the same Ministry portfolio. Sanjaya narrates; Sanket
-          warns.
+          — energy data on the same Ministry portfolio. Sanjaya tracks energy data; Sanket tracks
+          public security observations.
         </p>
         <p className="m-0">
           Methodology is reproducible by any visitor with{' '}

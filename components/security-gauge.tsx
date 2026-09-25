@@ -1,6 +1,6 @@
 import type { EntityReport } from '../lib/entities';
 
-type Props = { score: number; label: EntityReport['riskLabel']; size?: number };
+type Props = { score: number; label: EntityReport['riskLabel']; asOf?: string; size?: number };
 
 const labelColor: Record<EntityReport['riskLabel'], string> = {
   Critical: '#f87171',
@@ -9,7 +9,7 @@ const labelColor: Record<EntityReport['riskLabel'], string> = {
   Normal: '#a3d927',
 };
 
-export function SecurityGauge({ score, label, size = 220 }: Props) {
+export function SecurityGauge({ score, label, asOf, size = 220 }: Props) {
   // Semicircle: -90deg sweep, score 0-100 maps to 0-180deg arc fill
   const w = size;
   const h = size / 2 + 18;
@@ -45,7 +45,9 @@ export function SecurityGauge({ score, label, size = 220 }: Props) {
           {score}
         </text>
       </svg>
-      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] s-fade">Security score</p>
+      <p className="mt-1 font-mono text-[10px] uppercase tracking-[0.2em] s-fade">
+        Baseline score{asOf ? ` · ${asOf}` : ''}
+      </p>
       <p
         className="mt-1 font-mono text-xs uppercase tracking-[0.16em] font-semibold"
         style={{ color: fillColor }}

@@ -1,5 +1,5 @@
 import Link from 'next/link';
-import type { EntityReport, Tier } from '../lib/entities';
+import { actionTimeLabel, type EntityReport, type Tier } from '../lib/entities';
 
 type Props = { entities: EntityReport[] };
 
@@ -65,7 +65,7 @@ export function EntityConstellation({ entities }: Props) {
               </span>
               {e.phase2 ? (
                 <span className="font-mono text-[10px] uppercase tracking-[0.16em] s-accent-green">
-                  ▸ Phase 2
+                  ▸ Historical phase 2
                 </span>
               ) : (
                 <span aria-hidden className="invisible font-mono text-[10px]">▸</span>
@@ -86,7 +86,7 @@ export function EntityConstellation({ entities }: Props) {
               <span
                 className={`font-mono text-[10px] uppercase tracking-[0.16em] ${RISK_TEXT[e.riskLabel]}`}
               >
-                {e.riskLabel}
+                {e.riskLabel} · baseline
               </span>
             </div>
 
@@ -98,7 +98,7 @@ export function EntityConstellation({ entities }: Props) {
               {e.urgentActions.length > 0 ? (
                 <>
                   <span className="font-mono text-[10px] uppercase tracking-[0.16em] text-red-400 font-semibold tabular-nums">
-                    {Math.min(...e.urgentActions.map((a) => a.days))}d
+                    {actionTimeLabel(Math.min(...e.urgentActions.map((a) => a.days)))}
                   </span>
                   <span className="text-[11px] s-fade truncate flex-1">
                     {e.urgentActions[0].what}
@@ -106,7 +106,7 @@ export function EntityConstellation({ entities }: Props) {
                 </>
               ) : (
                 <span className="font-mono text-[10px] uppercase tracking-[0.16em] s-fade">
-                  no time-bound actions
+                  no current time-bound TLS action
                 </span>
               )}
             </div>

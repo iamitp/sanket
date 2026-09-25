@@ -74,7 +74,7 @@ export default async function EntityPage({
           <code className="bg-white/5 px-1.5 py-0.5 rounded mr-3">{e.domain}</code>
           baseline scan {baseline.scanDate}
           {daily && <> · daily passive check {daily.checkedDate}</>}
-          {e.phase2 && <> · Phase 2 active scan {e.phase2.runDate}</>}
+          {e.phase2 && <> · historical phase 2 assessment {e.phase2.runDate}</>}
         </p>
       </section>
 
@@ -133,9 +133,9 @@ export default async function EntityPage({
 
       {/* Top row: security gauge + urgent actions */}
       <section className="grid gap-4 lg:grid-cols-[260px_1fr] mb-8">
-        <SecurityGauge score={e.securityScore} label={e.riskLabel} />
+        <SecurityGauge score={e.securityScore} label={e.riskLabel} asOf={baseline.scanDate} />
         <div className="space-y-4">
-          <FindingsList findings={e.findings} title="Headline findings" />
+          <FindingsList findings={e.findings} title={`Historical findings · ${baseline.scanDate}`} />
           {e.urgentActions.length > 0 && <UrgentActionsStrip actions={e.urgentActions} />}
         </div>
       </section>
@@ -155,15 +155,20 @@ export default async function EntityPage({
 
       {/* Phase 2 — only if data exists */}
       {e.phase2 ? (
-        <>
+        <details className="mb-10 rounded-lg border s-border s-surface px-5 py-4">
+          <summary className="cursor-pointer font-mono text-[11px] uppercase tracking-[0.16em] s-fade">
+            Historical active assessment · {e.phase2.runDate} · open archive
+          </summary>
+          <div className="mt-5">
           {/* Phase 2 header banner */}
           <section className="rounded-lg border s-border s-raise px-5 py-4 mb-6">
             <p className="font-mono text-[11px] uppercase tracking-[0.2em] s-accent-green font-semibold mb-1">
-              Phase 2 · Active scan complete
+              Historical phase 2 assessment · {e.phase2.runDate}
             </p>
             <p className="m-0 s-dim text-[14px]">
-              Authorised ethical-hacking assessment ran on {e.phase2.runDate}. Active fingerprinting,
-              CVE matching, Mythos-class adversary simulation, and CISO patch list below.
+              This assessment is preserved as a dated record. Its attack paths and patch deadlines
+              are not current findings; use the daily passive check above for current TLS, headers,
+              availability, and email authentication.
             </p>
             {e.phase2.headlineQuestion && (
               <div
@@ -171,7 +176,7 @@ export default async function EntityPage({
                 style={{ borderLeftColor: 'var(--sanket-accent)' }}
               >
                 <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-accent font-semibold mb-1.5">
-                  Single-question version for MD
+                  Historical question from {e.phase2.runDate}
                 </p>
                 <p className="m-0 font-serif text-[15px] s-fg italic leading-snug">
                   {e.phase2.headlineQuestion}
@@ -229,11 +234,12 @@ export default async function EntityPage({
           {/* CISO patch list */}
           <section className="mb-10">
             <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-fade mb-3">
-              CISO patch list
+              Historical patch list · {e.phase2.runDate}
             </p>
             <CISOPatchTable patches={e.phase2.cisoPatchList} />
           </section>
-        </>
+          </div>
+        </details>
       ) : (
         <section className="rounded-lg border s-border s-surface p-5 mb-10 opacity-80">
           <p className="font-mono text-[11px] uppercase tracking-[0.2em] s-fade font-semibold mb-2">
@@ -255,12 +261,12 @@ export default async function EntityPage({
           <code className="font-mono text-xs s-dim bg-white/5 px-1 py-0.5 rounded">curl</code>,{' '}
           <code className="font-mono text-xs s-dim bg-white/5 px-1 py-0.5 rounded">dig</code>, and{' '}
           <code className="font-mono text-xs s-dim bg-white/5 px-1 py-0.5 rounded">openssl</code>.
-          Phase 1 (passive) findings are unconditional; Phase 2 (active) findings require
-          per-entity ethical-hacking authorisation.
+          Passive checks record observed HTTP, TLS, header, and DNS state, not proof of exploitation.
+          Historical active assessments are dated and are not current operational guidance.
         </p>
         <p className="m-0">
           Sibling: <a href="https://sanjaya.amitpatnaik.com" className="s-link">Sanjaya</a> — fuel
-          pricing transparency on the same Ministry portfolio. Sanjaya narrates; Sanket warns.
+          data on the same Ministry portfolio. Sanjaya tracks energy data; Sanket tracks public security observations.
         </p>
       </footer>
     </div>

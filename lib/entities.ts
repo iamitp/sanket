@@ -220,28 +220,53 @@ export function loadDailyEntityCheck(slug: string): DailyEntityCheck | null {
   return report?.entities.find((entity) => entity.slug === slug) ?? null;
 }
 
-function daysUntil(due: string, from: string): number | null {
-  if (!/^\d{4}-\d{2}-\d{2}$/.test(due) || !/^\d{4}-\d{2}-\d{2}$/.test(from)) return null;
-  const [dueYear, dueMonth, dueDay] = due.split('-').map(Number);
-  const [fromYear, fromMonth, fromDay] = from.split('-').map(Number);
-  const dueTime = Date.UTC(dueYear, dueMonth - 1, dueDay);
-  const fromTime = Date.UTC(fromYear, fromMonth - 1, fromDay);
-  return Math.ceil((dueTime - fromTime) / 86400000);
-}
-
 export function applyDailyCheck(entity: EntityReport, check: DailyEntityCheck | null): EntityReport {
-  if (!check) return entity;
+  // Baseline actions have historical target dates. They must never become
+  // today's priorities merely because a fresh passive observation exists.
+  if (!check) return {
+    ...entity,
+    oneLine: `No current passive check; historical assessment dated ${entity.scanDate}.`,
+    urgentActions: [],
+  };
+  const currentTlsAction: EntityReport['urgentActions'] = [];
+  if (
+    check.tls.authorized !== false &&
+    check.tls.expiresOn &&
+    check.tls.daysToExpiry != null &&
+    check.tls.daysToExpiry <= 30 &&
+    check.tls.state !== 'unknown'
+  ) {
+    currentTlsAction.push({
+      what: check.tls.daysToExpiry < 0
+        ? 'Investigate the currently observed expired TLS certificate'
+        : 'Renew the currently observed TLS certificate before expiry',
+      due: check.tls.expiresOn,
+      days: check.tls.daysToExpiry,
+    });
+  }
+  const availability = check.availability.statusCode
+    ? `HTTP ${check.availability.statusCode}`
+    : check.availability.ok ? 'responding' : 'availability unconfirmed';
+  const tls = check.tls.expiresOn
+    ? `TLS expires ${check.tls.expiresOn}`
+    : 'TLS expiry unconfirmed';
+  const headerSummary = check.availability.ok
+    ? `${check.headerFindings.missing.length} headers absent on observed response`
+    : 'header state unconfirmed';
   return {
     ...entity,
-    scanDate: check.checkedDate,
+    oneLine: `${check.checkedDate} passive check: ${availability}; ${tls}; ${headerSummary}.`,
     tls: check.tls,
     headers: check.headers,
     emailAuth: check.emailAuth,
-    urgentActions: entity.urgentActions.map((action) => {
-      const days = daysUntil(action.due, check.checkedDate);
-      return days == null ? action : { ...action, days };
-    }),
+    urgentActions: currentTlsAction,
   };
+}
+
+export function actionTimeLabel(days: number): string {
+  if (days < 0) return `expired ${Math.abs(days)}d ago`;
+  if (days === 0) return 'expires today';
+  return `${days}d to expiry`;
 }
 
 export function tierColor(tier: Tier): string {

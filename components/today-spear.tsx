@@ -1,16 +1,15 @@
 import Link from 'next/link';
-import type { EntityReport } from '../lib/entities';
+import { actionTimeLabel, type EntityReport } from '../lib/entities';
 
 type Props = { entities: EntityReport[] };
 
 // Pick the single most time-pressing item across the portfolio.
-// Priority: smallest days from urgentActions OR smallest TLS daysToExpiry where < 30.
+// Only actions derived from the latest passive observation qualify here.
 type Spear = {
   entity: EntityReport;
   what: string;
   due: string;
   days: number;
-  kind: 'urgent-action' | 'cert-expiry';
 };
 
 function pickSpear(entities: EntityReport[]): Spear | null {
@@ -22,16 +21,6 @@ function pickSpear(entities: EntityReport[]): Spear | null {
         what: a.what,
         due: a.due,
         days: a.days,
-        kind: 'urgent-action',
-      });
-    }
-    if (e.tls.daysToExpiry != null && e.tls.daysToExpiry < 30 && e.tls.expiresOn) {
-      candidates.push({
-        entity: e,
-        what: `Rotate TLS certificate before expiry`,
-        due: e.tls.expiresOn,
-        days: e.tls.daysToExpiry,
-        kind: 'cert-expiry',
       });
     }
   }
@@ -57,10 +46,10 @@ export function TodaySpear({ entities }: Props) {
       </p>
       <div className="flex items-baseline gap-3 mb-3">
         <span className={`font-sans font-semibold text-5xl tabular-nums leading-none ${dayColor}`}>
-          {spear.days}
+          {Math.abs(spear.days)}
         </span>
         <span className="font-mono text-[10px] uppercase tracking-[0.18em] s-fade">
-          day{spear.days === 1 ? '' : 's'} to {spear.due}
+          {actionTimeLabel(spear.days)} · {spear.due}
         </span>
       </div>
       <p className="m-0 s-fg text-[14.5px] leading-snug font-medium mb-2 group-hover:text-[var(--sanket-accent-soft)] transition">

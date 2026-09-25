@@ -1,4 +1,4 @@
-import type { EntityReport } from '../lib/entities';
+import { actionTimeLabel, type EntityReport } from '../lib/entities';
 
 type Props = { actions: EntityReport['urgentActions'] };
 
@@ -10,7 +10,7 @@ export function UrgentActionsStrip({ actions }: Props) {
       style={{ borderLeftColor: 'var(--sanket-accent)' }}
     >
       <p className="font-mono text-[10px] uppercase tracking-[0.2em] s-accent font-semibold mb-3">
-        Urgent · time-bound actions
+        Current · time-bound actions
       </p>
       <ul className="m-0 p-0 list-none space-y-2">
         {actions.map((a, i) => (
@@ -20,7 +20,7 @@ export function UrgentActionsStrip({ actions }: Props) {
                 a.days <= 7 ? 'text-red-400' : a.days <= 30 ? 'text-amber-400' : 's-fade'
               }`}
             >
-              {a.days}d
+              {actionTimeLabel(a.days)}
             </span>
             <span className="flex-1">{a.what}</span>
             <span className="s-fade text-[11px] font-mono shrink-0">{a.due}</span>
