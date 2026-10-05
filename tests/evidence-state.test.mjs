@@ -13,7 +13,10 @@ test('new TLS observation does not keep an expired baseline rotation instruction
   const current = applyDailyCheck(baseline, daily);
   assert.equal(current.scanDate, baseline.scanDate);
   assert.equal(current.tls.expiresOn, '2026-10-25');
-  assert.equal(current.urgentActions.length, 0);
+  assert.equal(
+    current.urgentActions.some(({ due }) => due === baseline.urgentActions[0].due),
+    false,
+  );
   assert.doesNotMatch(current.oneLine, /2026-05-05|May 5/);
   assert.equal(baseline.urgentActions[0].due, '2026-05-05');
 });

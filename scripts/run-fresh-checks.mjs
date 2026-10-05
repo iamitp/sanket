@@ -96,7 +96,6 @@ function requestHeaders(url, redirects = 0) {
       {
         method: 'HEAD',
         timeout: TIMEOUT_MS,
-        rejectUnauthorized: false,
         headers: {
           'User-Agent': USER_AGENT,
           Accept: 'text/html,application/xhtml+xml,application/xml;q=0.9,*/*;q=0.8',
@@ -139,7 +138,9 @@ function requestHeaders(url, redirects = 0) {
   });
 }
 
-function readTlsCertificate(domain, fromDate) {
+// Inspection deliberately permits an untrusted handshake so the report can name an
+// expired or self-signed certificate. It never supplies availability or header results.
+function inspectTlsCertificate(domain, fromDate) {
   return new Promise((resolve) => {
     const socket = tls.connect({
       host: domain,
@@ -172,8 +173,8 @@ function readTlsCertificate(domain, fromDate) {
         notes.push(`certificate expires in ${remaining} days`);
       }
       if (!socket.authorized && socket.authorizationError) {
-        state = state === 'fail' ? 'fail' : 'warn';
-        notes.push(`TLS validation warning: ${socket.authorizationError}`);
+        state = 'fail';
+        notes.push(`certificate is untrusted: ${socket.authorizationError}`);
       }
 
       socket.end();
@@ -321,7 +322,7 @@ function attentionScore(result) {
 async function checkEntity(entity, checkedAt, checkedDate, fromDate) {
   const [availability, tlsResult, emailAuth] = await Promise.all([
     requestHeaders(`https://${entity.domain}/`),
-    readTlsCertificate(entity.domain, fromDate),
+    inspectTlsCertificate(entity.domain, fromDate),
     checkEmailAuth(entity),
   ]);
   const headerMeta = classifyHeaders(availability.headers || {});
