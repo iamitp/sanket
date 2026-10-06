@@ -1,7 +1,7 @@
 {
   "report": "sanket-daily-passive-check",
   "version": 1,
-  "checkedAt": "2026-10-06T02:42:49.223Z",
+  "checkedAt": "2026-10-06T10:36:02.713Z",
   "checkedDate": "2026-10-06",
   "cadence": "daily",
   "scope": "Passive DNS TXT, TLS certificate, and HTTPS response-header checks only. No port scanning, vulnerability scanning, authentication probing, fuzzing, or takeover validation.",
@@ -9,7 +9,7 @@
     "entityCount": 19,
     "okCount": 15,
     "availabilityErrorCount": 4,
-    "tlsWarnCount": 6,
+    "tlsWarnCount": 7,
     "tlsFailCount": 1,
     "headerGapCount": 19,
     "emailRiskCount": 9,
@@ -22,18 +22,18 @@
         "headline": "HTTP header check failed: unable to verify the first certificate | TLS expires 2027-02-11 (128d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
       },
       {
+        "slug": "mopng",
+        "short": "MoPNG",
+        "domain": "mopng.gov.in",
+        "score": 72,
+        "headline": "HTTP header check failed: read ECONNRESET | TLS expires 2026-10-25 (19d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
+      },
+      {
         "slug": "cpcl",
         "short": "CPCL",
         "domain": "cpcl.co.in",
         "score": 62,
         "headline": "HTTP header check failed: request timed out | TLS check unknown: TLS connection timed out | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
-      },
-      {
-        "slug": "mopng",
-        "short": "MoPNG",
-        "domain": "mopng.gov.in",
-        "score": 62,
-        "headline": "HTTP header check failed: read ECONNRESET | TLS check unknown: TLS connection timed out | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
       },
       {
         "slug": "nrl",
@@ -57,7 +57,7 @@
       "name": "Bharat Petroleum Corporation Ltd",
       "short": "BPCL",
       "domain": "bharatpetroleum.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -111,7 +111,7 @@
       "name": "Bharat PetroResources Limited",
       "short": "BPRL",
       "domain": "bharatpetroresources.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -166,7 +166,7 @@
       "name": "Chennai Petroleum Corporation Ltd",
       "short": "CPCL",
       "domain": "cpcl.co.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": false,
@@ -220,7 +220,7 @@
       "name": "Directorate General of Hydrocarbons",
       "short": "DGH",
       "domain": "dghindia.gov.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -271,7 +271,7 @@
       "name": "Engineers India Limited",
       "short": "EIL",
       "domain": "engineersindia.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -325,7 +325,7 @@
       "name": "GAIL India",
       "short": "GAIL",
       "domain": "gailonline.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -379,7 +379,7 @@
       "name": "Hindustan Petroleum Corporation Ltd",
       "short": "HPCL",
       "domain": "hindustanpetroleum.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -433,7 +433,7 @@
       "name": "Indian Oil Corporation",
       "short": "IOC",
       "domain": "iocl.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -464,27 +464,27 @@
         "permissive": []
       },
       "emailAuth": {
-        "spf": "strict",
+        "spf": "missing",
         "dkim": "present",
-        "dmarc": "none",
-        "spfRecord": "v=spf1 ip4:103.25.130.0/24 ip4:43.224.137.0/24 ip4:103.109.6.143 ip4:103.35.123.129 include:superiorfemdom.com -all",
-        "dmarcRecord": "v=DMARC1; p=none"
+        "dmarc": "absent",
+        "spfRecord": null,
+        "dmarcRecord": null
       },
       "findings": [
         "HTTP 307 at https://iocl.com/",
         "TLS expires 2026-12-12 (67d)",
         "Missing headers: Referrer-Policy, Permissions-Policy",
-        "Email auth: SPF strict, DMARC none",
+        "Email auth: SPF missing, DMARC absent",
         "4/6 tracked hardening headers present."
       ],
-      "attentionScore": 24
+      "attentionScore": 40
     },
     {
       "slug": "mopng",
       "name": "Ministry of Petroleum & Natural Gas",
       "short": "MoPNG",
       "domain": "mopng.gov.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": false,
@@ -492,11 +492,13 @@
         "error": "read ECONNRESET"
       },
       "tls": {
-        "state": "unknown",
-        "issuer": "Unavailable",
-        "note": "TLS connection timed out",
-        "authorized": false,
-        "authorizationError": "TLS connection timed out"
+        "state": "warn",
+        "issuer": "eMudhra Technologies Limited",
+        "expiresOn": "2026-10-25",
+        "daysToExpiry": 19,
+        "note": "certificate expires in 19 days",
+        "authorized": true,
+        "authorizationError": null
       },
       "headers": {
         "hsts": false,
@@ -526,19 +528,19 @@
       },
       "findings": [
         "HTTP header check failed: read ECONNRESET",
-        "TLS check unknown: TLS connection timed out",
+        "TLS expires 2026-10-25 (19d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF strict, DMARC reject",
         "0/6 tracked hardening headers present."
       ],
-      "attentionScore": 62
+      "attentionScore": 72
     },
     {
       "slug": "mrpl",
       "name": "Mangalore Refinery and Petrochemicals Ltd",
       "short": "MRPL",
       "domain": "mrpl.co.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -594,7 +596,7 @@
       "name": "Numaligarh Refinery Limited",
       "short": "NRL",
       "domain": "nrl.co.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": false,
@@ -648,7 +650,7 @@
       "name": "Oil India Limited",
       "short": "Oil India",
       "domain": "oil-india.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -702,7 +704,7 @@
       "name": "Oil Industry Safety Directorate",
       "short": "OISD",
       "domain": "oisd.gov.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": false,
@@ -758,7 +760,7 @@
       "name": "Oil and Natural Gas Corporation",
       "short": "ONGC",
       "domain": "ongcindia.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -811,7 +813,7 @@
       "name": "Petroleum Conservation Research Association",
       "short": "PCRA",
       "domain": "pcra.org",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -864,7 +866,7 @@
       "name": "Petronet LNG",
       "short": "Petronet LNG",
       "domain": "petronetlng.com",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -918,7 +920,7 @@
       "name": "Petroleum and Natural Gas Regulatory Board",
       "short": "PNGRB",
       "domain": "pngrb.gov.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -968,7 +970,7 @@
       "name": "Petroleum Planning & Analysis Cell",
       "short": "PPAC",
       "domain": "ppac.gov.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
@@ -1018,7 +1020,7 @@
       "name": "Rajiv Gandhi Institute of Petroleum Technology",
       "short": "RGIPT",
       "domain": "rgipt.ac.in",
-      "checkedAt": "2026-10-06T02:42:49.223Z",
+      "checkedAt": "2026-10-06T10:36:02.713Z",
       "checkedDate": "2026-10-06",
       "availability": {
         "ok": true,
