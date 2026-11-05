@@ -1,17 +1,17 @@
 {
   "report": "sanket-daily-passive-check",
   "version": 1,
-  "checkedAt": "2026-11-04T11:19:35.713Z",
-  "checkedDate": "2026-11-04",
+  "checkedAt": "2026-11-05T11:18:00.371Z",
+  "checkedDate": "2026-11-05",
   "cadence": "daily",
   "scope": "Passive DNS TXT, TLS certificate, and HTTPS response-header checks only. No port scanning, vulnerability scanning, authentication probing, fuzzing, or takeover validation.",
   "summary": {
     "entityCount": 19,
     "okCount": 14,
     "availabilityErrorCount": 5,
-    "tlsWarnCount": 6,
+    "tlsWarnCount": 4,
     "tlsFailCount": 2,
-    "headerGapCount": 19,
+    "headerGapCount": 18,
     "emailRiskCount": 9,
     "topAttention": [
       {
@@ -19,35 +19,35 @@
         "short": "DGH",
         "domain": "dghindia.gov.in",
         "score": 94,
-        "headline": "HTTP header check failed: unable to verify the first certificate | TLS expires 2027-05-14 (191d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
+        "headline": "HTTP header check failed: unable to verify the first certificate | TLS expires 2027-05-14 (190d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
       },
       {
         "slug": "oisd",
         "short": "OISD",
         "domain": "oisd.gov.in",
         "score": 94,
-        "headline": "HTTP header check failed: unable to verify the first certificate | TLS expires 2027-02-11 (99d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
+        "headline": "HTTP header check failed: unable to verify the first certificate | TLS expires 2027-02-11 (98d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
       },
       {
         "slug": "pcra",
         "short": "PCRA",
         "domain": "pcra.org",
         "score": 86,
-        "headline": "HTTP header check failed: request timed out | TLS expires 2027-01-18 (75d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
-      },
-      {
-        "slug": "bprl",
-        "short": "BPRL",
-        "domain": "bharatpetroresources.com",
-        "score": 74,
-        "headline": "HTTP 200 at https://bharatpetroresources.com/ | TLS expires 2026-12-05 (31d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
+        "headline": "HTTP header check failed: request timed out | TLS expires 2027-01-18 (74d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
       },
       {
         "slug": "ioc",
         "short": "IOC",
         "domain": "iocl.com",
         "score": 74,
-        "headline": "HTTP 307 at https://iocl.com/ | TLS expires 2026-12-12 (38d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
+        "headline": "HTTP 307 at https://iocl.com/ | TLS expires 2026-12-12 (37d) | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
+      },
+      {
+        "slug": "cpcl",
+        "short": "CPCL",
+        "domain": "cpcl.co.in",
+        "score": 62,
+        "headline": "HTTP header check failed: request timed out | TLS check unknown: TLS connection timed out | Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy"
       }
     ]
   },
@@ -57,37 +57,31 @@
       "name": "Bharat Petroleum Corporation Ltd",
       "short": "BPCL",
       "domain": "bharatpetroleum.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
-        "statusCode": 403,
+        "statusCode": 404,
         "finalUrl": "https://bharatpetroleum.in/"
       },
       "tls": {
         "state": "pass",
         "issuer": "Amazon",
         "expiresOn": "2027-04-26",
-        "daysToExpiry": 173,
+        "daysToExpiry": 172,
         "authorized": true,
         "authorizationError": null
       },
       "headers": {
         "hsts": true,
-        "csp": false,
-        "xFrame": false,
-        "xContentType": false,
-        "referrerPolicy": false,
-        "permissionsPolicy": false
+        "csp": true,
+        "xFrame": true,
+        "xContentType": true,
+        "referrerPolicy": true,
+        "permissionsPolicy": true
       },
       "headerFindings": {
-        "missing": [
-          "CSP",
-          "X-Frame-Options",
-          "X-Content-Type-Options",
-          "Referrer-Policy",
-          "Permissions-Policy"
-        ],
+        "missing": [],
         "permissive": []
       },
       "emailAuth": {
@@ -98,32 +92,31 @@
         "dmarcRecord": "v=DMARC1; p=reject; rua=mailto:rua.bharatpetroleum@progist.in; ruf=mailto:ruf.bharatpetroleum@progist.in; fo=1"
       },
       "findings": [
-        "HTTP 403 at https://bharatpetroleum.in/",
-        "TLS expires 2027-04-26 (173d)",
-        "Missing headers: CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
+        "HTTP 404 at https://bharatpetroleum.in/",
+        "TLS expires 2027-04-26 (172d)",
+        "All tracked hardening headers present.",
         "Email auth: SPF soft, DMARC reject",
-        "1/6 tracked hardening headers present."
+        "6/6 tracked hardening headers present."
       ],
-      "attentionScore": 20
+      "attentionScore": 0
     },
     {
       "slug": "bprl",
       "name": "Bharat PetroResources Limited",
       "short": "BPRL",
       "domain": "bharatpetroresources.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
         "finalUrl": "https://bharatpetroresources.com/"
       },
       "tls": {
-        "state": "warn",
+        "state": "pass",
         "issuer": "Google Trust Services",
-        "expiresOn": "2026-12-05",
-        "daysToExpiry": 31,
-        "note": "certificate expires in 31 days",
+        "expiresOn": "2027-02-02",
+        "daysToExpiry": 89,
         "authorized": true,
         "authorizationError": null
       },
@@ -155,20 +148,20 @@
       },
       "findings": [
         "HTTP 200 at https://bharatpetroresources.com/",
-        "TLS expires 2026-12-05 (31d)",
+        "TLS expires 2027-02-02 (89d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF missing, DMARC absent",
         "0/6 tracked hardening headers present."
       ],
-      "attentionScore": 74
+      "attentionScore": 56
     },
     {
       "slug": "cpcl",
       "name": "Chennai Petroleum Corporation Ltd",
       "short": "CPCL",
       "domain": "cpcl.co.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": false,
         "finalUrl": "https://cpcl.co.in/",
@@ -221,8 +214,8 @@
       "name": "Directorate General of Hydrocarbons",
       "short": "DGH",
       "domain": "dghindia.gov.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": false,
         "finalUrl": "https://dghindia.gov.in/",
@@ -232,7 +225,7 @@
         "state": "fail",
         "issuer": "Sectigo Limited",
         "expiresOn": "2027-05-14",
-        "daysToExpiry": 191,
+        "daysToExpiry": 190,
         "note": "certificate is untrusted: UNABLE_TO_VERIFY_LEAF_SIGNATURE",
         "authorized": false,
         "authorizationError": "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
@@ -265,7 +258,7 @@
       },
       "findings": [
         "HTTP header check failed: unable to verify the first certificate",
-        "TLS expires 2027-05-14 (191d)",
+        "TLS expires 2027-05-14 (190d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF soft, DMARC quarantine",
         "0/6 tracked hardening headers present."
@@ -277,8 +270,8 @@
       "name": "Engineers India Limited",
       "short": "EIL",
       "domain": "engineersindia.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -288,7 +281,7 @@
         "state": "pass",
         "issuer": "DigiCert Inc",
         "expiresOn": "2027-04-16",
-        "daysToExpiry": 163,
+        "daysToExpiry": 162,
         "authorized": true,
         "authorizationError": null
       },
@@ -317,7 +310,7 @@
       },
       "findings": [
         "HTTP 200 at https://engineersindia.com/",
-        "TLS expires 2027-04-16 (163d)",
+        "TLS expires 2027-04-16 (162d)",
         "Missing headers: Permissions-Policy",
         "Permissive headers: CSP",
         "Email auth: SPF missing, DMARC absent",
@@ -330,8 +323,8 @@
       "name": "GAIL India",
       "short": "GAIL",
       "domain": "gailonline.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -341,7 +334,7 @@
         "state": "pass",
         "issuer": "DigiCert Inc",
         "expiresOn": "2027-05-09",
-        "daysToExpiry": 186,
+        "daysToExpiry": 185,
         "authorized": true,
         "authorizationError": null
       },
@@ -371,7 +364,7 @@
       },
       "findings": [
         "HTTP 200 at https://www.gailonline.com/",
-        "TLS expires 2027-05-09 (186d)",
+        "TLS expires 2027-05-09 (185d)",
         "Missing headers: CSP, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF strict, DMARC absent",
         "2/6 tracked hardening headers present."
@@ -383,8 +376,8 @@
       "name": "Hindustan Petroleum Corporation Ltd",
       "short": "HPCL",
       "domain": "hindustanpetroleum.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -394,7 +387,7 @@
         "state": "pass",
         "issuer": "Google Trust Services",
         "expiresOn": "2027-01-08",
-        "daysToExpiry": 65,
+        "daysToExpiry": 64,
         "authorized": true,
         "authorizationError": null
       },
@@ -423,7 +416,7 @@
       },
       "findings": [
         "HTTP 200 at https://www.hindustanpetroleum.com/",
-        "TLS expires 2027-01-08 (65d)",
+        "TLS expires 2027-01-08 (64d)",
         "Missing headers: HSTS",
         "Permissive headers: CSP",
         "Email auth: SPF missing, DMARC absent",
@@ -436,8 +429,8 @@
       "name": "Indian Oil Corporation",
       "short": "IOC",
       "domain": "iocl.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 307,
@@ -447,8 +440,8 @@
         "state": "warn",
         "issuer": "GoDaddy.com",
         "expiresOn": "2026-12-12",
-        "daysToExpiry": 38,
-        "note": "certificate expires in 38 days",
+        "daysToExpiry": 37,
+        "note": "certificate expires in 37 days",
         "authorized": true,
         "authorizationError": null
       },
@@ -480,7 +473,7 @@
       },
       "findings": [
         "HTTP 307 at https://iocl.com/",
-        "TLS expires 2026-12-12 (38d)",
+        "TLS expires 2026-12-12 (37d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF missing, DMARC absent",
         "0/6 tracked hardening headers present."
@@ -492,8 +485,8 @@
       "name": "Ministry of Petroleum & Natural Gas",
       "short": "MoPNG",
       "domain": "mopng.gov.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -503,7 +496,7 @@
         "state": "pass",
         "issuer": "Sectigo Limited",
         "expiresOn": "2027-05-10",
-        "daysToExpiry": 187,
+        "daysToExpiry": 186,
         "authorized": true,
         "authorizationError": null
       },
@@ -535,7 +528,7 @@
       },
       "findings": [
         "HTTP 200 at https://mopng.gov.in/hi",
-        "TLS expires 2027-05-10 (187d)",
+        "TLS expires 2027-05-10 (186d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF strict, DMARC reject",
         "0/6 tracked hardening headers present."
@@ -547,8 +540,8 @@
       "name": "Mangalore Refinery and Petrochemicals Ltd",
       "short": "MRPL",
       "domain": "mrpl.co.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 503,
@@ -558,7 +551,7 @@
         "state": "pass",
         "issuer": "GlobalSign nv-sa",
         "expiresOn": "2027-04-16",
-        "daysToExpiry": 163,
+        "daysToExpiry": 162,
         "authorized": true,
         "authorizationError": null
       },
@@ -590,7 +583,7 @@
       },
       "findings": [
         "HTTP 503 at https://mrpl.co.in/",
-        "TLS expires 2027-04-16 (163d)",
+        "TLS expires 2027-04-16 (162d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF strict, DMARC quarantine",
         "0/6 tracked hardening headers present."
@@ -602,8 +595,8 @@
       "name": "Numaligarh Refinery Limited",
       "short": "NRL",
       "domain": "nrl.co.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": false,
         "finalUrl": "https://nrl.co.in/",
@@ -656,19 +649,18 @@
       "name": "Oil India Limited",
       "short": "Oil India",
       "domain": "oil-india.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
         "finalUrl": "https://www.oil-india.com/"
       },
       "tls": {
-        "state": "warn",
+        "state": "pass",
         "issuer": "DigiCert Inc",
-        "expiresOn": "2026-11-13",
-        "daysToExpiry": 9,
-        "note": "certificate expires in 9 days",
+        "expiresOn": "2027-05-19",
+        "daysToExpiry": 195,
         "authorized": true,
         "authorizationError": null
       },
@@ -697,21 +689,21 @@
       },
       "findings": [
         "HTTP 200 at https://www.oil-india.com/",
-        "TLS expires 2026-11-13 (9d)",
+        "TLS expires 2027-05-19 (195d)",
         "Missing headers: Referrer-Policy",
         "Permissive headers: CSP",
         "Email auth: SPF strict, DMARC reject",
         "4/6 tracked hardening headers present."
       ],
-      "attentionScore": 24
+      "attentionScore": 6
     },
     {
       "slug": "oisd",
       "name": "Oil Industry Safety Directorate",
       "short": "OISD",
       "domain": "oisd.gov.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": false,
         "finalUrl": "https://oisd.gov.in/",
@@ -721,7 +713,7 @@
         "state": "fail",
         "issuer": "DigiCert Inc",
         "expiresOn": "2027-02-11",
-        "daysToExpiry": 99,
+        "daysToExpiry": 98,
         "note": "certificate is untrusted: UNABLE_TO_VERIFY_LEAF_SIGNATURE",
         "authorized": false,
         "authorizationError": "UNABLE_TO_VERIFY_LEAF_SIGNATURE"
@@ -754,7 +746,7 @@
       },
       "findings": [
         "HTTP header check failed: unable to verify the first certificate",
-        "TLS expires 2027-02-11 (99d)",
+        "TLS expires 2027-02-11 (98d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF strict, DMARC reject",
         "0/6 tracked hardening headers present."
@@ -766,8 +758,8 @@
       "name": "Oil and Natural Gas Corporation",
       "short": "ONGC",
       "domain": "ongcindia.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -777,7 +769,7 @@
         "state": "pass",
         "issuer": "DigiCert Inc",
         "expiresOn": "2027-02-19",
-        "daysToExpiry": 107,
+        "daysToExpiry": 106,
         "authorized": true,
         "authorizationError": null
       },
@@ -806,7 +798,7 @@
       },
       "findings": [
         "HTTP 200 at https://ongcindia.com/",
-        "TLS expires 2027-02-19 (107d)",
+        "TLS expires 2027-02-19 (106d)",
         "Missing headers: Permissions-Policy",
         "Permissive headers: CSP",
         "Email auth: SPF missing, DMARC absent",
@@ -819,8 +811,8 @@
       "name": "Petroleum Conservation Research Association",
       "short": "PCRA",
       "domain": "pcra.org",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": false,
         "finalUrl": "https://pcra.org/",
@@ -830,7 +822,7 @@
         "state": "pass",
         "issuer": "Let's Encrypt",
         "expiresOn": "2027-01-18",
-        "daysToExpiry": 75,
+        "daysToExpiry": 74,
         "authorized": true,
         "authorizationError": null
       },
@@ -862,7 +854,7 @@
       },
       "findings": [
         "HTTP header check failed: request timed out",
-        "TLS expires 2027-01-18 (75d)",
+        "TLS expires 2027-01-18 (74d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, X-Content-Type-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF missing, DMARC absent",
         "0/6 tracked hardening headers present."
@@ -874,8 +866,8 @@
       "name": "Petronet LNG",
       "short": "Petronet LNG",
       "domain": "petronetlng.com",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 405,
@@ -885,7 +877,7 @@
         "state": "pass",
         "issuer": "GoDaddy.com",
         "expiresOn": "2027-02-05",
-        "daysToExpiry": 93,
+        "daysToExpiry": 92,
         "authorized": true,
         "authorizationError": null
       },
@@ -916,7 +908,7 @@
       },
       "findings": [
         "HTTP 405 at https://petronetlng.com/",
-        "TLS expires 2027-02-05 (93d)",
+        "TLS expires 2027-02-05 (92d)",
         "Missing headers: HSTS, CSP, X-Frame-Options, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF strict, DMARC reject",
         "1/6 tracked hardening headers present."
@@ -928,8 +920,8 @@
       "name": "Petroleum and Natural Gas Regulatory Board",
       "short": "PNGRB",
       "domain": "pngrb.gov.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -939,8 +931,8 @@
         "state": "warn",
         "issuer": "GlobalSign nv-sa",
         "expiresOn": "2026-12-07",
-        "daysToExpiry": 33,
-        "note": "certificate expires in 33 days",
+        "daysToExpiry": 32,
+        "note": "certificate expires in 32 days",
         "authorized": true,
         "authorizationError": null
       },
@@ -967,7 +959,7 @@
       },
       "findings": [
         "HTTP 200 at https://pngrb.gov.in/eng-web/",
-        "TLS expires 2026-12-07 (33d)",
+        "TLS expires 2026-12-07 (32d)",
         "Permissive headers: CSP",
         "Email auth: SPF soft, DMARC quarantine",
         "5/6 tracked hardening headers present."
@@ -979,8 +971,8 @@
       "name": "Petroleum Planning & Analysis Cell",
       "short": "PPAC",
       "domain": "ppac.gov.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -990,8 +982,8 @@
         "state": "warn",
         "issuer": "Sectigo Limited",
         "expiresOn": "2026-12-18",
-        "daysToExpiry": 44,
-        "note": "certificate expires in 44 days",
+        "daysToExpiry": 43,
+        "note": "certificate expires in 43 days",
         "authorized": true,
         "authorizationError": null
       },
@@ -1018,7 +1010,7 @@
       },
       "findings": [
         "HTTP 200 at https://ppac.gov.in/",
-        "TLS expires 2026-12-18 (44d)",
+        "TLS expires 2026-12-18 (43d)",
         "Permissive headers: CSP",
         "Email auth: SPF soft, DMARC absent",
         "5/6 tracked hardening headers present."
@@ -1030,8 +1022,8 @@
       "name": "Rajiv Gandhi Institute of Petroleum Technology",
       "short": "RGIPT",
       "domain": "rgipt.ac.in",
-      "checkedAt": "2026-11-04T11:19:35.713Z",
-      "checkedDate": "2026-11-04",
+      "checkedAt": "2026-11-05T11:18:00.371Z",
+      "checkedDate": "2026-11-05",
       "availability": {
         "ok": true,
         "statusCode": 200,
@@ -1041,8 +1033,8 @@
         "state": "warn",
         "issuer": "Sectigo Limited",
         "expiresOn": "2026-11-22",
-        "daysToExpiry": 18,
-        "note": "certificate expires in 18 days",
+        "daysToExpiry": 17,
+        "note": "certificate expires in 17 days",
         "authorized": true,
         "authorizationError": null
       },
@@ -1071,7 +1063,7 @@
       },
       "findings": [
         "HTTP 200 at https://rgipt.ac.in/",
-        "TLS expires 2026-11-22 (18d)",
+        "TLS expires 2026-11-22 (17d)",
         "Missing headers: CSP, Referrer-Policy, Permissions-Policy",
         "Email auth: SPF soft, DMARC absent",
         "3/6 tracked hardening headers present."
